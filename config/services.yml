@@ -2,7 +2,12 @@ services:
     danieltj.reportuser.controller.ext:
         class: danieltj\reportuser\controller\ext
         arguments:
-            - '%danieltj.reportuser.tables.user_tokens%'
+            - '@danieltj.reportuser.includes.functions'
+
+    danieltj.reportuser.controller.mcp:
+        class: danieltj\reportuser\controller\mcp
+        arguments:
+            - '@danieltj.reportuser.includes.functions'
 
     danieltj.reportuser.listener:
         class: danieltj\reportuser\event\listener
@@ -18,4 +23,3 @@ services:
         arguments:
             - '@auth'
             - '@dbal.conn'
-            - '%danieltj.reportuser.tables.user_tokens%'

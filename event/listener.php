@@ -48,7 +48,6 @@ class listener implements EventSubscriberInterface {
 
 		return [
 			'core.user_setup_after'	=> 'add_languages',
-			'core.page_header'		=> 'handle_user_request',
 		];
 
 	}
