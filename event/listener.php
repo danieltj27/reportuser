@@ -48,6 +48,7 @@ class listener implements EventSubscriberInterface {
 
 		return [
 			'core.user_setup_after'	=> 'add_languages',
+			'core.permissions'		=> 'add_permissions',
 		];
 
 	}
@@ -57,7 +58,21 @@ class listener implements EventSubscriberInterface {
 	 */
 	public function add_languages() {
 
-		$this->language->add_lang( [ 'common' ], 'danieltj/reportuser' );
+		$this->language->add_lang( [
+			'common', 'mcp', 'permissions'
+		], 'danieltj/reportuser' );
+
+	}
+
+	/**
+	 * phpbb/permissions
+	 */
+	public function add_permissions( $event ) {
+
+		$event->update_subarray( 'permissions', 'm_user_report', [
+			'lang'	=> 'ACL_M_USER_REPORT',
+			'cat'	=> 'misc'
+		] );
 
 	}
 
