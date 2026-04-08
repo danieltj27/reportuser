@@ -72,8 +72,8 @@ final class functions {
 
 		}
 
-		// Cannot report yourself.
-		if ( $user_id === (int) $this->user->data[ 'user_id' ] ) {
+		// Cannot report yourself or guests.
+		if ( $user_id === (int) $this->user->data[ 'user_id' ] || ANONYMOUS === (int) $this->user->data[ 'user_id' ] ) {
 
 			return false;
 
