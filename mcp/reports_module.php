@@ -37,7 +37,7 @@ class reports_module {
 		$this->tpl_name = 'mcp_report_user';
 		$this->page_title = $language->lang( 'MCP_USER_REPORTS' );
 
-		$controller = $phpbb_container->get( 'danieltj.accountsecurity.controller.mcp' );
+		$controller = $phpbb_container->get( 'danieltj.reportuser.controller.mcp' );
 		$controller->reports( $this->u_action );
 
 	}

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * @package Account Security
+ * @package Report User
  * @copyright (c) 2026 Daniel James
  * @license https://opensource.org/license/gpl-2-0
  */
 
-namespace danieltj\accountsecurity\controller;
+namespace danieltj\reportuser\controller;
 
-use danieltj\accountsecurity\includes\functions;
+use danieltj\reportuser\includes\functions;
 
 final class ext {
 

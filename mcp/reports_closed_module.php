@@ -37,7 +37,7 @@ class reports_closed_module {
 		$this->tpl_name = 'mcp_report_user';
 		$this->page_title = $language->lang( 'MCP_USER_REPORTS_CLOSED' );
 
-		$controller = $phpbb_container->get( 'danieltj.accountsecurity.controller.mcp' );
+		$controller = $phpbb_container->get( 'danieltj.reportuser.controller.mcp' );
 		$controller->reports_closed( $this->u_action );
 
 	}
