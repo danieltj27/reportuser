@@ -1,0 +1,5 @@
+report_user_mcp_create_report:
+    path: /user/{id}/report
+    defaults: { _controller: danieltj.reportuser.controller.ext:report, id: 0 }
+    requirements:
+        id: \d+

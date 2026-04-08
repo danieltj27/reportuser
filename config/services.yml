@@ -1,0 +1,21 @@
+services:
+    danieltj.reportuser.controller.ext:
+        class: danieltj\reportuser\controller\ext
+        arguments:
+            - '%danieltj.reportuser.tables.user_tokens%'
+
+    danieltj.reportuser.listener:
+        class: danieltj\reportuser\event\listener
+        arguments:
+            - '@language'
+            - '@template'
+            - '@danieltj.reportuser.includes.functions'
+        tags:
+            - { name: event.listener }
+
+    danieltj.reportuser.includes.functions:
+        class: danieltj\reportuser\includes\functions
+        arguments:
+            - '@auth'
+            - '@dbal.conn'
+            - '%danieltj.reportuser.tables.user_tokens%'
