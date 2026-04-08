@@ -1,0 +1,13 @@
+/**
+ * css
+ */
+
+.page-body {
+	position: relative;
+}
+
+.report-user-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+}

@@ -47,14 +47,16 @@ class listener implements EventSubscriberInterface {
 	static public function getSubscribedEvents() {
 
 		return [
-			'core.user_setup_after'	=> 'add_languages',
-			'core.permissions'		=> 'add_permissions',
+			'core.user_setup_after'			=> 'add_languages',
+			'core.permissions'				=> 'add_permissions',
+
+			'core.memberlist_view_profile'	=> 'add_memberlist_template_vars',
 		];
 
 	}
 
 	/**
-	 * phpbb/user
+	 * phpbb/user:setup
 	 */
 	public function add_languages() {
 
@@ -65,13 +67,24 @@ class listener implements EventSubscriberInterface {
 	}
 
 	/**
-	 * phpbb/permissions
+	 * phpbb/permissions:__construct
 	 */
 	public function add_permissions( $event ) {
 
 		$event->update_subarray( 'permissions', 'm_user_report', [
 			'lang'	=> 'ACL_M_USER_REPORT',
 			'cat'	=> 'misc'
+		] );
+
+	}
+
+	/**
+	 * memberlist
+	 */
+	public function add_memberlist_template_vars( $event ) {
+
+		$this->template->assign_vars( [
+			'REPORT_USER' => ( $this->functions->can_report_user( $event[ 'member' ][ 'user_id' ] ) ) ? $this->functions->get_report_user_url( $event[ 'member' ][ 'user_id' ] ) : false,
 		] );
 
 	}

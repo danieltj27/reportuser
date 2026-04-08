@@ -23,3 +23,5 @@ services:
         arguments:
             - '@auth'
             - '@dbal.conn'
+            - '@routing.helper'
+            - '@user'
