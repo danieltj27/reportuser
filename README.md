@@ -1,4 +1,4 @@
-# Status Updates
+# Report User
 
 Adds a button that allows people to report other users.
 
