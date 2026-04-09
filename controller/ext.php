@@ -73,9 +73,11 @@ final class ext {
 	 */
 	public function report( int $user_id ) {
 
-		/**
-		 * @todo FORCE GET REQUEST FOR PAGE
-		 */
+		if ( 'GET' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
+
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_HTTP' ), E_USER_WARNING );
+
+		}
 
 		// The profile URL of the user being reported.
 		$user_return_url = append_sid( '/memberlist.php', [
@@ -85,7 +87,7 @@ final class ext {
 
 		if ( ! $this->functions->can_report_user( $user_id ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_PERMISSION_DENIED' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $user_return_url . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_PERMISSIONS' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $user_return_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
@@ -113,9 +115,11 @@ final class ext {
 	 */
 	public function submit( int $user_id ) {
 
-		/**
-		 * @todo FORCE POST REQUEST FOR PAGE
-		 */
+		if ( 'POST' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
+
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_HTTP' ), E_USER_WARNING );
+
+		}
 
 		// The profile URL of the user being reported.
 		$user_return_url = append_sid( '/memberlist.php', [
@@ -125,7 +129,7 @@ final class ext {
 
 		if ( ! $this->functions->can_report_user( $user_id ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_PERMISSION_DENIED' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_INDEX' ), '<a href="' . $user_return_url . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_PERMISSIONS' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_INDEX' ), '<a href="' . $user_return_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 

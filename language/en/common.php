@@ -25,7 +25,8 @@ $lang = array_merge( $lang, [
 	'REPORT_REASON_LABEL'			=> 'Report Information',
 	'REPORT_REASON_DESCRIPTION'		=> 'This field is required and cannot be left blank.',
 
-	'REPORT_USER_ERROR_PERMISSION_DENIED'	=> 'You cannot submit a report for this user.',
+	'REPORT_USER_ERROR_INVALID_HTTP'		=> 'You cannot request this page using that method.',
+	'REPORT_USER_ERROR_INVALID_PERMISSIONS'	=> 'You cannot submit a report for this user.',
 	'REPORT_USER_ERROR_INVALID_USER'		=> 'You cannot report a user that does not exist.',
 	'REPORT_USER_ERROR_INVALID_CSRF'		=> 'You have submitted an invalid form.',
 	'REPORT_USER_ERROR_INVALID_REASON'		=> 'You must include a reason for your report.',
