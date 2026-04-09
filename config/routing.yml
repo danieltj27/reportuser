@@ -1,5 +1,11 @@
 report_user_mcp_create_report:
-    path: /user/{id}/report
-    defaults: { _controller: danieltj.reportuser.controller.ext:report, id: 0 }
+    path: /user/{user_id}/report
+    defaults: { _controller: danieltj.reportuser.controller.ext:report, user_id: 0 }
     requirements:
-        id: \d+
+        user_id: \d+
+
+report_user_mcp_submit_report:
+    path: /user/{user_id}/report/submit
+    defaults: { _controller: danieltj.reportuser.controller.ext:submit, user_id: 0 }
+    requirements:
+        user_id: \d+

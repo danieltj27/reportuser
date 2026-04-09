@@ -21,4 +21,10 @@ if ( empty( $lang ) || ! is_array( $lang ) ) {
 $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS'			=> 'Open user reports',
 	'MCP_USER_REPORTS_CLOSED'	=> 'Closed user reports',
+
+	'USER_REPORT_TH_USERNAME'	=> 'Reported user',
+	'USER_REPORT_TH_BY'			=> 'Reported by',
+	'USER_REPORT_TH_REASON'		=> 'Reason',
+	'USER_REPORT_TH_TIME'		=> 'Time',
+	'USER_REPORT_TH_REVIEW'		=> 'Review',
 ] );

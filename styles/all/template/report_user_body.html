@@ -1,0 +1,44 @@
+{% include 'overall_header.html' %}
+
+<h2>{{ lang( 'REPORT_USER' ) }}</h2>
+
+<div class="report-user-notice rules">
+	<div class="inner">
+		<strong><i class="icon fa-exclamation fa-fw" aria-hidden="true"></i>&nbsp;{{ REPORT_THIS_USER }}</strong>
+	</div>
+</div>
+
+<form action="{{ REPORT_USER }}" method="post" id="report-user">
+	<div class="panel">
+		<div class="inner">
+			<div class="content">
+				<fieldset>
+					<dl class="fields2">
+						<dt><label for="report_notify">{{ lang( 'REPORT_NOTIFY' ) ~ lang( 'COLON' ) }}</label></dt>
+						<dd>
+							<label for="report_notify_yes"><input type="radio" name="report_notify" id="report_notify_yes" value="1"{{ ( REPORT_NOTIFY ) ? ' checked="checked"' : '' }}/>&nbsp;{{ lang( 'YES' ) }}</label>
+							<label for="report_notify_no"><input type="radio" name="report_notify" id="report_notify_no" value="0"{{ ( ! REPORT_NOTIFY ) ? ' checked="checked"' : '' }}/>&nbsp;{{ lang( 'NO' ) }}</label>
+						</dd>
+					</dl>
+					<dl class="fields2">
+						<dt><label for="report_reason">{{ lang( 'REPORT_REASON_LABEL' ) ~ lang( 'COLON' ) }}</label><br /><span>{{ lang( 'REPORT_REASON_DESCRIPTION' ) }}</span></dt>
+						<dd><textarea name="report_reason" id="report_reason" rows="4" cols="76" class="inputbox">{{ REPORT_TEXT }}</textarea></dd>
+					</dl>
+				</fieldset>
+			</div>
+		</div>
+	</div>
+	<div class="panel">
+		<div class="inner">
+			<div class="content">
+				<fieldset class="submit-buttons">
+					{{ S_FORM_TOKEN }}
+					<input type="submit" name="submit" class="button1" value="{{ lang( 'SUBMIT' ) }}" />&nbsp;
+					<input type="submit" name="cancel" class="button1" value="{{ lang( 'CANCEL' ) }}" />
+				</fieldset>
+			</div>
+		</div>
+	</div>
+</form>
+
+{% include 'overall_footer.html' %}

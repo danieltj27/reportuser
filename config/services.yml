@@ -2,6 +2,12 @@ services:
     danieltj.reportuser.controller.ext:
         class: danieltj\reportuser\controller\ext
         arguments:
+            - '@controller.helper'
+            - '@language'
+            - '@request'
+            - '@routing.helper'
+            - '@template'
+            - '@user'
             - '@danieltj.reportuser.includes.functions'
 
     danieltj.reportuser.controller.mcp:
@@ -13,6 +19,7 @@ services:
         class: danieltj\reportuser\event\listener
         arguments:
             - '@language'
+            - '@routing.helper'
             - '@template'
             - '@danieltj.reportuser.includes.functions'
         tags:

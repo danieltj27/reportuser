@@ -1,0 +1,42 @@
+{% include 'mcp_header.html' %}
+
+<h2>{{ lang( 'MCP_USER_REPORT' ) }}</h2>
+
+<div class="panel">
+	<div class="inner">
+		<div class="action-bar bar-top">
+			<div class="pagination">
+				{{ TOTAL_REPORTS }} &bull; {{ PAGE_NUMBER }}
+			</div>
+		</div>
+		<table class="table1 responsive">
+			<thead>
+				<tr>
+					<th>{{ lang( 'USER_REPORT_TH_USERNAME' ) }}</th>
+					<th>{{ lang( 'USER_REPORT_TH_BY' ) }}</th>
+					<th>{{ lang( 'USER_REPORT_TH_REASON' ) }}</th>
+					<th>{{ lang( 'USER_REPORT_TH_TIME' ) }}</th>
+					<th>{{ lang( 'MARK' ) }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="bg1">
+					<td>username</td>
+					<td>reporter</td>
+					<td>reason</td>
+					<td>time</td>
+					<td>url</td>
+					<td class="center"><input type="checkbox" name="markreport[]" id="report-0" value="" /></td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="action-bar bar-bottom">
+			{% include 'display_options.html' %}
+			<div class="pagination">
+				{{ TOTAL_REPORTS }} &bull; {{ PAGE_NUMBER }}
+			</div>
+		</div>
+	</div>
+</div>
+
+{% include 'mcp_footer.html' %}
