@@ -199,6 +199,23 @@ final class functions {
 	}
 
 	/**
+	 * Return a collection of user reports.
+	 * 
+	 * @todo work in progress!
+	 * 
+	 * @param 
+	 * 
+	 * @return array|bool  An array containing user reports.
+	 */
+	public function get_user_reports( int $report_id = 0, array $options = [] ) : array {
+
+		
+
+		return [];
+
+	}
+
+	/**
 	 * Return an array of user data.
 	 * 
 	 * @param integer $user_id A user id.

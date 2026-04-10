@@ -1,0 +1,36 @@
+{% if S_SHOW_USER_REPORTS %}
+	<div class="panel">
+		<div class="inner">
+			<h3>{{ lang( 'MCP_USER_REPORTS_LATEST' ) }}</h3>
+			<p>{{ lang( 'MCP_USER_REPORTS_TOTAL' ) }}</p>
+			<table class="table1">
+				<thead>
+					<tr>
+						<th class="name">asdf</th>
+						<th class="name">asdf</th>
+						<th class="name">asdf</th>
+						<th class="name">asdf</th>
+						<th class="name">asdf</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% if USER_REPORTS %}
+						{% for report in USER_REPORTS %}
+							<tr class="bg1">
+								<td><span>asdf</span></td>
+								<td><span>asdf</span></td>
+								<td><span>asdf</span></td>
+								<td><span>asdf</span></td>
+								<td><span>asdf</span></td>
+							</tr>
+						{% endfor %}
+					{% else %}
+						<tr>
+							<td colspan="5">{{ lang( 'MCP_USER_REPORTS_NO_RESULTS' ) }}</td>
+						</tr>
+					{% endif %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endif %}

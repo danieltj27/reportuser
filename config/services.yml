@@ -13,6 +13,13 @@ services:
     danieltj.reportuser.controller.mcp:
         class: danieltj\reportuser\controller\mcp
         arguments:
+            - '@auth'
+            - '@controller.helper'
+            - '@language'
+            - '@request'
+            - '@routing.helper'
+            - '@template'
+            - '@user'
             - '@danieltj.reportuser.includes.functions'
 
     danieltj.reportuser.listener:

@@ -70,6 +70,8 @@ final class ext {
 
 	/**
 	 * Create a new user report.
+	 * 
+	 * @todo include better return links in trigger_error()
 	 */
 	public function report( int $user_id ) {
 
@@ -87,19 +89,15 @@ final class ext {
 
 		if ( ! $this->functions->can_report_user( $user_id ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_PERMISSIONS' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $user_return_url . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REPORT' ), E_USER_WARNING );
 
 		}
 
 		$reported_user = $this->functions->get_user_data( $user_id );
 
-		if ( false === $reported_user ) {
-
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_USER' ), E_USER_WARNING );
-
-		}
-
 		add_form_key( 'report_user_form_csrf' );
+
+		$this->language->add_lang( 'mcp' );
 
 		$this->template->assign_vars( [
 			'REPORT_USER'		=> $this->router->route( 'report_user_mcp_submit_report', [ 'user_id' => $user_id ] ),
@@ -112,6 +110,8 @@ final class ext {
 
 	/**
 	 * Submit a new user report.
+	 * 
+	 * @todo include better return links in trigger_error()
 	 */
 	public function submit( int $user_id ) {
 
@@ -129,13 +129,13 @@ final class ext {
 
 		if ( ! $this->functions->can_report_user( $user_id ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_PERMISSIONS' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_INDEX' ), '<a href="' . $user_return_url . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REPORT' ), E_USER_WARNING );
 
 		}
 
 		if ( ! check_form_key( 'report_user_form_csrf' ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_CSRF' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $this->router->route( 'report_user_mcp_create_report', [ 'user_id' => $user_id ] ) . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_CSRF' ), E_USER_WARNING );
 
 		}
 
@@ -145,7 +145,7 @@ final class ext {
 
 		if ( 1 > strlen( $report_reason ) || 250 < strlen( $report_reason ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REASON' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $this->router->route( 'report_user_mcp_create_report', [ 'user_id' => $user_id ] ) . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REASON' ), E_USER_WARNING );
 
 		}
 
@@ -169,7 +169,7 @@ final class ext {
 
 		if ( false === $report_id ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_UNKNOWN_ERROR' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $this->router->route( 'report_user_mcp_create_report', [ 'user_id' => $user_id ] ) . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_UNKNOWN_ERROR' ), E_USER_WARNING );
 
 		}
 
@@ -177,7 +177,7 @@ final class ext {
 		 * @todo send notifications to moderators
 		 */
 
-		trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORT_SUCCESS' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $user_return_url . '">', '</a>' ), E_USER_WARNING );
+		trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORT_SUCCESS' ), E_USER_WARNING );
 
 	}
 
