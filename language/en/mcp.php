@@ -24,11 +24,10 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_LATEST'		=> 'Latest 5 user reports',
 	'MCP_USER_REPORTS_NO_RESULTS'	=> 'There are no user reports to review.',
 
-	'USER_REPORT_TH_USERNAME'	=> 'Reported user',
-	'USER_REPORT_TH_BY'			=> 'Reported by',
-	'USER_REPORT_TH_REASON'		=> 'Reason',
-	'USER_REPORT_TH_TIME'		=> 'Time',
-	'USER_REPORT_TH_REVIEW'		=> 'Review',
+	'USER_REPORT_COLUMN_USERNAME'	=> 'Reported user',
+	'USER_REPORT_COLUMN_REPORTER'	=> 'Reported by',
+	'USER_REPORT_COLUMN_REASON'		=> 'Reason',
+	'USER_REPORT_COLUMN_TIME'		=> 'Time',
 
 	'MCP_REPORT_USER_ERROR_INVALID_HTTP'	=> 'You cannot access this route with an invalid request method.',
 	'MCP_REPORT_USER_ERROR_ACCESS_DENIED'	=> 'You do not have permission to manage user reports.',

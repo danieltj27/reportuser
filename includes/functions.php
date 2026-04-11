@@ -203,20 +203,106 @@ final class functions {
 	 * 
 	 * @todo work in progress!
 	 * 
-	 * @param 
+	 * @param int   $report_id    The report ID to fetch, ignores all other parameters.
+	 * @param array $query        Array of query parameters used to search for reports.
+	 * @param array $order_by     Array containing order by parameters.
+	 * @param array $limit_offset Array containing limit and offset parameters.
 	 * 
-	 * @return array|bool  An array containing user reports.
+	 * @return array  An array containing user reports.
 	 */
-	public function get_user_reports( int $report_id = 0, array $options = [] ) : array {
+	public function get_user_reports( int $report_id = 0, array $query = [], array $order_by = [], array $limit_offset = [] ) : array {
 
-		
+		// Columns allowed in queries.
+		$allowed_columns = [
+			'report_id',
+			'report_closed',
+			'report_time',
+			'report_text',
+			'user_id',
+			'reported_user_id',
+		];
 
-		return [];
+		// Placeholders for sql query.
+		$where = '';
+		$order = '';
+		$limit = '';
+
+		if ( 0 !== $report_id ) {
+
+			$where = $this->database->sql_build_array( 'SELECT', [
+				'report_id' => $report_id,
+			] );
+
+		} elseif ( ! empty( $query ) ) {
+
+			$where_collection = [];
+
+			foreach ( $query as $key => $value ) {
+
+				if ( isset( $value[ 0 ] ) && isset( $value[ 1 ] ) && isset( $value[ 2 ] ) && in_array( $value[ 0 ], $allowed_columns, true ) && in_array( $value[ 1 ], [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN' ], true ) ) {
+
+					$where_collection[] = ( 'IN' === $value[ 1 ] || 'NOT IN' === $value[ 1 ] ) ? $value[ 0 ] . ' ' . $value[ 1 ] . '(' . $value[ 2 ] . ')' : $value[ 0 ] . ' ' . $value[ 1 ] . ' ' . $value[ 2 ];
+
+				}
+
+			}
+
+			if ( ! empty( $where_collection ) ) {
+
+				$where = ' WHERE ' . implode( ' AND ', $where_collection );
+
+			}
+
+		}
+
+		if ( ! empty( $order_by ) ) {
+
+			$order_collection = [];
+
+			foreach ( $order_by as $key => $value ) {
+
+				if ( isset( $value[ 0 ] ) && isset( $value[ 1 ] ) && in_array( $value[ 0 ], $allowed_columns, true ) && in_array( $value[ 1 ], [ 'ASC', 'DESC' ], true ) ) {
+
+					$order_collection[] = $value[ 0 ] . ' ' . $value[ 1 ];
+
+				}
+
+			}
+
+			if ( ! empty( $order_collection ) ) {
+
+				$order  = ' ORDER BY ' . implode( ', ', $order_collection );
+
+			}
+
+		}
+
+		if ( ! empty( $limit_offset ) ) {
+
+			$limit =  ' LIMIT ' . implode( ', ', $limit_offset );
+
+		}
+
+		$result = $this->database->sql_query( 'SELECT * FROM ' . REPORTS_TABLE . $where . $order . $limit );
+
+		$reports = $this->database->sql_fetchrowset( $result );
+
+		$this->database->sql_freeresult( $result );
+
+		if ( false === $reports ) {
+
+			return [];
+
+		}
+
+		return $reports;
 
 	}
 
 	/**
 	 * Return an array of user data.
+	 * 
+	 * @todo repurpose this function to fetch multiple users
 	 * 
 	 * @param integer $user_id A user id.
 	 * 
@@ -240,6 +326,40 @@ final class functions {
 		}
 
 		return $user;
+
+	}
+
+	/**
+	 * Return a localised version of a timestamp.
+	 * 
+	 * @todo add option to change time (in new \phpbb\datetime call)
+	 * 
+	 * @param  string $timezone An ISO formatted timezone code.
+	 * 
+	 * @return string           A localised timestamp as a string.
+	 */
+	public function get_l10n_local_time( string $timezone = 'UTC' ) : string {
+
+		try {
+
+			/**
+			 * Required for \phpbb\datetime wrapper.
+			 * 
+			 * @link https://www.php.net/manual/en/class.datetimezone.php
+			 */
+			$dtz = new \DateTimeZone( $timezone );
+
+		} catch ( \DateInvalidTimeZoneException $error ) {
+
+			// Always fallback to UTC.
+			$dtz = new \DateTimeZone( 'UTC' );
+
+		}
+
+		// phpBB wrapper class for php DateTime to localise timestamps.
+		$datetime = new \phpbb\datetime( $this->user, 'now', $dtz );
+
+		return $datetime->format( $this->user->data[ 'user_dateformat' ], true );
 
 	}
 

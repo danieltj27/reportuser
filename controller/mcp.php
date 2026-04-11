@@ -94,7 +94,50 @@ final class mcp {
 
 		add_form_key( 'report_user_form_csrf' );
 
-		//return $this->controller->render( '@danieltj_reportuser/mcp_user_reports.html', $this->language->lang( 'REPORT_USER' ) );
+		$reports = $this->functions->get_user_reports( query: [
+			[ 'reported_user_id', '!=', 0 ],
+			[ 'report_closed', '=', 0 ],
+		], order_by: [
+			[ 'report_time', 'ASC' ],
+		], limit_offset: [
+			0, 10
+		] );
+
+		/**
+		 * @todo loop through every user and cache it so all users can be queried at the same time.
+		 */
+
+		$reports_data = [];
+		$_user_cache = [];
+
+		if ( ! empty( $reports ) ) {
+
+			foreach ( $reports as $report ) {
+
+				$reported_user = $this->functions->get_user_data( $report[ 'reported_user_id' ] );
+				$reported_by = $this->functions->get_user_data( $report[ 'user_id' ] );
+
+				$reported_user_html = ( false !== $reported_user ) ? get_username_string( 'full', $reported_user[ 'user_id' ], $reported_user[ 'username' ], $reported_user[ 'user_colour' ] ) : '_ERROR_';
+				$reported_by_html = ( false !== $reported_by ) ? get_username_string( 'full', $reported_by[ 'user_id' ], $reported_by[ 'username' ], $reported_by[ 'user_colour' ] ) : '_ERROR_';
+
+				$reports_data[] = [
+					'reported_user'		=> $reported_user_html,
+					'reported_by'		=> $reported_by_html,
+					'report_reason'		=> $report[ 'report_text' ],
+					'report_time'		=> $this->functions->get_l10n_local_time( $this->user->data[ 'user_dateformat' ] ),
+				];
+
+			}
+
+		}
+
+		$this->template->assign_vars( [
+			'USER_REPORTS' => $reports_data,
+		] );
+
+		var_dump( $reports_data ); die();
+
+		//die( 'reports' );
 
 	}
 
@@ -117,7 +160,7 @@ final class mcp {
 
 		add_form_key( 'report_user_form_csrf' );
 
-		//return $this->controller->render( '@danieltj_reportuser/mcp_user_reports_closed.html', $this->language->lang( 'REPORT_USER' ) );
+		//die( 'reports_closed' );
 
 	}
 
