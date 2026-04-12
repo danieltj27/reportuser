@@ -39,3 +39,4 @@ services:
             - '@dbal.conn'
             - '@routing.helper'
             - '@user'
+            - '%datetime.class%'

@@ -8,16 +8,16 @@
 
 namespace danieltj\reportuser\mcp;
 
-class reports_info {
+class reports_open_info {
 
 	public function module() {
 
 		return [
-			'filename'	=> '\danieltj\reportuser\mcp\reports_module',
-			'title'		=> 'MCP_USER_REPORTS',
+			'filename'	=> '\danieltj\reportuser\mcp\reports_open_module',
+			'title'		=> 'MCP_USER_REPORTS_OPEN',
 			'modes'		=> [
 				'status'	=> [
-					'title'	=> 'MCP_USER_REPORTS',
+					'title'	=> 'MCP_USER_REPORTS_OPEN',
 					'auth'	=> 'ext_danieltj/reportuser && acl_m_user_report',
 					'cat'	=> [ 'MCP_REPORTS' ],
 				],

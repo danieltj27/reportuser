@@ -8,7 +8,7 @@
 
 namespace danieltj\reportuser\mcp;
 
-class reports_module {
+class reports_open_module {
 
 	/**
 	 * @var $action;
@@ -26,7 +26,7 @@ class reports_module {
 	public $page_title;
 
 	/**
-	 * UCP module
+	 * MCP module
 	 */
 	public function main( $id, $mode ) {
 
@@ -35,10 +35,10 @@ class reports_module {
 		$language = $phpbb_container->get( 'language' );
 
 		$this->tpl_name = 'mcp_user_reports';
-		$this->page_title = $language->lang( 'MCP_USER_REPORTS' );
+		$this->page_title = $language->lang( 'MCP_USER_REPORTS_OPEN' );
 
 		$controller = $phpbb_container->get( 'danieltj.reportuser.controller.mcp' );
-		$controller->reports( $this->u_action );
+		$controller->reports( $this->u_action, $mode );
 
 	}
 

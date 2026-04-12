@@ -93,7 +93,11 @@ final class ext {
 
 		}
 
-		$reported_user = $this->functions->get_user_data( $user_id );
+		/**
+		 * @todo can this be improved to always return the first result?
+		 */
+		$user_data = $this->functions->get_user_data( [ $user_id ] );
+		$reported_user = $user_data[0];
 
 		add_form_key( 'report_user_form_csrf' );
 

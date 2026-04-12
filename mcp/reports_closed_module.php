@@ -26,7 +26,7 @@ class reports_closed_module {
 	public $page_title;
 
 	/**
-	 * UCP module
+	 * MCP module
 	 */
 	public function main( $id, $mode ) {
 
@@ -34,11 +34,11 @@ class reports_closed_module {
 
 		$language = $phpbb_container->get( 'language' );
 
-		$this->tpl_name = 'mcp_user_reports_closed';
+		$this->tpl_name = 'mcp_user_reports';
 		$this->page_title = $language->lang( 'MCP_USER_REPORTS_CLOSED' );
 
 		$controller = $phpbb_container->get( 'danieltj.reportuser.controller.mcp' );
-		$controller->reports_closed( $this->u_action );
+		$controller->reports( $this->u_action, $mode );
 
 	}
 

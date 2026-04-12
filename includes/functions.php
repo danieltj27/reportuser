@@ -36,14 +36,20 @@ final class functions {
 	protected $user;
 
 	/**
+	 * @var datetime
+	 */
+	protected $datetime;
+
+	/**
 	 * Constructor
 	 */
-	public function __construct( auth $auth, database $database, router $router, user $user ) {
+	public function __construct( auth $auth, database $database, router $router, user $user, $datetime_class ) {
 
 		$this->auth = $auth;
 		$this->database = $database;
 		$this->router = $router;
 		$this->user = $user;
+		$this->datetime = $datetime_class;
 
 	}
 
@@ -122,7 +128,7 @@ final class functions {
 		], $options );
 
 		// Check the reported user exists.
-		$reported_user = $this->get_user_data( $options[ 'reported_user_id' ] );
+		$reported_user = $this->get_user_data( [ $options[ 'reported_user_id' ] ] );
 
 		if ( false === $reported_user ) {
 
@@ -200,8 +206,6 @@ final class functions {
 
 	/**
 	 * Return a collection of user reports.
-	 * 
-	 * @todo work in progress!
 	 * 
 	 * @param int   $report_id    The report ID to fetch, ignores all other parameters.
 	 * @param array $query        Array of query parameters used to search for reports.
@@ -300,45 +304,74 @@ final class functions {
 	}
 
 	/**
+	 * Return the total number of user reports.
+	 * 
+	 * @param bool $open Flag that counts open or closed user reports.
+	 * 
+	 * @return int  The total number of user reports (open or closed).
+	 */
+	public function get_user_report_total( string $report_type = 'open' ) : int {
+
+		$where = match ( $report_type ) {
+			'closed' => 'reported_user_id != 0 AND report_closed = 1',
+			default => 'reported_user_id != 0 AND report_closed = 0',
+		};
+
+		$result = $this->database->sql_query(
+			'SELECT count(*) FROM ' . REPORTS_TABLE . ' WHERE ' . $where
+		);
+
+		$report_count = $this->database->sql_fetchrow( $result );
+
+		$this->database->sql_freeresult( $result );
+
+		return $report_count[ 'count(*)' ];
+
+	}
+
+	/**
 	 * Return an array of user data.
 	 * 
 	 * @todo repurpose this function to fetch multiple users
 	 * 
-	 * @param integer $user_id A user id.
+	 * @param array $user_ids An array containing user IDs.
 	 * 
-	 * @return array|bool  An array of user data or false.
+	 * @return array  An array of user data (can be empty).
 	 */
-	public function get_user_data( int $user_id ) : array|bool {
+	public function get_user_data( array $user_ids ) : array {
 
-		$result = $this->database->sql_query(
-			'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
-				'user_id' => $user_id,
-			] )
-		);
+		if ( empty( $user_ids ) ) {
 
-		$user = $this->database->sql_fetchrow( $result );
-		$this->database->sql_freeresult( $result );
-
-		if ( false === $user ) {
-
-			return false;
+			return [];
 
 		}
 
-		return $user;
+		$result = $this->database->sql_query(
+			'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $this->database->sql_in_set( 'user_id', $user_ids )
+		);
+
+		$users = $this->database->sql_fetchrowset( $result );
+		$this->database->sql_freeresult( $result );
+
+		if ( false === $users ) {
+
+			return [];
+
+		}
+
+		return $users;
 
 	}
 
 	/**
 	 * Return a localised version of a timestamp.
 	 * 
-	 * @todo add option to change time (in new \phpbb\datetime call)
-	 * 
-	 * @param  string $timezone An ISO formatted timezone code.
+	 * @param  string $zone (optional) An ISO formatted timezone code.
+	 * @param  int    $time A UNIX timestamp.
 	 * 
 	 * @return string           A localised timestamp as a string.
 	 */
-	public function get_l10n_local_time( string $timezone = 'UTC' ) : string {
+	public function get_l10n_local_time( string $zone = 'UTC', int $time ) : string {
 
 		try {
 
@@ -347,7 +380,7 @@ final class functions {
 			 * 
 			 * @link https://www.php.net/manual/en/class.datetimezone.php
 			 */
-			$dtz = new \DateTimeZone( $timezone );
+			$dtz = new \DateTimeZone( $zone );
 
 		} catch ( \DateInvalidTimeZoneException $error ) {
 
@@ -357,7 +390,7 @@ final class functions {
 		}
 
 		// phpBB wrapper class for php DateTime to localise timestamps.
-		$datetime = new \phpbb\datetime( $this->user, 'now', $dtz );
+		$datetime = new $this->datetime( $this->user, date( 'Y-m-d H:i:s', $time ), $dtz );
 
 		return $datetime->format( $this->user->data[ 'user_dateformat' ], true );
 

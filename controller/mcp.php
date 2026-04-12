@@ -78,131 +78,116 @@ final class mcp {
 	/**
 	 * @todo
 	 */
-	public function reports( string $action ) {
-
-		if ( 'GET' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
-
-			trigger_error( $this->language->lang( 'MCP_REPORT_USER_ERROR_INVALID_HTTP' ), E_USER_WARNING );
-
-		}
+	public function reports( string $action, string $mode ) {
 
 		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
 
-			trigger_error( $this->language->lang( 'MCP_REPORT_USER_ERROR_ACCESS_DENIED' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_NOT_MODERATOR' ), E_USER_WARNING );
 
 		}
 
-		add_form_key( 'report_user_form_csrf' );
+		if ( 'POST' === strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) && $this->request->is_set_post( 'action' ) ) {
+
+			if ( ! check_form_key( 'report_user_mcp_csrf' ) ) {
+
+				trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_CSRF' ), E_USER_WARNING );
+
+			}
+
+			$report_ids = $this->request->variable( 'report_item', [ 0 ] );
+
+			/**
+			 * @todo implement functionality to update reports.
+			 */
+
+		}
+
+		add_form_key( 'report_user_mcp_csrf' );
+
+		// Check which report type to look at (open or closed).
+		$reports_type = match ( $mode ) {
+			'user_reports_closed'	=> 1, // closed reports
+			'user_reports_open'		=> 0, // open reports
+			default					=> 2, // fallback for anything else
+		};
+
+		// Pagination settings for this view.
+		$count = $this->functions->get_user_report_total( ( 1 === $reports_type ) ? 'closed' : 'open' );
+		$limit = 10;
+		$page = $this->request->variable( 'page', 1 );
+		$prev_page = $page - 1;
+		$next_page = $page + 1;
+		$max_page = ( $count > $limit ) ? (int) ceil( $count / $limit ) : 1;
+		$offset = ( 1 < $page ) ? ( $limit * page ) - $limit : 0;
 
 		$reports = $this->functions->get_user_reports( query: [
 			[ 'reported_user_id', '!=', 0 ],
-			[ 'report_closed', '=', 0 ],
+			[ 'report_closed', '=', $reports_type ],
 		], order_by: [
 			[ 'report_time', 'ASC' ],
 		], limit_offset: [
 			0, 10
 		] );
 
-		/**
-		 * @todo loop through every user and cache it so all users can be queried at the same time.
-		 */
-
 		$reports_data = [];
 		$_user_cache = [];
 
 		if ( ! empty( $reports ) ) {
 
+			$user_ids = [];
+
 			foreach ( $reports as $report ) {
 
-				$reported_user = $this->functions->get_user_data( $report[ 'reported_user_id' ] );
-				$reported_by = $this->functions->get_user_data( $report[ 'user_id' ] );
-
-				$reported_user_html = ( false !== $reported_user ) ? get_username_string( 'full', $reported_user[ 'user_id' ], $reported_user[ 'username' ], $reported_user[ 'user_colour' ] ) : '_ERROR_';
-				$reported_by_html = ( false !== $reported_by ) ? get_username_string( 'full', $reported_by[ 'user_id' ], $reported_by[ 'username' ], $reported_by[ 'user_colour' ] ) : '_ERROR_';
-
-				$reports_data[] = [
-					'reported_user'		=> $reported_user_html,
-					'reported_by'		=> $reported_by_html,
-					'report_reason'		=> $report[ 'report_text' ],
-					'report_time'		=> $this->functions->get_l10n_local_time( $this->user->data[ 'user_dateformat' ] ),
+				$reports_data[ $report[ 'report_id' ] ] = [
+					'report_id'				=> (int) $report[ 'report_id' ],
+					'reported_user_id'		=> (int) $report[ 'reported_user_id' ],
+					//'reported_user'		=> false,
+					'reported_by_user_id'	=> (int) $report[ 'user_id' ],
+					//'reported_by'			=> false,
+					'report_text'			=> $report[ 'report_text' ],
+					'report_time'			=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $report[ 'report_time' ] ),
 				];
+
+				if ( (int) $report[ 'user_id' ] !== (int) $report[ 'reported_user_id' ] ) {
+
+					$user_ids[] = (int) $report[ 'reported_user_id' ];
+
+				}
+
+				$user_ids[] = (int) $report[ 'user_id' ];
+
+			}
+
+			$users = $this->functions->get_user_data( $user_ids );
+
+			foreach ( $users as $user ) {
+
+				if ( ! isset( $_user_cache[ $user[ 'user_id' ] ] ) ) {
+
+					$_user_cache[ $user[ 'user_id' ] ] = get_username_string( 'full', $user[ 'user_id' ], $user[ 'username' ], $user[ 'user_colour' ] );
+
+				}
+
+			}
+
+			foreach ( $reports_data as $report ) {
+
+				$reports_data[ $report[ 'report_id' ] ][ 'reported_user' ] = ( isset( $_user_cache[ $report[ 'reported_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_user_id' ] ] : false;
+				$reports_data[ $report[ 'report_id' ] ][ 'reported_by' ] = ( isset( $_user_cache[ $report[ 'reported_by_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_by_user_id' ] ] : false;
 
 			}
 
 		}
 
 		$this->template->assign_vars( [
-			'USER_REPORTS' => $reports_data,
+			'USER_REPORTS_TITLE'	=> ( 1 === $reports_type ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN' ),
+			'USER_REPORTS_EXPLAIN'	=> ( 1 === $reports_type ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED_EXPLAIN' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN_EXPLAIN' ),
+			'TOTAL_REPORTS'			=> $this->language->lang( 'MCP_USER_REPORTS_TYPE_TOTAL', $count ),
+			'PAGE_NUMBER'			=> $this->language->lang( 'MCP_USER_REPORTS_PAGE', $page, $max_page ),
+			'USER_REPORTS'			=> $reports_data,
+			'OPEN_REPORTS'			=> ( 1 === $reports_type ) ? false : true,
+			'USER_REPORT_ACTION'	=> $action,
 		] );
-
-		var_dump( $reports_data ); die();
-
-		//die( 'reports' );
-
-	}
-
-	/**
-	 * @todo
-	 */
-	public function reports_closed( string $action ) {
-
-		if ( 'GET' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
-
-			trigger_error( $this->language->lang( 'MCP_REPORT_USER_ERROR_INVALID_HTTP' ), E_USER_WARNING );
-
-		}
-
-		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
-
-			trigger_error( $this->language->lang( 'MCP_REPORT_USER_ERROR_ACCESS_DENIED' ), E_USER_WARNING );
-
-		}
-
-		add_form_key( 'report_user_form_csrf' );
-
-		//die( 'reports_closed' );
-
-	}
-
-	/**
-	 * @todo
-	 */
-	public function close_report( int $report_id ) {
-
-		if ( 'POST' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
-
-			trigger_error( $this->language->lang( 'MCP_REPORT_USER_ERROR_INVALID_HTTP' ), E_USER_WARNING );
-
-		}
-
-		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
-
-			trigger_error( $this->language->lang( 'MCP_REPORT_USER_ERROR_ACCESS_DENIED' ), E_USER_WARNING );
-
-		}
-
-		die( 'close_report' );
-
-	}
-
-	/**
-	 * @todo
-	 */
-	public function delete_report( int $report_id ) {
-
-		if ( 'POST' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
-
-			trigger_error( $this->language->lang( 'MCP_REPORT_USER_ERROR_INVALID_HTTP' ), E_USER_WARNING );
-
-		}
-
-		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
-
-			trigger_error( $this->language->lang( 'MCP_REPORT_USER_ERROR_ACCESS_DENIED' ), E_USER_WARNING );
-
-		}
-
-		die( 'delete_report' );
 
 	}
 

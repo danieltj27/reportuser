@@ -1,41 +1,83 @@
 {% include 'mcp_header.html' %}
 
-<h2>{{ lang( 'MCP_USER_REPORT' ) }}</h2>
+<h2>{{ USER_REPORTS_TITLE }}</h2>
 
-<div class="panel">
-	<div class="inner">
-		<div class="action-bar bar-top">
-			<div class="pagination">
-				{{ TOTAL_REPORTS }} &bull; {{ PAGE_NUMBER }}
+<form action="{{ USER_REPORT_ACTION }}" method="post" id="mcp_user_reports">
+
+	<div class="panel">
+		<div class="inner">
+			<p>{{ USER_REPORTS_EXPLAIN }}</p>
+			<div class="action-bar bar-top">
+				<div class="pagination">
+					{{ TOTAL_REPORTS }} &bull; {{ PAGE_NUMBER }}
+				</div>
 			</div>
-		</div>
-		<table class="table1 responsive">
-			<thead>
-				<tr>
-					<th class="name">{{ lang( 'USER_REPORT_COLUMN_USERNAME' ) }}</th>
-					<th class="name">{{ lang( 'USER_REPORT_COLUMN_REPORTER' ) }}</th>
-					<th class="name">{{ lang( 'USER_REPORT_COLUMN_REASON' ) }}</th>
-					<th class="name">{{ lang( 'USER_REPORT_COLUMN_TIME' ) }}</th>
-					<th class="name">{{ lang( 'MARK' ) }}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr class="bg1">
-					<td>username</td>
-					<td>reason</td>
-					<td>reporter</td>
-					<td>time</td>
-					<td class="center"><input type="checkbox" name="markreport[]" id="report-0" value="" /></td>
-				</tr>
-			</tbody>
-		</table>
-		<div class="action-bar bar-bottom">
-			{% include 'display_options.html' %}
-			<div class="pagination">
-				{{ TOTAL_REPORTS }} &bull; {{ PAGE_NUMBER }}
+			<table class="table1 responsive">
+				<thead>
+					{% if USER_REPORTS %}
+						<tr>
+							<th class="name">{{ lang( 'USER_REPORT_COLUMN_USERNAME' ) }}</th>
+							<th class="name">{{ lang( 'USER_REPORT_COLUMN_REASON' ) }}</th>
+							<th class="name">{{ lang( 'USER_REPORT_COLUMN_TIME' ) }}</th>
+							<th class="name">{{ lang( 'USER_REPORT_COLUMN_REPORTER' ) }}</th>
+							<th>{{ lang( 'MARK' ) }}</th>
+						</tr>
+					{% else %}
+						<tr>
+							<th class="name" colspan="5">{{ lang( 'REPORTS' ) }}</th>
+						</tr>
+					{% endif %}
+				</thead>
+				<tbody>
+					{% if USER_REPORTS %}
+						{% for report in USER_REPORTS %}
+							<tr class="bg1">
+								<td>
+									{% if report.reported_user %}
+										{{ report.reported_user }}
+									{% else %}
+										{{ report.reported_user_id }}
+									{% endif %}
+								</td>
+								<td>{{ report.report_text }}</td>
+								<td>{{ report.report_time }}</td>
+								<td>
+									{% if report.reported_by %}
+										{{ report.reported_by }}
+									{% else %}
+										{{ report.reported_by_user_id }}
+									{% endif %}
+								</td>
+								<td class="mark"><input type="checkbox" name="report_item[{{ report.report_id }}]" id="report-0" value="{{ report.report_id }}" /></td>
+							</tr>
+						{% endfor %}
+					{% else %}
+						<tr class="bg1">
+							<td class="center" colspan="5"><strong>{{ lang( 'MCP_USER_REPORTS_NO_RESULTS' ) }}</strong></td>
+						</tr>
+					{% endif %}
+				</tbody>
+			</table>
+			<div class="action-bar bar-bottom">
+				{% include 'display_options.html' %}
+				<div class="pagination">
+					{{ TOTAL_REPORTS }} &bull; {{ PAGE_NUMBER }}
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+
+	{% if USER_REPORTS %}
+	<fieldset class="display-actions">
+		{{ S_FORM_TOKEN }}
+		<input type="submit" name="action[delete]" class="button2" value="{{ lang( 'DELETE_REPORTS' ) }}" />
+		{% if OPEN_REPORTS %}
+			&nbsp;<input type="submit" name="action[close]" class="button1" value="{{ lang( 'CLOSE_REPORTS' ) }}" />
+		{% endif %}
+		<div><a href="#" onclick="marklist( 'mcp_user_reports', 'report_item', true ); return false;">{{ lang( 'MARK_ALL' ) }}</a> :: <a href="#" onclick="marklist( 'mcp_user_reports', 'report_item', false ); return false;">{{ lang( 'UNMARK_ALL' ) }}</a></div>
+	</fieldset>
+	{% endif %}
+
+</form>
 
 {% include 'mcp_footer.html' %}

@@ -77,15 +77,15 @@ class v100 extends \phpbb\db\migration\migration {
 				[ 'permission.role_exists', [ 'ROLE_MOD_STANDARD' ] ],
 				[ 'permission.permission_set', [ 'ROLE_MOD_STANDARD', 'm_user_report' ] ],
 			] ],
-			
+
 			[
 				'module.add', [
 					'mcp', 'MCP_REPORTS',
 					[
 						'module_auth'		=> 'ext_danieltj/reportuser && acl_m_user_report',
-						'module_basename'	=> '\danieltj\reportuser\mcp\reports_module',
-						'module_langname'	=> 'MCP_USER_REPORTS',
-						'module_mode'		=> 'user_reports',
+						'module_basename'	=> '\danieltj\reportuser\mcp\reports_open_module',
+						'module_langname'	=> 'MCP_USER_REPORTS_OPEN',
+						'module_mode'		=> 'user_reports_open',
 					],
 				],
 			],

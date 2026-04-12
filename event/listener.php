@@ -54,10 +54,11 @@ class listener implements EventSubscriberInterface {
 	static public function getSubscribedEvents() {
 
 		return [
-			'core.user_setup_after'			=> 'add_languages',
-			'core.permissions'				=> 'add_permissions',
+			'core.user_setup_after'						=> 'add_languages',
+			'core.permissions'							=> 'add_permissions',
 
-			'core.memberlist_view_profile'	=> 'add_memberlist_template_vars',
+			'core.memberlist_view_profile'				=> 'add_memberlist_template_vars',
+			'core.modify_mcp_modules_display_option'	=> 'update_mcp_module_display',
 		];
 
 	}
@@ -99,6 +100,20 @@ class listener implements EventSubscriberInterface {
 		$this->template->assign_vars( [
 			'REPORT_USER' => ( $this->functions->can_report_user( $event[ 'member' ][ 'user_id' ] ) ) ? $report_user_url : false,
 		] );
+
+	}
+
+	/**
+	 * mcp
+	 */
+	public function update_mcp_module_display( $event ) {
+
+		if ( 'user_reports_open' === $event[ 'mode' ] || 'user_reports_closed' === $event[ 'mode' ] ) {
+
+			$event[ 'module' ]->set_display( 'reports', 'report_details', false );
+			$event[ 'module' ]->set_display( 'pm_reports', 'pm_report_details', false );
+
+		}
 
 	}
 
