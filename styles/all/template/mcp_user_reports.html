@@ -70,9 +70,9 @@
 	{% if USER_REPORTS %}
 	<fieldset class="display-actions">
 		{{ S_FORM_TOKEN }}
-		<input type="submit" name="action[delete]" class="button2" value="{{ lang( 'DELETE_REPORTS' ) }}" />
+		<input type="submit" name="submit[delete]" class="button2" value="{{ lang( 'DELETE_REPORTS' ) }}" />
 		{% if OPEN_REPORTS %}
-			&nbsp;<input type="submit" name="action[close]" class="button1" value="{{ lang( 'CLOSE_REPORTS' ) }}" />
+			&nbsp;<input type="submit" name="submit[close]" class="button1" value="{{ lang( 'CLOSE_REPORTS' ) }}" />
 		{% endif %}
 		<div><a href="#" onclick="marklist( 'mcp_user_reports', 'report_item', true ); return false;">{{ lang( 'MARK_ALL' ) }}</a> :: <a href="#" onclick="marklist( 'mcp_user_reports', 'report_item', false ); return false;">{{ lang( 'UNMARK_ALL' ) }}</a></div>
 	</fieldset>

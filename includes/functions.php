@@ -155,6 +155,8 @@ final class functions {
 	/**
 	 * Close a user report.
 	 * 
+	 * @todo add user notification (if requested)
+	 * 
 	 * @param int $report_id A report id.
 	 * 
 	 * @return bool  True if successful, false if failed.
@@ -181,6 +183,8 @@ final class functions {
 
 	/**
 	 * Delete an existing user report.
+	 * 
+	 * @todo add user notification (if requested)
 	 * 
 	 * @param int $report_id A report id.
 	 * 

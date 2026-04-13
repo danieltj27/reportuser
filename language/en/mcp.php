@@ -35,6 +35,15 @@ $lang = array_merge( $lang, [
 	],
 	'MCP_USER_REPORTS_PAGE'				=> 'Page <strong>%s</strong> of <strong>%s</strong>',
 
+	'MCP_USER_REPORT_ACTION_CONFIRM_CLOSE'		=> [
+		1 => 'Are you sure you would like to close this report?',
+		2 => 'Are you sure you would like to close the reports?',
+	],
+	'MCP_USER_REPORT_ACTION_CONFIRM_DELETE'		=> [
+		1 => 'Are you sure you would like to delete this report?',
+		2 => 'Are you sure you would like to delete the reports?',
+	],
+
 	'USER_REPORT_COLUMN_USERNAME'	=> 'Reported user',
 	'USER_REPORT_COLUMN_REPORTER'	=> 'Reported by',
 	'USER_REPORT_COLUMN_REASON'		=> 'Reason',

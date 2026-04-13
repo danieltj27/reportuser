@@ -181,7 +181,7 @@ final class ext {
 		 * @todo send notifications to moderators
 		 */
 
-		trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORT_SUCCESS' ), E_USER_WARNING );
+		trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORT_SUBMITTED' ), E_USER_WARNING );
 
 	}
 

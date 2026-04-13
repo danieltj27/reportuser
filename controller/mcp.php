@@ -86,33 +86,94 @@ final class mcp {
 
 		}
 
-		if ( 'POST' === strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) && $this->request->is_set_post( 'action' ) ) {
-
-			if ( ! check_form_key( 'report_user_mcp_csrf' ) ) {
-
-				trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_CSRF' ), E_USER_WARNING );
-
-			}
-
-			$report_ids = $this->request->variable( 'report_item', [ 0 ] );
-
-			/**
-			 * @todo implement functionality to update reports.
-			 */
-
-		}
-
-		add_form_key( 'report_user_mcp_csrf' );
-
 		// Check which report type to look at (open or closed).
-		$reports_type = match ( $mode ) {
+		$reports_view = match ( $mode ) {
 			'user_reports_closed'	=> 1, // closed reports
 			'user_reports_open'		=> 0, // open reports
 			default					=> 2, // fallback for anything else
 		};
 
-		// Pagination settings for this view.
-		$count = $this->functions->get_user_report_total( ( 1 === $reports_type ) ? 'closed' : 'open' );
+		if ( 2 === $reports_view ) {
+
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REQUEST' ), E_USER_WARNING );
+
+		}
+
+		if ( confirm_box( true ) ) {
+
+			$view = $this->request->variable( 'reports_view', 0 );
+			$report_ids = $this->request->variable( 'report_ids', [ 0 ] );
+			$submit = $this->request->variable( 'submit', '' );
+
+			if ( ! is_array( $report_ids ) || is_array( $report_ids ) && empty( $report_ids ) ) {
+
+				trigger_error( $this->language->lang( 'REPORT_USER_ERROR_NO_REPORT_SELECTED' ), E_USER_WARNING );
+
+			}
+
+			if ( ! in_array( $submit, [ 'close', 'delete' ] ) ) {
+
+				trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REQUEST' ), E_USER_WARNING );
+
+			}
+
+			foreach ( $report_ids as $report ) {
+
+				$result = match ( $submit ) {
+					'delete'	=> $this->functions->delete_user_report( $report ),
+					'close'		=> $this->functions->close_user_report( $report ),
+				};
+
+			}
+
+			if ( 'delete' === $submit ) {
+
+				trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORTS_DELETED', $report_ids ), E_USER_WARNING );
+
+			}
+
+			if ( 'close' === $submit ) {
+
+				trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORTS_CLOSED', $report_ids ), E_USER_WARNING );
+
+			}
+
+		} else {
+
+			if ( 'POST' === strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) && $this->request->is_set_post( 'submit' ) ) {
+
+				if ( ! check_form_key( 'report_user_mcp_csrf' ) ) {
+
+					trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_CSRF' ), E_USER_WARNING );
+
+				}
+
+				$report_ids = $this->request->variable( 'report_item', [ 0 ] );
+
+				$submit = $this->request->variable( 'submit', [ '' ] );
+				$submit = $submit[ 0 ];
+				$submit = ( $submit === $this->language->lang( 'CLOSE_REPORTS' ) ) ? 'close' : 'delete';
+
+				confirm_box(
+					false,
+					$this->language->lang( ( 'close' === $submit ) ? 'MCP_USER_REPORT_ACTION_CONFIRM_CLOSE' : 'MCP_USER_REPORT_ACTION_CONFIRM_DELETE' ),
+					build_hidden_fields( [
+						'reports_view'	=> $reports_view,
+						'report_ids'	=> $report_ids,
+						'action'		=> $action,
+						'mode'			=> $mode,
+						'submit'		=> $submit,
+					] ),
+				);
+
+			}
+
+		}
+
+		add_form_key( 'report_user_mcp_csrf' );
+
+		// Set-up pagination settings for this view.
+		$count = $this->functions->get_user_report_total( ( 1 === $reports_view ) ? 'closed' : 'open' );
 		$limit = 10;
 		$page = $this->request->variable( 'page', 1 );
 		$prev_page = $page - 1;
@@ -122,7 +183,7 @@ final class mcp {
 
 		$reports = $this->functions->get_user_reports( query: [
 			[ 'reported_user_id', '!=', 0 ],
-			[ 'report_closed', '=', $reports_type ],
+			[ 'report_closed', '=', $reports_view ],
 		], order_by: [
 			[ 'report_time', 'ASC' ],
 		], limit_offset: [
@@ -180,12 +241,12 @@ final class mcp {
 		}
 
 		$this->template->assign_vars( [
-			'USER_REPORTS_TITLE'	=> ( 1 === $reports_type ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN' ),
-			'USER_REPORTS_EXPLAIN'	=> ( 1 === $reports_type ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED_EXPLAIN' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN_EXPLAIN' ),
+			'USER_REPORTS_TITLE'	=> ( 1 === $reports_view ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN' ),
+			'USER_REPORTS_EXPLAIN'	=> ( 1 === $reports_view ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED_EXPLAIN' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN_EXPLAIN' ),
 			'TOTAL_REPORTS'			=> $this->language->lang( 'MCP_USER_REPORTS_TYPE_TOTAL', $count ),
 			'PAGE_NUMBER'			=> $this->language->lang( 'MCP_USER_REPORTS_PAGE', $page, $max_page ),
 			'USER_REPORTS'			=> $reports_data,
-			'OPEN_REPORTS'			=> ( 1 === $reports_type ) ? false : true,
+			'OPEN_REPORTS'			=> ( 1 === $reports_view ) ? false : true,
 			'USER_REPORT_ACTION'	=> $action,
 		] );
 
