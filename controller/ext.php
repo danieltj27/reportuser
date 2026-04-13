@@ -71,13 +71,13 @@ final class ext {
 	/**
 	 * Create a new user report.
 	 * 
-	 * @todo include better return links in trigger_error()
+	 * @todo include return links in trigger_error calls
 	 */
 	public function report( int $user_id ) {
 
 		if ( 'GET' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_HTTP' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_HTTP_REQUEST' ), E_USER_WARNING );
 
 		}
 
@@ -89,7 +89,7 @@ final class ext {
 
 		if ( ! $this->functions->can_report_user( $user_id ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REPORT' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORT_USER_PERMISSION' ), E_USER_WARNING );
 
 		}
 
@@ -101,6 +101,7 @@ final class ext {
 
 		add_form_key( 'report_user_form_csrf' );
 
+		// Add phpBB core MCP language strings.
 		$this->language->add_lang( 'mcp' );
 
 		$this->template->assign_vars( [
@@ -115,13 +116,13 @@ final class ext {
 	/**
 	 * Submit a new user report.
 	 * 
-	 * @todo include better return links in trigger_error()
+	 * @todo include return links in trigger_error calls
 	 */
 	public function submit( int $user_id ) {
 
 		if ( 'POST' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_HTTP' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_HTTP_REQUEST' ), E_USER_WARNING );
 
 		}
 
@@ -133,13 +134,13 @@ final class ext {
 
 		if ( ! $this->functions->can_report_user( $user_id ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REPORT' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORT_USER_PERMISSION' ), E_USER_WARNING );
 
 		}
 
 		if ( ! check_form_key( 'report_user_form_csrf' ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_CSRF' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_CSRF_TOKEN' ), E_USER_WARNING );
 
 		}
 
@@ -149,7 +150,7 @@ final class ext {
 
 		if ( 1 > strlen( $report_reason ) || 250 < strlen( $report_reason ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REASON' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REPORT_REASON' ), E_USER_WARNING );
 
 		}
 
@@ -173,15 +174,18 @@ final class ext {
 
 		if ( false === $report_id ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_UNKNOWN_ERROR' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_UNKNOWN_ERROR_MESSAGE' ), E_USER_WARNING );
 
 		}
 
 		/**
 		 * @todo send notifications to moderators
+		 * 
+		 * create function to fetch mods with m_user_report permission
+		 * send notification to all mods from above function
 		 */
 
-		trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORT_SUBMITTED' ), E_USER_WARNING );
+		trigger_error( $this->language->lang( 'REPORT_USER_SUCCESS_MESSAGE' ), E_USER_WARNING );
 
 	}
 

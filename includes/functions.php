@@ -153,6 +153,28 @@ final class functions {
 	}
 
 	/**
+	 * Return the data of a user report.
+	 * 
+	 * @param int $report_id The user report ID.
+	 * 
+	 * @return array|bool  An array of report data or false if it cannot be found.
+	 */
+	public function get_user_report( int $report_id ) : array|bool {
+
+		$result = $this->database->sql_query(
+			'SELECT * FROM ' . REPORTS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
+				'report_id' => $report_id,
+			] )
+		);
+
+		$report = $this->database->sql_fetchrow( $result );
+		$this->database->sql_freeresult( $result );
+
+		return $report;
+
+	}
+
+	/**
 	 * Close a user report.
 	 * 
 	 * @todo add user notification (if requested)

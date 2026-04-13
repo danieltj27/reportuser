@@ -76,13 +76,15 @@ final class mcp {
 	}
 
 	/**
-	 * @todo
+	 * Handle the user reports interface.
+	 * 
+	 * @todo include return links in trigger_error calls
 	 */
 	public function reports( string $action, string $mode ) {
 
 		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_NOT_MODERATOR' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION' ), E_USER_WARNING );
 
 		}
 
@@ -95,7 +97,7 @@ final class mcp {
 
 		if ( 2 === $reports_view ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REQUEST' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ), E_USER_WARNING );
 
 		}
 
@@ -107,17 +109,21 @@ final class mcp {
 
 			if ( ! is_array( $report_ids ) || is_array( $report_ids ) && empty( $report_ids ) ) {
 
-				trigger_error( $this->language->lang( 'REPORT_USER_ERROR_NO_REPORT_SELECTED' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_EMPTY_REPORT_ARRAY' ), E_USER_WARNING );
 
 			}
 
 			if ( ! in_array( $submit, [ 'close', 'delete' ] ) ) {
 
-				trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REQUEST' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ), E_USER_WARNING );
 
 			}
 
 			foreach ( $report_ids as $report ) {
+
+				/**
+				 * @todo add error logging for updating report status'
+				 */
 
 				$result = match ( $submit ) {
 					'delete'	=> $this->functions->delete_user_report( $report ),
@@ -128,13 +134,13 @@ final class mcp {
 
 			if ( 'delete' === $submit ) {
 
-				trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORTS_DELETED', $report_ids ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', $report_ids ), E_USER_WARNING );
 
 			}
 
 			if ( 'close' === $submit ) {
 
-				trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORTS_CLOSED', $report_ids ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', $report_ids ), E_USER_WARNING );
 
 			}
 
@@ -144,7 +150,7 @@ final class mcp {
 
 				if ( ! check_form_key( 'report_user_mcp_csrf' ) ) {
 
-					trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_CSRF' ), E_USER_WARNING );
+					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ), E_USER_WARNING );
 
 				}
 
@@ -156,7 +162,7 @@ final class mcp {
 
 				confirm_box(
 					false,
-					$this->language->lang( ( 'close' === $submit ) ? 'MCP_USER_REPORT_ACTION_CONFIRM_CLOSE' : 'MCP_USER_REPORT_ACTION_CONFIRM_DELETE' ),
+					$this->language->lang( ( 'close' === $submit ) ? 'MCP_USER_REPORTS_ACTION_CONFIRM_CLOSE' : 'MCP_USER_REPORTS_ACTION_CONFIRM_DELETE', $report_ids ),
 					build_hidden_fields( [
 						'reports_view'	=> $reports_view,
 						'report_ids'	=> $report_ids,

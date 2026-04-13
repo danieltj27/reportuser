@@ -24,6 +24,10 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_OPEN_EXPLAIN'		=> 'This is a list of all user reports that are open and need review.',
 	'MCP_USER_REPORTS_CLOSED_EXPLAIN'	=> 'This is a list of all user reports that have been resolved.',
 	'MCP_USER_REPORTS_LATEST'			=> 'Latest 5 user reports',
+	'MCP_USER_REPORTS_COLUMN_USERNAME'	=> 'Reported user',
+	'MCP_USER_REPORTS_COLUMN_REPORTER'	=> 'Reported by',
+	'MCP_USER_REPORTS_COLUMN_REASON'		=> 'Reason',
+	'MCP_USER_REPORTS_COLUMN_TIME'		=> 'Time',
 	'MCP_USER_REPORTS_NO_RESULTS'		=> 'There are no user reports to review.',
 	'MCP_USER_REPORTS_TYPE_TOTAL'		=> [
 		1 => '1 report',
@@ -35,17 +39,29 @@ $lang = array_merge( $lang, [
 	],
 	'MCP_USER_REPORTS_PAGE'				=> 'Page <strong>%s</strong> of <strong>%s</strong>',
 
-	'MCP_USER_REPORT_ACTION_CONFIRM_CLOSE'		=> [
+	// CONFIRM MESSAGES
+	'MCP_USER_REPORTS_ACTION_CONFIRM_CLOSE'		=> [
 		1 => 'Are you sure you would like to close this report?',
 		2 => 'Are you sure you would like to close the reports?',
 	],
-	'MCP_USER_REPORT_ACTION_CONFIRM_DELETE'		=> [
+	'MCP_USER_REPORTS_ACTION_CONFIRM_DELETE'	=> [
 		1 => 'Are you sure you would like to delete this report?',
 		2 => 'Are you sure you would like to delete the reports?',
 	],
 
-	'USER_REPORT_COLUMN_USERNAME'	=> 'Reported user',
-	'USER_REPORT_COLUMN_REPORTER'	=> 'Reported by',
-	'USER_REPORT_COLUMN_REASON'		=> 'Reason',
-	'USER_REPORT_COLUMN_TIME'		=> 'Time',
+	// SUCCESS MESSAGES
+	'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED'	=> [
+		1 => 'The selected report has been successfully closed.',
+		2 => 'The selected reports have been successfully closed.',
+	],
+	'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED'	=> [
+		1 => 'The selected report has been successfully deleted.',
+		2 => 'The selected reports have been successfully deleted.',
+	],
+
+	// ERRORS
+	'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION'	=> 'You do not have permission to manage user reports.',
+	'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION'	=> 'You have submitted an invalid form action.',
+	'MCP_USER_REPORTS_ERROR_EMPTY_REPORT_ARRAY'		=> 'You must select at least one report to close or delete.',
+	'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN'	=> 'You have submitted an incorrect CSRF token.',
 ] );
