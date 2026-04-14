@@ -25,6 +25,7 @@ services:
     danieltj.reportuser.listener:
         class: danieltj\reportuser\event\listener
         arguments:
+            - '@auth'
             - '@language'
             - '@routing.helper'
             - '@template'

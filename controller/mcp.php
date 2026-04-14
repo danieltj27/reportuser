@@ -121,10 +121,6 @@ final class mcp {
 
 			foreach ( $report_ids as $report ) {
 
-				/**
-				 * @todo add error logging for updating report status'
-				 */
-
 				$result = match ( $submit ) {
 					'delete'	=> $this->functions->delete_user_report( $report ),
 					'close'		=> $this->functions->close_user_report( $report ),

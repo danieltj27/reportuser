@@ -8,6 +8,7 @@
 
 namespace danieltj\reportuser\event;
 
+use phpbb\auth\auth;
 use phpbb\language\language;
 use phpbb\routing\helper as router;
 use phpbb\template\template;
@@ -15,6 +16,11 @@ use danieltj\reportuser\includes\functions;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class listener implements EventSubscriberInterface {
+
+	/**
+	 * @var auth
+	 */
+	protected $auth;
 
 	/**
 	 * @var language
@@ -39,8 +45,9 @@ class listener implements EventSubscriberInterface {
 	/**
 	 * Constructor
 	 */
-	public function __construct( language $language, router $router, template $template, functions $functions ) {
+	public function __construct( auth $auth, language $language, router $router, template $template, functions $functions ) {
 
+		$this->auth = $auth;
 		$this->language = $language;
 		$this->router = $router;
 		$this->template = $template;
@@ -112,6 +119,15 @@ class listener implements EventSubscriberInterface {
 
 			$event[ 'module' ]->set_display( 'reports', 'report_details', false );
 			$event[ 'module' ]->set_display( 'pm_reports', 'pm_report_details', false );
+
+		}
+
+		if ( 'front' === $event[ 'mode' ] && $event[ 'module' ]->loaded( '\danieltj\reportuser\mcp\reports_open_module' ) ) {
+
+			$this->template->assign_vars( [
+				'S_USER_REPORTS'					=> ( $this->auth->acl_get( 'm_user_report' ) ) ? true : false,
+				'MCP_USER_REPORTS_LATEST_OVERVIEW'	=> $this->language->lang( 'MCP_USER_REPORTS_LATEST_OVERVIEW', 0 ),
+			] );
 
 		}
 

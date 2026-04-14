@@ -61,7 +61,7 @@ final class functions {
 	}
 
 	/**
-	 * Check if the current user can report the specified user.
+	 * Returns whether the user can report the specified user.
 	 * 
 	 * @todo this needs a more thorough check
 	 *       - can view profiles

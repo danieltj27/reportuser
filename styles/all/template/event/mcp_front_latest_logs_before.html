@@ -1,23 +1,22 @@
-{% if S_SHOW_USER_REPORTS %}
+{% if S_USER_REPORTS %}
 	<div class="panel">
 		<div class="inner">
-			<h3>{{ lang( 'MCP_USER_REPORTS_LATEST' ) }}</h3>
-			<p>{{ lang( 'MCP_USER_REPORTS_TOTAL' ) }}</p>
+			<h3>{{ lang( 'MCP_USER_REPORTS_LATEST_TITLE' ) }}</h3>
+			<p>{{ MCP_USER_REPORTS_LATEST_OVERVIEW }}</p>
 			<table class="table1">
 				<thead>
 					<tr>
-						<th class="name">asdf</th>
-						<th class="name">asdf</th>
-						<th class="name">asdf</th>
-						<th class="name">asdf</th>
-						<th class="name">asdf</th>
+						<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_USERNAME' ) }}</th>
+						<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REASON' ) }}</th>
+						<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_TIME' ) }}</th>
+						<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REPORTER' ) }}</th>
+						<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REVIEW' ) }}</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% if USER_REPORTS %}
 						{% for report in USER_REPORTS %}
 							<tr class="bg1">
-								<td><span>asdf</span></td>
 								<td><span>asdf</span></td>
 								<td><span>asdf</span></td>
 								<td><span>asdf</span></td>
