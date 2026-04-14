@@ -134,13 +134,13 @@ final class mcp {
 
 			if ( 'delete' === $submit ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', $report_ids ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', count( $report_ids ) ), E_USER_WARNING );
 
 			}
 
 			if ( 'close' === $submit ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', $report_ids ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', count( $report_ids ) ), E_USER_WARNING );
 
 			}
 
@@ -162,7 +162,7 @@ final class mcp {
 
 				confirm_box(
 					false,
-					$this->language->lang( ( 'close' === $submit ) ? 'MCP_USER_REPORTS_ACTION_CONFIRM_CLOSE' : 'MCP_USER_REPORTS_ACTION_CONFIRM_DELETE', $report_ids ),
+					$this->language->lang( ( 'close' === $submit ) ? 'MCP_USER_REPORTS_ACTION_CONFIRM_CLOSE' : 'MCP_USER_REPORTS_ACTION_CONFIRM_DELETE', count( $report_ids ) ),
 					build_hidden_fields( [
 						'reports_view'	=> $reports_view,
 						'report_ids'	=> $report_ids,

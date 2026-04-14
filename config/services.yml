@@ -37,6 +37,7 @@ services:
         arguments:
             - '@auth'
             - '@dbal.conn'
+            - '@log'
             - '@routing.helper'
             - '@user'
             - '%datetime.class%'

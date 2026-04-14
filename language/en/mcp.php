@@ -22,7 +22,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_OPEN'				=> 'Open user reports',
 	'MCP_USER_REPORTS_CLOSED'			=> 'Closed user reports',
 	'MCP_USER_REPORTS_OPEN_EXPLAIN'		=> 'This is a list of all user reports that are open and need review.',
-	'MCP_USER_REPORTS_CLOSED_EXPLAIN'	=> 'This is a list of all user reports that have been resolved.',
+	'MCP_USER_REPORTS_CLOSED_EXPLAIN'	=> 'This is a list of all user reports that have been closed.',
 	'MCP_USER_REPORTS_LATEST'			=> 'Latest 5 user reports',
 	'MCP_USER_REPORTS_COLUMN_USERNAME'	=> 'Reported user',
 	'MCP_USER_REPORTS_COLUMN_REPORTER'	=> 'Reported by',
@@ -64,4 +64,8 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION'	=> 'You have submitted an invalid form action.',
 	'MCP_USER_REPORTS_ERROR_EMPTY_REPORT_ARRAY'		=> 'You must select at least one report to close or delete.',
 	'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN'	=> 'You have submitted an incorrect CSRF token.',
+
+	// LOGS
+	'MCP_USER_REPORT_LOG_CLOSED_REPORT'		=> '<strong>Closed user Report:</strong><br />» %s (user_id: %d) ',
+	'MCP_USER_REPORT_LOG_DELETED_REPORT'	=> '<strong>Deleted user report:</strong><br />» %s (user_id: %d)',
 ] );

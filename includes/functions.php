@@ -10,6 +10,7 @@ namespace danieltj\reportuser\includes;
 
 use phpbb\auth\auth;
 use phpbb\db\driver\driver_interface as database;
+use phpbb\log\log;
 use phpbb\routing\helper as router;
 use phpbb\user;
 
@@ -24,6 +25,11 @@ final class functions {
 	 * @var driver_interface
 	 */
 	protected $database;
+
+	/**
+	 * @var log
+	 */
+	protected $log;
 
 	/**
 	 * @var router
@@ -43,10 +49,11 @@ final class functions {
 	/**
 	 * Constructor
 	 */
-	public function __construct( auth $auth, database $database, router $router, user $user, $datetime_class ) {
+	public function __construct( auth $auth, database $database, log $log, router $router, user $user, $datetime_class ) {
 
 		$this->auth = $auth;
 		$this->database = $database;
+		$this->log = $log;
 		$this->router = $router;
 		$this->user = $user;
 		$this->datetime = $datetime_class;
@@ -185,11 +192,19 @@ final class functions {
 	 */
 	public function close_user_report( int $report_id ) : bool {
 
+		$report_data = $this->get_user_report( $report_id );
+
+		if ( false === $report_data ) {
+
+			return false;
+
+		}
+
 		$this->database->sql_query(
 			'UPDATE ' . REPORTS_TABLE . ' SET ' . $this->database->sql_build_array( 'UPDATE', [
 				'report_closed' => 1,
 			] ) . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
-				'report_id' => $report_id,
+				'report_id' => $report_data[ 'report_id' ],
 			] )
 		);
 
@@ -198,6 +213,27 @@ final class functions {
 			return false;
 
 		}
+
+		$user_data = $this->get_user_data( [ $report_data[ 'reported_user_id' ] ] );
+		$reported_user_name = '';
+
+		if ( ! empty( $user_data ) ) {
+
+			$reported_user_name = get_username_string( 'no_profile', $user_data[ 0 ][ 'user_id' ], $user_data[ 0 ][ 'username' ], $user_data[ 0 ][ 'user_colour' ] );
+
+		}
+
+		$this->log->add(
+			'mod',
+			$this->user->data[ 'user_id' ],
+			$this->user->data[ 'user_ip' ],
+			'MCP_USER_REPORT_LOG_CLOSED_REPORT',
+			time(),
+			[
+				'reported_user_name'	=> $reported_user_name,
+				'reported_user_id'		=> $report_data[ 'reported_user_id' ],
+			]
+		);
 
 		return true;
 
@@ -214,9 +250,17 @@ final class functions {
 	 */
 	public function delete_user_report( int $report_id ) : bool {
 
+		$report_data = $this->get_user_report( $report_id );
+
+		if ( false === $report_data ) {
+
+			return false;
+
+		}
+
 		$this->database->sql_query(
 			'DELETE FROM ' . REPORTS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
-				'report_id' => $report_id,
+				'report_id' => $report_data[ 'report_id' ],
 			] )
 		);
 
@@ -225,6 +269,27 @@ final class functions {
 			return false;
 
 		}
+
+		$user_data = $this->get_user_data( [ $report_data[ 'reported_user_id' ] ] );
+		$reported_user_name = '';
+
+		if ( ! empty( $user_data ) ) {
+
+			$reported_user_name = get_username_string( 'no_profile', $user_data[ 0 ][ 'user_id' ], $user_data[ 0 ][ 'username' ], $user_data[ 0 ][ 'user_colour' ] );
+
+		}
+
+		$this->log->add(
+			'mod',
+			$this->user->data[ 'user_id' ],
+			$this->user->data[ 'user_ip' ],
+			'MCP_USER_REPORT_LOG_DELETED_REPORT',
+			time(),
+			[
+				'reported_user_name'	=> $reported_user_name,
+				'reported_user_id'		=> $report_data[ 'reported_user_id' ],
+			]
+		);
 
 		return true;
 
