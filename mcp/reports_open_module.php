@@ -38,7 +38,7 @@ class reports_open_module {
 		$this->page_title = $language->lang( 'MCP_USER_REPORTS_OPEN' );
 
 		$controller = $phpbb_container->get( 'danieltj.reportuser.controller.mcp' );
-		$controller->reports( $this->u_action, $mode );
+		$controller->reports( $id, $this->u_action, $mode );
 
 	}
 

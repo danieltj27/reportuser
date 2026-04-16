@@ -11,6 +11,7 @@ namespace danieltj\reportuser\controller;
 use phpbb\auth\auth;
 use phpbb\controller\helper as controller;
 use phpbb\language\language;
+use phpbb\pagination;
 use phpbb\request\request;
 use phpbb\routing\helper as router;
 use phpbb\template\template;
@@ -33,6 +34,11 @@ final class mcp {
 	 * @var language
 	 */
 	protected $language;
+
+	/**
+	 * @var pagination
+	 */
+	protected $pagination;
 
 	/**
 	 * @var request
@@ -62,11 +68,12 @@ final class mcp {
 	/**
 	 * Constructor
 	 */
-	public function __construct( auth $auth, controller $controller, language $language, request $request, router $router, template $template, user $user, functions $functions ) {
+	public function __construct( auth $auth, controller $controller, language $language, pagination $pagination, request $request, router $router, template $template, user $user, functions $functions ) {
 
 		$this->auth = $auth;
 		$this->controller = $controller;
 		$this->language = $language;
+		$this->pagination = $pagination;
 		$this->request = $request;
 		$this->router = $router;
 		$this->template = $template;
@@ -80,7 +87,7 @@ final class mcp {
 	 * 
 	 * @todo include return links in trigger_error calls
 	 */
-	public function reports( string $action, string $mode ) {
+	public function reports( string $module_id, string $action, string $mode ) {
 
 		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
 
@@ -90,8 +97,8 @@ final class mcp {
 
 		// Check which report type to look at (open or closed).
 		$reports_view = match ( $mode ) {
-			'user_reports_closed'	=> 1, // closed reports
-			'user_reports_open'		=> 0, // open reports
+			'user_reports_closed'	=> 1, // id: \danieltj\reportuser\mcp\reports_closed_module
+			'user_reports_open'		=> 0, // id: \danieltj\reportuser\mcp\reports_open_module
 			default					=> 2, // fallback for anything else
 		};
 
@@ -177,19 +184,19 @@ final class mcp {
 		// Set-up pagination settings for this view.
 		$count = $this->functions->get_user_report_total( ( 1 === $reports_view ) ? 'closed' : 'open' );
 		$limit = 10;
-		$page = $this->request->variable( 'page', 1 );
+		$max_page = ( $count > $limit ) ? (int) ceil( $count / $limit ) : 1;
+		$page = ( $max_page < $this->request->variable( 'page', 1 ) ) ? $max_page : $this->request->variable( 'page', 1 );
 		$prev_page = $page - 1;
 		$next_page = $page + 1;
-		$max_page = ( $count > $limit ) ? (int) ceil( $count / $limit ) : 1;
-		$offset = ( 1 < $page ) ? ( $limit * page ) - $limit : 0;
+		$offset = ( 1 < $page ) ? ( $limit * $page ) - $limit : 0;
 
 		$reports = $this->functions->get_user_reports( query: [
 			[ 'reported_user_id', '!=', 0 ],
 			[ 'report_closed', '=', $reports_view ],
 		], order_by: [
-			[ 'report_time', 'ASC' ],
+			[ 'report_time', 'DESC' ],
 		], limit_offset: [
-			0, 10
+			$offset, $limit
 		] );
 
 		$reports_data = [];
@@ -209,6 +216,10 @@ final class mcp {
 					//'reported_by'			=> false,
 					'report_text'			=> $report[ 'report_text' ],
 					'report_time'			=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $report[ 'report_time' ] ),
+					'report_details_link'	=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
+						'mode'		=> 'user_report_details',
+						'report_id'	=> (int) $report[ 'report_id' ],
+					] ),
 				];
 
 				if ( (int) $report[ 'user_id' ] !== (int) $report[ 'reported_user_id' ] ) {
@@ -242,6 +253,20 @@ final class mcp {
 
 		}
 
+
+		/**
+		 * @todo implement pagination that works with page numbers
+		 *       and not offsets like phpbb\pagination.
+		 */
+		// $this->pagination->generate_template_pagination(
+		// 	$this->functions->get_mcp_module_url( $module_id ),
+		// 	'pagination',
+		// 	'page',
+		// 	$count,
+		// 	$limit,
+		// 	$offset
+		// );
+
 		$this->template->assign_vars( [
 			'USER_REPORTS_TITLE'	=> ( 1 === $reports_view ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN' ),
 			'USER_REPORTS_EXPLAIN'	=> ( 1 === $reports_view ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED_EXPLAIN' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN_EXPLAIN' ),
@@ -250,6 +275,78 @@ final class mcp {
 			'USER_REPORTS'			=> $reports_data,
 			'OPEN_REPORTS'			=> ( 1 === $reports_view ) ? false : true,
 			'USER_REPORT_ACTION'	=> $action,
+		] );
+
+	}
+
+	/**
+	 * Handle the user report details interface.
+	 * 
+	 * @todo include return links in trigger_error calls
+	 */
+	public function details( string $module_id, string $action, string $mode ) {
+
+		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
+
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION' ), E_USER_WARNING );
+
+		}
+
+		add_form_key( 'report_user_mcp_csrf' );
+
+		$reports = $this->functions->get_user_reports( query: [
+			[ 'report_id', '=', $this->request->variable( 'report_id', 0 ) ],
+		] );
+
+		$_user_cache = [];
+		$user_ids = [];
+
+		if ( empty( $reports ) ) {
+
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_REPORT_NOT_FOUND' ), E_USER_WARNING );
+
+		}
+
+		if ( (int) $reports[ 0 ][ 'user_id' ] !== (int) $reports[ 0 ][ 'reported_user_id' ] ) {
+
+			$user_ids[] = (int) $reports[ 0 ][ 'reported_user_id' ];
+
+		}
+
+		$user_ids[] = (int) $reports[ 0 ][ 'user_id' ];
+
+		$users = $this->functions->get_user_data( $user_ids );
+
+		foreach ( $users as $user ) {
+
+			if ( ! isset( $_user_cache[ $user[ 'user_id' ] ] ) ) {
+
+				$_user_cache[ $user[ 'user_id' ] ] = get_username_string( 'full', $user[ 'user_id' ], $user[ 'username' ], $user[ 'user_colour' ] );
+
+			}
+
+		}
+
+		// Collect all the report data we need for display.
+		$report_data = [
+			'report_id'				=> (int) $reports[ 0 ][ 'report_id' ],
+			'reported_user_id'		=> (int) $reports[ 0 ][ 'reported_user_id' ],
+			'reported_user'			=> ( isset( $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] : false,
+			'reported_by_user_id'	=> (int) $reports[ 0 ][ 'user_id' ],
+			'reported_by'			=> ( isset( $_user_cache[ $reports[ 0 ][ 'user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'user_id' ] ] : false,
+			'report_text'			=> $reports[ 0 ][ 'report_text' ],
+			'report_time'			=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $reports[ 0 ][ 'report_time' ] ),
+			'report_details_link'	=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
+				'mode'		=> 'user_report_details',
+				'report_id'	=> (int) $reports[ 0 ][ 'report_id' ],
+			] ),
+		];
+
+		$this->template->assign_vars( [
+			'USER_REPORT'							=> $report_data,
+			'MCP_USER_REPORTS_REPORT_INFO_TITLE'	=> $this->language->lang( 'MCP_USER_REPORTS_REPORT_INFO_TITLE', $report_data[ 'report_id' ] ),
+			'MCP_USER_REPORTS_REPORT_BY_USER'		=> $this->language->lang( 'MCP_USER_REPORTS_REPORT_BY_USER', $report_data[ 'reported_by' ] ),
+			'S_REPORT_CLOSED'						=> ( 1 === (int) $reports[ 0 ][ 'report_closed' ] ) ? true : false,
 		] );
 
 	}

@@ -9,7 +9,10 @@
 			<p>{{ USER_REPORTS_EXPLAIN }}</p>
 			<div class="action-bar bar-top">
 				<div class="pagination">
-					{{ TOTAL_REPORTS }} &bull; {{ PAGE_NUMBER }}
+					{{ TOTAL_REPORTS }}
+					{% if pagination %}
+						{% include 'pagination.html' %}
+					{% endif %}
 				</div>
 			</div>
 			<table class="table1 responsive">
@@ -20,6 +23,7 @@
 							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REASON' ) }}</th>
 							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_TIME' ) }}</th>
 							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REPORTER' ) }}</th>
+							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REVIEW' ) }}</th>
 							<th>{{ lang( 'MARK' ) }}</th>
 						</tr>
 					{% else %}
@@ -48,6 +52,9 @@
 										{{ report.reported_by_user_id }}
 									{% endif %}
 								</td>
+								<td>
+									<a href="{{ report.report_details_link }}" class="button small">{{ lang( 'MCP_USER_REPORTS_REVIEW_REPORT' ) }}</a>
+								</td>
 								<td class="mark"><input type="checkbox" name="report_item[{{ report.report_id }}]" id="report-0" value="{{ report.report_id }}" /></td>
 							</tr>
 						{% endfor %}
@@ -59,9 +66,11 @@
 				</tbody>
 			</table>
 			<div class="action-bar bar-bottom">
-				{% include 'display_options.html' %}
 				<div class="pagination">
-					{{ TOTAL_REPORTS }} &bull; {{ PAGE_NUMBER }}
+					{{ TOTAL_REPORTS }}
+					{% if pagination %}
+						{% include 'pagination.html' %}
+					{% endif %}
 				</div>
 			</div>
 		</div>

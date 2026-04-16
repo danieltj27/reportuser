@@ -100,6 +100,17 @@ class v100 extends \phpbb\db\migration\migration {
 					],
 				],
 			],
+			[
+				'module.add', [
+					'mcp', 'MCP_REPORTS',
+					[
+						'module_auth'		=> 'ext_danieltj/reportuser && acl_m_user_report',
+						'module_basename'	=> '\danieltj\reportuser\mcp\report_details_module',
+						'module_langname'	=> 'MCP_USER_REPORTS_DETAILS',
+						'module_mode'		=> 'user_report_details',
+					],
+				],
+			],
 		];
 
 	}

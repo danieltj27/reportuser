@@ -21,6 +21,7 @@ if ( empty( $lang ) || ! is_array( $lang ) ) {
 $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_OPEN'				=> 'Open user reports',
 	'MCP_USER_REPORTS_CLOSED'			=> 'Closed user reports',
+	'MCP_USER_REPORTS_DETAILS'			=> 'User report details',
 	'MCP_USER_REPORTS_OPEN_EXPLAIN'		=> 'This is a list of all user reports that are open and need review.',
 	'MCP_USER_REPORTS_CLOSED_EXPLAIN'	=> 'This is a list of all user reports that have been closed.',
 	'MCP_USER_REPORTS_LATEST_TITLE'		=> 'Latest 5 user reports',
@@ -34,6 +35,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_COLUMN_REASON'	=> 'Reason',
 	'MCP_USER_REPORTS_COLUMN_TIME'		=> 'Time',
 	'MCP_USER_REPORTS_COLUMN_REVIEW'	=> 'Review',
+	'MCP_USER_REPORTS_REVIEW_REPORT'	=> 'View report',
 	'MCP_USER_REPORTS_NO_RESULTS'		=> 'There are no user reports to review.',
 	'MCP_USER_REPORTS_TYPE_TOTAL'		=> [
 		1 => '1 report',
@@ -44,6 +46,11 @@ $lang = array_merge( $lang, [
 		2 => 'In total there is %s reports to review.',
 	],
 	'MCP_USER_REPORTS_PAGE'				=> 'Page <strong>%s</strong> of <strong>%s</strong>',
+
+	// REPORT DETAILS
+	'MCP_USER_REPORTS_REPORT_INFO_TITLE'		=> 'Report #%d',
+	'MCP_USER_REPORTS_REPORT_BY_USER'			=> 'Reported by %s',
+	'MCP_USER_REPORTS_REPORT_CLOSED_NOTICE'		=> 'This report has been closed.',
 
 	// CONFIRM MESSAGES
 	'MCP_USER_REPORTS_ACTION_CONFIRM_CLOSE'		=> [
@@ -70,6 +77,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION'	=> 'You have submitted an invalid form action.',
 	'MCP_USER_REPORTS_ERROR_EMPTY_REPORT_ARRAY'		=> 'You must select at least one report to close or delete.',
 	'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN'	=> 'You have submitted an incorrect CSRF token.',
+	'MCP_USER_REPORTS_ERROR_REPORT_NOT_FOUND'		=> 'The selected report does not exist.',
 
 	// LOGS
 	'MCP_USER_REPORT_LOG_CLOSED_REPORT'		=> '<strong>Closed user Report:</strong><br />» %s (user_id: %d) ',

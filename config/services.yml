@@ -16,6 +16,7 @@ services:
             - '@auth'
             - '@controller.helper'
             - '@language'
+            - '@pagination'
             - '@request'
             - '@routing.helper'
             - '@template'
@@ -29,6 +30,7 @@ services:
             - '@language'
             - '@routing.helper'
             - '@template'
+            - '@user'
             - '@danieltj.reportuser.includes.functions'
         tags:
             - { name: event.listener }

@@ -455,6 +455,49 @@ final class functions {
 	}
 
 	/**
+	 * Return the user reports module URL.
+	 * 
+	 * @param string $mode   Module base name used to return module data.
+	 * @param array  $params Additional parameters to add to the URL.
+	 * 
+	 * @return string  The module URL.
+	 */
+	public function get_mcp_module_url( string $module, array $params = [] ) : string {
+
+		$module_url = './mcp.php';
+
+		$result = $this->database->sql_query(
+			'SELECT * FROM ' . MODULES_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
+				'module_basename' => $module,
+			] )
+		);
+
+		$module = $this->database->sql_fetchrow( $result );
+		$this->database->sql_freeresult( $result );
+
+		if ( false === $module ) {
+
+			return $module_url;
+
+		}
+
+		$module_url .= '?i=' . $module[ 'module_id' ];
+
+		if ( is_array( $params ) && ! empty( $params ) ) {
+
+			foreach ( $params as $key => $value ) {
+
+				$module_url .= '&' . (string) $key . '=' . urlencode( (string) $value );
+
+			}
+
+		}
+
+		return $module_url;
+
+	}
+
+	/**
 	 * Return a localised version of a timestamp.
 	 * 
 	 * @param  string $zone (optional) An ISO formatted timezone code.

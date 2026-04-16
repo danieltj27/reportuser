@@ -8,7 +8,7 @@
 
 namespace danieltj\reportuser\mcp;
 
-class reports_closed_module {
+class report_details_module {
 
 	/**
 	 * @var $action;
@@ -34,11 +34,11 @@ class reports_closed_module {
 
 		$language = $phpbb_container->get( 'language' );
 
-		$this->tpl_name = 'mcp_user_reports';
-		$this->page_title = $language->lang( 'MCP_USER_REPORTS_CLOSED' );
+		$this->tpl_name = 'mcp_user_report_details';
+		$this->page_title = $language->lang( 'MCP_USER_REPORTS_DETAILS' );
 
 		$controller = $phpbb_container->get( 'danieltj.reportuser.controller.mcp' );
-		$controller->reports( $id, $this->u_action, $mode );
+		$controller->details( $id, $this->u_action, $mode );
 
 	}
 

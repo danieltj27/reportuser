@@ -3,33 +3,46 @@
 		<div class="inner">
 			<h3>{{ lang( 'MCP_USER_REPORTS_LATEST_TITLE' ) }}</h3>
 			<p>{{ MCP_USER_REPORTS_LATEST_OVERVIEW }}</p>
-			<table class="table1">
-				<thead>
-					<tr>
-						<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_USERNAME' ) }}</th>
-						<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REASON' ) }}</th>
-						<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_TIME' ) }}</th>
-						<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REPORTER' ) }}</th>
-						<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REVIEW' ) }}</th>
-					</tr>
-				</thead>
-				<tbody>
+			{% if USER_REPORTS %}
+				<table class="table1">
+					<thead>
+						<tr>
+							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_USERNAME' ) }}</th>
+							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REASON' ) }}</th>
+							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_TIME' ) }}</th>
+							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REPORTER' ) }}</th>
+						</tr>
+					</thead>
+					<tbody>
 					{% if USER_REPORTS %}
 						{% for report in USER_REPORTS %}
 							<tr class="bg1">
-								<td><span>asdf</span></td>
-								<td><span>asdf</span></td>
-								<td><span>asdf</span></td>
-								<td><span>asdf</span></td>
+								<td>
+									{% if report.reported_user %}
+										{{ report.reported_user }}
+									{% else %}
+										{{ report.reported_user_id }}
+									{% endif %}
+								</td>
+								<td>{{ report.report_text }}</td>
+								<td>{{ report.report_time }}</td>
+								<td>
+									{% if report.reported_by %}
+										{{ report.reported_by }}
+									{% else %}
+										{{ report.reported_by_user_id }}
+									{% endif %}
+								</td>
 							</tr>
 						{% endfor %}
 					{% else %}
-						<tr>
-							<td colspan="5">{{ lang( 'MCP_USER_REPORTS_NO_RESULTS' ) }}</td>
+						<tr class="bg1">
+							<td class="center" colspan="5"><strong>{{ lang( 'MCP_USER_REPORTS_NO_RESULTS' ) }}</strong></td>
 						</tr>
 					{% endif %}
-				</tbody>
-			</table>
+					</tbody>
+				</table>
+			{% endif %}
 		</div>
 	</div>
 {% endif %}

@@ -12,6 +12,7 @@ use phpbb\auth\auth;
 use phpbb\language\language;
 use phpbb\routing\helper as router;
 use phpbb\template\template;
+use phpbb\user;
 use danieltj\reportuser\includes\functions;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -38,6 +39,11 @@ class listener implements EventSubscriberInterface {
 	protected $template;
 
 	/**
+	 * @var user
+	 */
+	protected $user;
+
+	/**
 	 * @var functions
 	 */
 	protected $functions;
@@ -45,12 +51,13 @@ class listener implements EventSubscriberInterface {
 	/**
 	 * Constructor
 	 */
-	public function __construct( auth $auth, language $language, router $router, template $template, functions $functions ) {
+	public function __construct( auth $auth, language $language, router $router, template $template, user $user, functions $functions ) {
 
 		$this->auth = $auth;
 		$this->language = $language;
 		$this->router = $router;
 		$this->template = $template;
+		$this->user = $user;
 		$this->functions = $functions;
 
 	}
@@ -115,18 +122,85 @@ class listener implements EventSubscriberInterface {
 	 */
 	public function update_mcp_module_display( $event ) {
 
-		if ( 'user_reports_open' === $event[ 'mode' ] || 'user_reports_closed' === $event[ 'mode' ] ) {
+		if ( 'user_reports_open' === $event[ 'mode' ] || 'user_reports_closed' === $event[ 'mode' ] || 'user_report_details' === $event[ 'mode' ] ) {
 
 			$event[ 'module' ]->set_display( 'reports', 'report_details', false );
 			$event[ 'module' ]->set_display( 'pm_reports', 'pm_report_details', false );
 
 		}
 
-		if ( 'front' === $event[ 'mode' ] && $event[ 'module' ]->loaded( '\danieltj\reportuser\mcp\reports_open_module' ) ) {
+		if ( 'user_report_details' !== $event[ 'mode' ] ) {
+
+			$event[ 'module' ]->set_display( '\danieltj\reportuser\mcp\report_details_module', 'user_report_details', false );
+
+		}
+
+		// Check the open reports module is loaded first.
+		if ( $event[ 'module' ]->loaded( '\danieltj\reportuser\mcp\reports_open_module' ) ) {
+
+			$reports = $this->functions->get_user_reports( query: [
+				[ 'reported_user_id', '!=', 0 ],
+				[ 'report_closed', '=', 0 ],
+			], order_by: [
+				[ 'report_time', 'DESC' ],
+			], limit_offset: [
+				0, 5
+			] );
+
+			$reports_data = [];
+			$_user_cache = [];
+
+			if ( ! empty( $reports ) ) {
+
+				$user_ids = [];
+
+				foreach ( $reports as $report ) {
+
+					$reports_data[ $report[ 'report_id' ] ] = [
+						'report_id'				=> (int) $report[ 'report_id' ],
+						'reported_user_id'		=> (int) $report[ 'reported_user_id' ],
+						//'reported_user'		=> false,
+						'reported_by_user_id'	=> (int) $report[ 'user_id' ],
+						//'reported_by'			=> false,
+						'report_text'			=> $report[ 'report_text' ],
+						'report_time'			=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $report[ 'report_time' ] ),
+					];
+
+					if ( (int) $report[ 'user_id' ] !== (int) $report[ 'reported_user_id' ] ) {
+
+						$user_ids[] = (int) $report[ 'reported_user_id' ];
+
+					}
+
+					$user_ids[] = (int) $report[ 'user_id' ];
+
+				}
+
+				$users = $this->functions->get_user_data( $user_ids );
+
+				foreach ( $users as $user ) {
+
+					if ( ! isset( $_user_cache[ $user[ 'user_id' ] ] ) ) {
+
+						$_user_cache[ $user[ 'user_id' ] ] = get_username_string( 'full', $user[ 'user_id' ], $user[ 'username' ], $user[ 'user_colour' ] );
+
+					}
+
+				}
+
+				foreach ( $reports_data as $report ) {
+
+					$reports_data[ $report[ 'report_id' ] ][ 'reported_user' ] = ( isset( $_user_cache[ $report[ 'reported_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_user_id' ] ] : false;
+					$reports_data[ $report[ 'report_id' ] ][ 'reported_by' ] = ( isset( $_user_cache[ $report[ 'reported_by_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_by_user_id' ] ] : false;
+
+				}
+
+			}
 
 			$this->template->assign_vars( [
 				'S_USER_REPORTS'					=> ( $this->auth->acl_get( 'm_user_report' ) ) ? true : false,
 				'MCP_USER_REPORTS_LATEST_OVERVIEW'	=> $this->language->lang( 'MCP_USER_REPORTS_LATEST_OVERVIEW', 0 ),
+				'USER_REPORTS'						=> $reports_data,
 			] );
 
 		}
