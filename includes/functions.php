@@ -423,8 +423,6 @@ final class functions {
 	/**
 	 * Return an array of user data.
 	 * 
-	 * @todo repurpose this function to fetch multiple users
-	 * 
 	 * @param array $user_ids An array containing user IDs.
 	 * 
 	 * @return array  An array of user data (can be empty).
@@ -441,16 +439,52 @@ final class functions {
 			'SELECT * FROM ' . USERS_TABLE . ' WHERE ' . $this->database->sql_in_set( 'user_id', $user_ids )
 		);
 
-		$users = $this->database->sql_fetchrowset( $result );
+		$user_data = $this->database->sql_fetchrowset( $result );
 		$this->database->sql_freeresult( $result );
 
-		if ( false === $users ) {
+		if ( false === $user_data ) {
 
 			return [];
 
 		}
 
+		$users = [];
+
+		foreach ( $user_data as $user ) {
+
+			$users[ $user[ 'user_id' ] ] = $user;
+
+		}
+
 		return $users;
+
+	}
+
+	/**
+	 * Return an array of profile data.
+	 * 
+	 * @param int $user_id The user ID to fetch profile fields for.
+	 * 
+	 * @return array  An array containing custom profile fields.
+	 */
+	public function get_user_profile_data( int $user_id ) : array {
+
+		$result = $this->database->sql_query(
+			'SELECT * FROM ' . PROFILE_FIELDS_DATA_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
+				'user_id' => $user_id,
+			] )
+		);
+
+		$profile_data = $this->database->sql_fetchrowset( $result );
+		$this->database->sql_freeresult( $result );
+
+		if ( false === $profile_data ) {
+
+			return [];
+
+		}
+
+		return $profile_data;
 
 	}
 

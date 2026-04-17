@@ -246,8 +246,8 @@ final class mcp {
 
 			foreach ( $reports_data as $report ) {
 
-				$reports_data[ $report[ 'report_id' ] ][ 'reported_user' ] = ( isset( $_user_cache[ $report[ 'reported_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_user_id' ] ] : false;
-				$reports_data[ $report[ 'report_id' ] ][ 'reported_by' ] = ( isset( $_user_cache[ $report[ 'reported_by_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_by_user_id' ] ] : false;
+				$reports_data[ $report[ 'report_id' ] ][ 'reported_user' ] = ( isset( $_user_cache[ $report[ 'reported_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $report[ 'reported_user_id' ] );
+				$reports_data[ $report[ 'report_id' ] ][ 'reported_by' ] = ( isset( $_user_cache[ $report[ 'reported_by_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_by_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $report[ 'reported_by_user_id' ] );
 
 			}
 
@@ -283,6 +283,7 @@ final class mcp {
 	 * Handle the user report details interface.
 	 * 
 	 * @todo include return links in trigger_error calls
+	 * @todo fix breadcrumb link to report detail page (missing id)
 	 */
 	public function details( string $module_id, string $action, string $mode ) {
 
@@ -317,28 +318,47 @@ final class mcp {
 
 		$users = $this->functions->get_user_data( $user_ids );
 
+		// Set up some profile defaults for the reported user.
+		$reported_user_avatar = '';
+		$reported_user_signature = '';
+
 		foreach ( $users as $user ) {
 
 			if ( ! isset( $_user_cache[ $user[ 'user_id' ] ] ) ) {
 
 				$_user_cache[ $user[ 'user_id' ] ] = get_username_string( 'full', $user[ 'user_id' ], $user[ 'username' ], $user[ 'user_colour' ] );
 
+				if ( (int) $user[ 'user_id' ] === (int) $reports[ 0 ][ 'reported_user_id' ] ) {
+
+					$reported_user_avatar = phpbb_get_avatar( [
+						'avatar'			=> $user[ 'user_avatar' ],
+						'avatar_type'		=> $user[ 'user_avatar_type' ],
+						'avatar_width'		=> $user[ 'user_avatar_width' ],
+						'avatar_height'		=> $user[ 'user_avatar_height' ],
+					], 'USER_AVATAR' );
+
+					$reported_user_signature = '';
+
+				}
+
 			}
 
 		}
 
-		// Collect all the report data we need for display.
 		$report_data = [
-			'report_id'				=> (int) $reports[ 0 ][ 'report_id' ],
-			'reported_user_id'		=> (int) $reports[ 0 ][ 'reported_user_id' ],
-			'reported_user'			=> ( isset( $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] : false,
-			'reported_by_user_id'	=> (int) $reports[ 0 ][ 'user_id' ],
-			'reported_by'			=> ( isset( $_user_cache[ $reports[ 0 ][ 'user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'user_id' ] ] : false,
-			'report_text'			=> $reports[ 0 ][ 'report_text' ],
-			'report_time'			=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $reports[ 0 ][ 'report_time' ] ),
-			'report_details_link'	=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
-				'mode'		=> 'user_report_details',
-				'report_id'	=> (int) $reports[ 0 ][ 'report_id' ],
+			'report_id'					=> (int) $reports[ 0 ][ 'report_id' ],
+			'reported_user_id'			=> (int) $reports[ 0 ][ 'reported_user_id' ],
+			'reported_user'				=> ( isset( $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $reports[ 0 ][ 'reported_user_id' ] ),
+			'reported_user_avatar'		=> $reported_user_avatar,
+			'reported_user_signature'	=> $reported_user_signature,
+			'reported_user_cpfs'		=> [],
+			'reported_by_user_id'		=> (int) $reports[ 0 ][ 'user_id' ],
+			'reported_by'				=> ( isset( $_user_cache[ $reports[ 0 ][ 'user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $reports[ 0 ][ 'user_id' ] ),
+			'report_text'				=> $reports[ 0 ][ 'report_text' ],
+			'report_time'				=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $reports[ 0 ][ 'report_time' ] ),
+			'report_details_link'		=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
+				'mode'					=> 'user_report_details',
+				'report_id'				=> (int) $reports[ 0 ][ 'report_id' ],
 			] ),
 		];
 

@@ -164,6 +164,10 @@ class listener implements EventSubscriberInterface {
 						//'reported_by'			=> false,
 						'report_text'			=> $report[ 'report_text' ],
 						'report_time'			=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $report[ 'report_time' ] ),
+						'report_details_link'	=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
+							'mode'		=> 'user_report_details',
+							'report_id'	=> (int) $report[ 'report_id' ],
+						] ),
 					];
 
 					if ( (int) $report[ 'user_id' ] !== (int) $report[ 'reported_user_id' ] ) {

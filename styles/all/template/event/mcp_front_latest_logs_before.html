@@ -11,6 +11,7 @@
 							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REASON' ) }}</th>
 							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_TIME' ) }}</th>
 							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REPORTER' ) }}</th>
+							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REVIEW' ) }}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -32,6 +33,9 @@
 									{% else %}
 										{{ report.reported_by_user_id }}
 									{% endif %}
+								</td>
+								<td>
+									<a href="{{ report.report_details_link }}" class="button small">{{ lang( 'MCP_USER_REPORTS_REVIEW_REPORT' ) }}</a>
 								</td>
 							</tr>
 						{% endfor %}

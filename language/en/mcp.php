@@ -30,27 +30,29 @@ $lang = array_merge( $lang, [
 		1 => 'In total there is <strong>1</strong> user report to review.',
 		2 => 'In total there are <strong>%d</strong> user reports to review.',
 	],
-	'MCP_USER_REPORTS_COLUMN_USERNAME'	=> 'Reported user',
-	'MCP_USER_REPORTS_COLUMN_REPORTER'	=> 'Reported by',
-	'MCP_USER_REPORTS_COLUMN_REASON'	=> 'Reason',
-	'MCP_USER_REPORTS_COLUMN_TIME'		=> 'Time',
-	'MCP_USER_REPORTS_COLUMN_REVIEW'	=> 'Review',
-	'MCP_USER_REPORTS_REVIEW_REPORT'	=> 'View report',
-	'MCP_USER_REPORTS_NO_RESULTS'		=> 'There are no user reports to review.',
-	'MCP_USER_REPORTS_TYPE_TOTAL'		=> [
+	'MCP_USER_REPORTS_COLUMN_USERNAME'		=> 'Reported user',
+	'MCP_USER_REPORTS_COLUMN_REPORTER'		=> 'Reported by',
+	'MCP_USER_REPORTS_COLUMN_REASON'		=> 'Reason',
+	'MCP_USER_REPORTS_COLUMN_TIME'			=> 'Time',
+	'MCP_USER_REPORTS_COLUMN_REVIEW'		=> 'Review',
+	'MCP_USER_REPORTS_REVIEW_REPORT'		=> 'View report',
+	'MCP_USER_REPORTS_NO_RESULTS'			=> 'There are no user reports to review.',
+	'MCP_USER_REPORTS_TYPE_TOTAL'			=> [
 		1 => '1 report',
 		2 => '%s reports',
 	],
-	'MCP_USER_REPORTS_LAST_5'			=> [
+	'MCP_USER_REPORTS_LAST_5'				=> [
 		1 => 'In total there is 1 report to review.',
 		2 => 'In total there is %s reports to review.',
 	],
-	'MCP_USER_REPORTS_PAGE'				=> 'Page <strong>%s</strong> of <strong>%s</strong>',
+	'MCP_USER_REPORTS_PAGE'					=> 'Page <strong>%s</strong> of <strong>%s</strong>',
 
 	// REPORT DETAILS
 	'MCP_USER_REPORTS_REPORT_INFO_TITLE'		=> 'Report #%d',
 	'MCP_USER_REPORTS_REPORT_BY_USER'			=> 'Reported by %s',
 	'MCP_USER_REPORTS_REPORT_CLOSED_NOTICE'		=> 'This report has been closed.',
+	'MCP_USER_REPORTS_USER_DETAILS_TITLE'		=> 'Profile information',
+	'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER'	=> 'unknown user %d',
 
 	// CONFIRM MESSAGES
 	'MCP_USER_REPORTS_ACTION_CONFIRM_CLOSE'		=> [
