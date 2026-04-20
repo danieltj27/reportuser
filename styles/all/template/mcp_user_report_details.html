@@ -15,6 +15,17 @@
 	</div>
 </div>
 
+<form action="{{ USER_REPORT_ACTION }}" method="post" id="mcp_user_report_details">
+	<fieldset class="submit-buttons">
+		{{ S_FORM_TOKEN }}
+		<input type="hidden" name="report_item" id="report-{{ USER_REPORT.report_id }}" value="{{ USER_REPORT.report_id }}" />
+		<input type="submit" name="submit[delete]" class="button2" value="{{ lang( 'DELETE_REPORT' ) }}" />
+		{% if S_REPORT_OPEN %}
+			&nbsp;<input type="submit" name="submit[close]" class="button1" value="{{ lang( 'CLOSE_REPORT' ) }}" />
+		{% endif %}
+	</fieldset>
+</form>
+
 <div class="panel" class="user-report-profileinfo">
 	<div class="inner">
 		<div class="postbody">

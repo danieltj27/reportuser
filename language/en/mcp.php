@@ -51,7 +51,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_REPORT_INFO_TITLE'		=> 'Report #%d',
 	'MCP_USER_REPORTS_REPORT_BY_USER'			=> 'Reported by %s',
 	'MCP_USER_REPORTS_REPORT_CLOSED_NOTICE'		=> 'This report has been closed.',
-	'MCP_USER_REPORTS_USER_DETAILS_TITLE'		=> 'Profile information',
+	'MCP_USER_REPORTS_USER_DETAILS_TITLE'		=> 'User information',
 	'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER'	=> 'unknown user %d',
 
 	// CONFIRM MESSAGES
@@ -78,6 +78,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION'	=> 'You do not have permission to manage user reports.',
 	'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION'	=> 'You have submitted an invalid form action.',
 	'MCP_USER_REPORTS_ERROR_EMPTY_REPORT_ARRAY'		=> 'You must select at least one report to close or delete.',
+	'MCP_USER_REPORTS_ERROR_INVALID_REPORT_ID'		=> 'You have submitted an invalid report identifier.',
 	'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN'	=> 'You have submitted an incorrect CSRF token.',
 	'MCP_USER_REPORTS_ERROR_REPORT_NOT_FOUND'		=> 'The selected report does not exist.',
 

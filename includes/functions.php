@@ -219,7 +219,9 @@ final class functions {
 
 		if ( ! empty( $user_data ) ) {
 
-			$reported_user_name = get_username_string( 'no_profile', $user_data[ 0 ][ 'user_id' ], $user_data[ 0 ][ 'username' ], $user_data[ 0 ][ 'user_colour' ] );
+			$this_user = array_first( $user_data );
+
+			$reported_user_name = get_username_string( 'no_profile', $this_user[ 'user_id' ], $this_user[ 'username' ], $this_user[ 'user_colour' ] );
 
 		}
 
@@ -275,7 +277,9 @@ final class functions {
 
 		if ( ! empty( $user_data ) ) {
 
-			$reported_user_name = get_username_string( 'no_profile', $user_data[ 0 ][ 'user_id' ], $user_data[ 0 ][ 'username' ], $user_data[ 0 ][ 'user_colour' ] );
+			$this_user = array_first( $user_data );
+
+			$reported_user_name = get_username_string( 'no_profile', $this_user[ 'user_id' ], $this_user[ 'username' ], $this_user[ 'user_colour' ] );
 
 		}
 

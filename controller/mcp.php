@@ -95,6 +95,8 @@ final class mcp {
 
 		}
 
+		//var_dump( $mode ); die();
+
 		// Check which report type to look at (open or closed).
 		$reports_view = match ( $mode ) {
 			'user_reports_closed'	=> 1, // id: \danieltj\reportuser\mcp\reports_closed_module
@@ -108,17 +110,17 @@ final class mcp {
 
 		}
 
-		if ( confirm_box( true ) ) {
+		$report_ids = $this->request->variable( 'report_ids', [ 0 ] );
 
-			$view = $this->request->variable( 'reports_view', 0 );
-			$report_ids = $this->request->variable( 'report_ids', [ 0 ] );
-			$submit = $this->request->variable( 'submit', '' );
+		if ( confirm_box( true ) ) {
 
 			if ( ! is_array( $report_ids ) || is_array( $report_ids ) && empty( $report_ids ) ) {
 
 				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_EMPTY_REPORT_ARRAY' ), E_USER_WARNING );
 
 			}
+
+			$submit = $this->request->variable( 'submit', '' );
 
 			if ( ! in_array( $submit, [ 'close', 'delete' ] ) ) {
 
@@ -151,17 +153,14 @@ final class mcp {
 
 			if ( 'POST' === strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) && $this->request->is_set_post( 'submit' ) ) {
 
-				if ( ! check_form_key( 'report_user_mcp_csrf' ) ) {
+				if ( ! check_form_key( 'mcp_user_reports_csrf' ) ) {
 
 					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ), E_USER_WARNING );
 
 				}
 
-				$report_ids = $this->request->variable( 'report_item', [ 0 ] );
-
 				$submit = $this->request->variable( 'submit', [ '' ] );
-				$submit = $submit[ 0 ];
-				$submit = ( $submit === $this->language->lang( 'CLOSE_REPORTS' ) ) ? 'close' : 'delete';
+				$submit = ( $submit[ 0 ] === $this->language->lang( 'CLOSE_REPORTS' ) ) ? 'close' : 'delete';
 
 				confirm_box(
 					false,
@@ -179,7 +178,7 @@ final class mcp {
 
 		}
 
-		add_form_key( 'report_user_mcp_csrf' );
+		add_form_key( 'mcp_user_reports_csrf' );
 
 		// Set-up pagination settings for this view.
 		$count = $this->functions->get_user_report_total( ( 1 === $reports_view ) ? 'closed' : 'open' );
@@ -217,8 +216,8 @@ final class mcp {
 					'report_text'			=> $report[ 'report_text' ],
 					'report_time'			=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $report[ 'report_time' ] ),
 					'report_details_link'	=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
-						'mode'		=> 'user_report_details',
-						'report_id'	=> (int) $report[ 'report_id' ],
+						'mode'	=> 'user_report_details',
+						'r'		=> (int) $report[ 'report_id' ],
 					] ),
 				];
 
@@ -293,10 +292,75 @@ final class mcp {
 
 		}
 
-		add_form_key( 'report_user_mcp_csrf' );
+		$report_id = $this->request->variable( 'r', 0 );
+		$submit = $this->request->variable( 'submit', [ '' ] );
+
+		if ( confirm_box( true ) ) {
+
+			if ( 0 === $report_id ) {
+
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_REPORT_ID' ), E_USER_WARNING );
+
+			}
+
+			$submit = $this->request->variable( 'submit', '' );
+
+			if ( ! in_array( $submit, [ 'close', 'delete' ] ) ) {
+
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ), E_USER_WARNING );
+
+			}
+
+			$result = match ( $submit ) {
+				'delete'	=> $this->functions->delete_user_report( $report_id ),
+				'close'		=> $this->functions->close_user_report( $report_id ),
+			};
+
+			if ( 'delete' === $submit ) {
+
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', 1 ), E_USER_WARNING );
+
+			}
+
+			if ( 'close' === $submit ) {
+
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', 1 ), E_USER_WARNING );
+
+			}
+
+		} else {
+
+			if ( 'POST' === strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) && $this->request->is_set_post( 'submit' ) ) {
+
+				if ( ! check_form_key( 'mcp_user_reports_csrf' ) ) {
+
+					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ), E_USER_WARNING );
+
+				}
+
+				$submit = $this->request->variable( 'submit', [ '' ] );
+				$submit = ( $submit[ 0 ] === $this->language->lang( 'CLOSE_REPORT' ) ) ? 'close' : 'delete';
+
+				confirm_box(
+					false,
+					$this->language->lang( ( 'close' === $submit ) ? 'MCP_USER_REPORTS_ACTION_CONFIRM_CLOSE' : 'MCP_USER_REPORTS_ACTION_CONFIRM_DELETE', 1 ),
+					build_hidden_fields( [
+						'reports_view'	=> 'user_report_details',
+						'report_id'		=> $report_id,
+						'action'		=> $action,
+						'mode'			=> $mode,
+						'submit'		=> $submit,
+					] ),
+				);
+
+			}
+
+		}
+
+		add_form_key( 'mcp_user_reports_csrf' );
 
 		$reports = $this->functions->get_user_reports( query: [
-			[ 'report_id', '=', $this->request->variable( 'report_id', 0 ) ],
+			[ 'report_id', '=', $report_id ],
 		] );
 
 		$_user_cache = [];
@@ -366,7 +430,7 @@ final class mcp {
 			'USER_REPORT'							=> $report_data,
 			'MCP_USER_REPORTS_REPORT_INFO_TITLE'	=> $this->language->lang( 'MCP_USER_REPORTS_REPORT_INFO_TITLE', $report_data[ 'report_id' ] ),
 			'MCP_USER_REPORTS_REPORT_BY_USER'		=> $this->language->lang( 'MCP_USER_REPORTS_REPORT_BY_USER', $report_data[ 'reported_by' ] ),
-			'S_REPORT_CLOSED'						=> ( 1 === (int) $reports[ 0 ][ 'report_closed' ] ) ? true : false,
+			'S_REPORT_OPEN'							=> ( 1 === (int) $reports[ 0 ][ 'report_closed' ] ) ? false : true,
 		] );
 
 	}

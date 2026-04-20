@@ -55,7 +55,7 @@
 								<td>
 									<a href="{{ report.report_details_link }}" class="button small">{{ lang( 'MCP_USER_REPORTS_REVIEW_REPORT' ) }}</a>
 								</td>
-								<td class="mark"><input type="checkbox" name="report_item[{{ report.report_id }}]" id="report-0" value="{{ report.report_id }}" /></td>
+								<td class="mark"><input type="checkbox" name="report_ids[{{ report.report_id }}]" id="report-{{ report.report_id }}" value="{{ report.report_id }}" /></td>
 							</tr>
 						{% endfor %}
 					{% else %}

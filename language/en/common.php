@@ -28,7 +28,8 @@ $lang = array_merge( $lang, [
 
 	// ERRORS
 	'REPORT_USER_ERROR_INVALID_HTTP_REQUEST'		=> 'You have submitted an invalid HTTP request.',
-	'REPORT_USER_ERROR_REPORT_USER_PERMISSION'		=> 'You do not have permission to submit a user report.',
+	'REPORT_USER_ERROR_INVALID_USER_PERMISSION'		=> 'You do not have permission to submit a user report.',
+	'REPORT_USER_ERROR_INVALID_USER_SELECTED'		=> 'You cannot submit a report against the selected user.',
 	'REPORT_USER_ERROR_INVALID_CSRF_TOKEN'			=> 'You have submitted an incorrect CSRF token.',
 	'REPORT_USER_ERROR_INVALID_REPORT_REASON'		=> 'You have submitted an invalid report reason.',
 	'REPORT_USER_ERROR_UNKNOWN_ERROR_MESSAGE'		=> 'An unexpected error occurred, please try again.',

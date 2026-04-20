@@ -89,15 +89,19 @@ final class ext {
 
 		if ( ! $this->functions->can_report_user( $user_id ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORT_USER_PERMISSION' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_USER_PERMISSION' ), E_USER_WARNING );
 
 		}
 
-		/**
-		 * @todo can this be improved to always return the first result?
-		 */
 		$user_data = $this->functions->get_user_data( [ $user_id ] );
-		$reported_user = $user_data[0];
+
+		if ( empty( $user_data ) ) {
+
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_USER_SELECTED' ), E_USER_WARNING );
+
+		}
+
+		$reported_user = array_first( $user_data );
 
 		add_form_key( 'report_user_form_csrf' );
 
@@ -134,7 +138,7 @@ final class ext {
 
 		if ( ! $this->functions->can_report_user( $user_id ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_REPORT_USER_PERMISSION' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_USER_PERMISSION' ), E_USER_WARNING );
 
 		}
 

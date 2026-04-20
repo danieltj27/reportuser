@@ -28,6 +28,7 @@ services:
         arguments:
             - '@auth'
             - '@language'
+            - '@request'
             - '@routing.helper'
             - '@template'
             - '@user'

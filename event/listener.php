@@ -10,6 +10,7 @@ namespace danieltj\reportuser\event;
 
 use phpbb\auth\auth;
 use phpbb\language\language;
+use phpbb\request\request;
 use phpbb\routing\helper as router;
 use phpbb\template\template;
 use phpbb\user;
@@ -27,6 +28,11 @@ class listener implements EventSubscriberInterface {
 	 * @var language
 	 */
 	protected $language;
+
+	/**
+	 * @var request
+	 */
+	protected $request;
 
 	/**
 	 * @var router
@@ -51,10 +57,11 @@ class listener implements EventSubscriberInterface {
 	/**
 	 * Constructor
 	 */
-	public function __construct( auth $auth, language $language, router $router, template $template, user $user, functions $functions ) {
+	public function __construct( auth $auth, language $language, request $request, router $router, template $template, user $user, functions $functions ) {
 
 		$this->auth = $auth;
 		$this->language = $language;
+		$this->request = $request;
 		$this->router = $router;
 		$this->template = $template;
 		$this->user = $user;
@@ -135,6 +142,14 @@ class listener implements EventSubscriberInterface {
 
 		}
 
+		if ( 'user_report_details' === $event[ 'mode' ] ) {
+
+			$report_id = $this->request->variable( 'r', 0 );
+
+			$event[ 'module' ]->adjust_url( 'r=' . $report_id );
+
+		}
+
 		// Check the open reports module is loaded first.
 		if ( $event[ 'module' ]->loaded( '\danieltj\reportuser\mcp\reports_open_module' ) ) {
 
@@ -165,8 +180,8 @@ class listener implements EventSubscriberInterface {
 						'report_text'			=> $report[ 'report_text' ],
 						'report_time'			=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $report[ 'report_time' ] ),
 						'report_details_link'	=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
-							'mode'		=> 'user_report_details',
-							'report_id'	=> (int) $report[ 'report_id' ],
+							'mode'	=> 'user_report_details',
+							'r'		=> (int) $report[ 'report_id' ],
 						] ),
 					];
 
