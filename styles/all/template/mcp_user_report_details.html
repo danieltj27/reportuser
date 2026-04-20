@@ -19,10 +19,10 @@
 	<fieldset class="submit-buttons">
 		{{ S_FORM_TOKEN }}
 		<input type="hidden" name="report_item" id="report-{{ USER_REPORT.report_id }}" value="{{ USER_REPORT.report_id }}" />
-		<input type="submit" name="submit[delete]" class="button2" value="{{ lang( 'DELETE_REPORT' ) }}" />
 		{% if S_REPORT_OPEN %}
-			&nbsp;<input type="submit" name="submit[close]" class="button1" value="{{ lang( 'CLOSE_REPORT' ) }}" />
+			<input type="submit" name="submit[close]" class="button1" value="{{ lang( 'CLOSE_REPORT' ) }}" />&nbsp;
 		{% endif %}
+		<input type="submit" name="submit[delete]" class="button2" value="{{ lang( 'DELETE_REPORT' ) }}" />
 	</fieldset>
 </form>
 
