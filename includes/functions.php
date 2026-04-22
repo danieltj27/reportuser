@@ -70,11 +70,6 @@ final class functions {
 	/**
 	 * Returns whether the user can report the specified user.
 	 * 
-	 * @todo this needs a more thorough check
-	 *       - can view profiles
-	 *       - cannot report self
-	 *       - not have open report already
-	 * 
 	 * @param integer $user_id  A user id.
 	 * 
 	 * @return bool  True if permission is allowed, false if not.
@@ -104,9 +99,33 @@ final class functions {
 		$user = $this->database->sql_fetchrow( $result );
 		$this->database->sql_freeresult( $result );
 
+		// User does not exist.
 		if ( false === $user ) {
 
 			return false;
+
+		}
+
+		// Moderators can report anyone whenever they like.
+		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
+
+			$result = $this->database->sql_query(
+				'SELECT * FROM ' . REPORTS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
+					'user_id'			=> (int) $this->user->data[ 'user_id' ],
+					'report_closed'		=> 0,
+					'reported_user_id'	=> $user_id,
+				] )
+			);
+
+			$reports = $this->database->sql_fetchrow( $result );
+			$this->database->sql_freeresult( $result );
+
+			// You already reported this user.
+			if ( false !== $reports ) {
+
+				return false;
+
+			}
 
 		}
 
@@ -129,7 +148,7 @@ final class functions {
 			] )
 		);
 
-		$reports = $this->database->sql_fetchrow( $result );
+		$reports = $this->database->sql_fetchrowset( $result );
 		$this->database->sql_freeresult( $result );
 
 		if ( false === $reports ) {
