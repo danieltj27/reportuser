@@ -77,7 +77,6 @@ class listener implements EventSubscriberInterface {
 		return [
 			'core.user_setup_after'						=> 'add_languages',
 			'core.permissions'							=> 'add_permissions',
-
 			'core.memberlist_view_profile'				=> 'add_memberlist_template_vars',
 			'core.modify_mcp_modules_display_option'	=> 'update_mcp_module_display',
 		];
@@ -118,8 +117,11 @@ class listener implements EventSubscriberInterface {
 			'user_id' => $event[ 'member' ][ 'user_id' ],
 		] );
 
+		$can_report_user = $this->functions->can_report_user( $event[ 'member' ][ 'user_id' ] );
+
 		$this->template->assign_vars( [
-			'REPORT_USER' => ( $this->functions->can_report_user( $event[ 'member' ][ 'user_id' ] ) ) ? $report_user_url : false,
+			'S_REPORT_USER_CSS'	=> ( $can_report_user ) ? true : false,
+			'REPORT_USER'		=> ( $can_report_user ) ? $report_user_url : false,
 		] );
 
 	}

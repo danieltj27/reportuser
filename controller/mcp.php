@@ -383,8 +383,9 @@ final class mcp {
 		$users = $this->functions->get_user_data( $user_ids );
 
 		// Set up some profile defaults for the reported user.
-		$reported_user_avatar = '';
-		$reported_user_signature = '';
+		$reported_user_avatar = false;
+		$reported_user_cpf = [];
+		$reported_user_signature = false;
 
 		foreach ( $users as $user ) {
 
@@ -401,7 +402,9 @@ final class mcp {
 						'avatar_height'		=> $user[ 'user_avatar_height' ],
 					], 'USER_AVATAR' );
 
-					$reported_user_signature = '';
+					$reported_user_signature = generate_text_for_display( $user[ 'user_sig' ], $user[ 'user_sig_bbcode_uid' ], $user[ 'user_sig_bbcode_bitfield' ], false, false );
+
+					$reported_user_cpf = $this->functions->get_user_cpf_data( $user[ 'user_id' ] );
 
 				}
 
@@ -414,8 +417,8 @@ final class mcp {
 			'reported_user_id'			=> (int) $reports[ 0 ][ 'reported_user_id' ],
 			'reported_user'				=> ( isset( $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $reports[ 0 ][ 'reported_user_id' ] ),
 			'reported_user_avatar'		=> $reported_user_avatar,
+			'reported_user_cpfs'		=> $reported_user_cpf,
 			'reported_user_signature'	=> $reported_user_signature,
-			'reported_user_cpfs'		=> [],
 			'reported_by_user_id'		=> (int) $reports[ 0 ][ 'user_id' ],
 			'reported_by'				=> ( isset( $_user_cache[ $reports[ 0 ][ 'user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $reports[ 0 ][ 'user_id' ] ),
 			'report_text'				=> $reports[ 0 ][ 'report_text' ],
@@ -427,6 +430,7 @@ final class mcp {
 		];
 
 		$this->template->assign_vars( [
+			'S_REPORT_USER_CSS'						=> true,
 			'USER_REPORT'							=> $report_data,
 			'MCP_USER_REPORTS_REPORT_INFO_TITLE'	=> $this->language->lang( 'MCP_USER_REPORTS_REPORT_INFO_TITLE', $report_data[ 'report_id' ] ),
 			'MCP_USER_REPORTS_REPORT_BY_USER'		=> $this->language->lang( 'MCP_USER_REPORTS_REPORT_BY_USER', $report_data[ 'reported_by' ] ),

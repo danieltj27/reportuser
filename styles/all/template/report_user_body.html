@@ -12,6 +12,7 @@
 	<div class="panel">
 		<div class="inner">
 			<div class="content">
+				{% EVENT danieltj_report_user_form_new_report_before %}
 				<fieldset>
 					<dl class="fields2">
 						<dt><label for="report_notify">{{ lang( 'REPORT_NOTIFY' ) ~ lang( 'COLON' ) }}</label></dt>
@@ -25,6 +26,7 @@
 						<dd><textarea name="report_reason" id="report_reason" rows="4" cols="76" class="inputbox">{{ REPORT_TEXT }}</textarea></dd>
 					</dl>
 				</fieldset>
+				{% EVENT danieltj_report_user_form_new_report_after %}
 			</div>
 		</div>
 	</div>

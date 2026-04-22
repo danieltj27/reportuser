@@ -3,7 +3,6 @@
 <h2>{{ USER_REPORTS_TITLE }}</h2>
 
 <form action="{{ USER_REPORT_ACTION }}" method="post" id="mcp_user_reports">
-
 	<div class="panel" class="user-report-list">
 		<div class="inner">
 			<p>{{ USER_REPORTS_EXPLAIN }}</p>
@@ -24,6 +23,7 @@
 							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_TIME' ) }}</th>
 							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REPORTER' ) }}</th>
 							<th class="name">{{ lang( 'MCP_USER_REPORTS_COLUMN_REVIEW' ) }}</th>
+							{% EVENT danieltj_report_user_mcp_report_list_column_th_after %}
 							<th>{{ lang( 'MARK' ) }}</th>
 						</tr>
 					{% else %}
@@ -55,6 +55,7 @@
 								<td>
 									<a href="{{ report.report_details_link }}" class="button small">{{ lang( 'MCP_USER_REPORTS_REVIEW_REPORT' ) }}</a>
 								</td>
+								{% EVENT danieltj_report_user_mcp_report_list_column_td_after %}
 								<td class="mark"><input type="checkbox" name="report_ids[{{ report.report_id }}]" id="report-{{ report.report_id }}" value="{{ report.report_id }}" /></td>
 							</tr>
 						{% endfor %}
@@ -75,18 +76,16 @@
 			</div>
 		</div>
 	</div>
-
 	{% if USER_REPORTS %}
-	<fieldset class="display-actions">
-		{{ S_FORM_TOKEN }}
-		<input type="submit" name="submit[delete]" class="button2" value="{{ lang( 'DELETE_REPORTS' ) }}" />
-		{% if OPEN_REPORTS %}
-			&nbsp;<input type="submit" name="submit[close]" class="button1" value="{{ lang( 'CLOSE_REPORTS' ) }}" />
-		{% endif %}
-		<div><a href="#" onclick="marklist( 'mcp_user_reports', 'report_item', true ); return false;">{{ lang( 'MARK_ALL' ) }}</a> :: <a href="#" onclick="marklist( 'mcp_user_reports', 'report_item', false ); return false;">{{ lang( 'UNMARK_ALL' ) }}</a></div>
-	</fieldset>
+		<fieldset class="display-actions">
+			{{ S_FORM_TOKEN }}
+			<input type="submit" name="submit[delete]" class="button2" value="{{ lang( 'DELETE_REPORTS' ) }}" />
+			{% if OPEN_REPORTS %}
+				&nbsp;<input type="submit" name="submit[close]" class="button1" value="{{ lang( 'CLOSE_REPORTS' ) }}" />
+			{% endif %}
+			<div><a href="#" onclick="marklist( 'mcp_user_reports', 'report_item', true ); return false;">{{ lang( 'MARK_ALL' ) }}</a> :: <a href="#" onclick="marklist( 'mcp_user_reports', 'report_item', false ); return false;">{{ lang( 'UNMARK_ALL' ) }}</a></div>
+		</fieldset>
 	{% endif %}
-
 </form>
 
 {% include 'mcp_footer.html' %}

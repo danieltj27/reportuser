@@ -6,7 +6,7 @@
 	position: relative;
 }
 
-.report-user-button {
+a.report-user-button {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -16,4 +16,54 @@ div.report-user-notice {
 	margin: 10px auto;
 	padding: 10px;
 	display: block;
+}
+
+.reported-user-profile {
+	width: 100%;
+	margin: 0 auto;
+	padding: 10px;
+	display: block;
+	box-sizing: border-box;
+}
+
+.reported-user-profile .rup-avatar {
+	width: 100px;
+	max-width: 100%;
+	margin: 0;
+	padding: 0 12px 0 0;
+	display: inline-block;
+}
+
+.reported-user-profile .rup-avatar img {
+	width: 100%;
+	height: auto;
+}
+
+.reported-user-profile .rup-username {
+	width: calc(100% - 100px);
+	max-width: 240px;
+	margin: 0;
+	display: inline-block;
+}
+
+.reported-user-profile .rup-custom-fields,
+.reported-user-profile .rup-signature {
+	width: 100%;
+	margin: 0 auto;
+	display: block;
+}
+
+.reported-user-profile .rup-custom-fields ul,
+.reported-user-profile .rup-custom-fields ul li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.reported-user-profile .rup-custom-fields ul li {
+	margin-bottom: 5px;
+}
+
+.reported-user-profile .rup-custom-fields ul li:Last-child {
+	margin-bottom: 0;
 }

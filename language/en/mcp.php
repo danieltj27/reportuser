@@ -52,6 +52,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_REPORT_BY_USER'			=> 'Reported by %s',
 	'MCP_USER_REPORTS_REPORT_CLOSED_NOTICE'		=> 'This report has been closed.',
 	'MCP_USER_REPORTS_USER_DETAILS_TITLE'		=> 'User information',
+	'MCP_USER_REPORTS_USER_DETAILS_EXPLAIN'		=> 'This is a preview of this user\'s profile. They will be unable to edit their profile whilst this report remains open.',
 	'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER'	=> 'unknown user %d',
 
 	// CONFIRM MESSAGES

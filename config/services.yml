@@ -41,6 +41,7 @@ services:
         arguments:
             - '@auth'
             - '@dbal.conn'
+            - '@language'
             - '@log'
             - '@routing.helper'
             - '@user'

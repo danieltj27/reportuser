@@ -10,6 +10,7 @@ namespace danieltj\reportuser\includes;
 
 use phpbb\auth\auth;
 use phpbb\db\driver\driver_interface as database;
+use phpbb\language\language;
 use phpbb\log\log;
 use phpbb\routing\helper as router;
 use phpbb\user;
@@ -25,6 +26,11 @@ final class functions {
 	 * @var driver_interface
 	 */
 	protected $database;
+
+	/**
+	 * @var language
+	 */
+	protected $language;
 
 	/**
 	 * @var log
@@ -49,10 +55,11 @@ final class functions {
 	/**
 	 * Constructor
 	 */
-	public function __construct( auth $auth, database $database, log $log, router $router, user $user, $datetime_class ) {
+	public function __construct( auth $auth, database $database, language $language, log $log, router $router, user $user, $datetime_class ) {
 
 		$this->auth = $auth;
 		$this->database = $database;
+		$this->language = $language;
 		$this->log = $log;
 		$this->router = $router;
 		$this->user = $user;
@@ -98,6 +105,34 @@ final class functions {
 		$this->database->sql_freeresult( $result );
 
 		if ( false === $user ) {
+
+			return false;
+
+		}
+
+		return true;
+
+	}
+
+	/**
+	 * Returns whether the user has open reports against them.
+	 * 
+	 * @param int $user_id The user ID used to search for.
+	 * 
+	 * @return bool  True if reported, false if not.
+	 */
+	public function is_user_reported( int $user_id ) : bool {
+
+		$result = $this->database->sql_query(
+			'SELECT * FROM ' . REPORTS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
+				'reported_user_id' => $user_id,
+			] )
+		);
+
+		$reports = $this->database->sql_fetchrow( $result );
+		$this->database->sql_freeresult( $result );
+
+		if ( false === $reports ) {
 
 			return false;
 
@@ -465,13 +500,16 @@ final class functions {
 	}
 
 	/**
-	 * Return an array of profile data.
+	 * Return an array of custom fields data.
 	 * 
 	 * @param int $user_id The user ID to fetch profile fields for.
 	 * 
 	 * @return array  An array containing custom profile fields.
 	 */
-	public function get_user_profile_data( int $user_id ) : array {
+	public function get_user_cpf_data( int $user_id ) : array {
+
+		// The users formatted profile fields.
+		$fields = [];
 
 		$result = $this->database->sql_query(
 			'SELECT * FROM ' . PROFILE_FIELDS_DATA_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
@@ -479,16 +517,57 @@ final class functions {
 			] )
 		);
 
-		$profile_data = $this->database->sql_fetchrowset( $result );
+		$user_cpf_data = $this->database->sql_fetchrow( $result );
 		$this->database->sql_freeresult( $result );
 
-		if ( false === $profile_data ) {
+		if ( false === $user_cpf_data ) {
 
 			return [];
 
 		}
 
-		return $profile_data;
+		// Fetch the profile field data.
+		$result = $this->database->sql_query( 'SELECT * FROM ' . PROFILE_FIELDS_TABLE );
+
+		$field_data = $this->database->sql_fetchrowset( $result );
+		$this->database->sql_freeresult( $result );
+
+		if ( false !== $field_data ) {
+
+			// Fetch the language string data.
+			$result = $this->database->sql_query( 'SELECT * FROM ' . PROFILE_LANG_TABLE );
+
+			$lang_data = $this->database->sql_fetchrowset( $result );
+			$this->database->sql_freeresult( $result );
+
+			if ( false !== $lang_data ) {
+
+				foreach ( $field_data as $field ) {
+
+					$fields[ $field[ 'field_id' ] ] = [
+						'language'	=> false,
+						'key'		=> $field[ 'field_name' ],
+						'value'		=> false,
+					];
+
+				}
+
+				foreach ( $lang_data as $lang ) {
+
+					if ( $fields[ $lang[ 'field_id' ] ] ) {
+
+						$fields[ $lang[ 'field_id' ] ][ 'language' ] = $this->language->lang( $lang[ 'lang_name' ] );
+						$fields[ $lang[ 'field_id' ] ][ 'value' ] = $user_cpf_data[ 'pf_' . $fields[ $lang[ 'field_id' ] ][ 'key' ] ];
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return $fields;
 
 	}
 
