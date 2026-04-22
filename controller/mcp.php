@@ -384,7 +384,7 @@ final class mcp {
 
 		// Set up some profile defaults for the reported user.
 		$reported_user_avatar = false;
-		$reported_user_cpf = [];
+		$reported_user_cpf = false;
 		$reported_user_signature = false;
 
 		foreach ( $users as $user ) {

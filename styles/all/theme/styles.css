@@ -26,10 +26,17 @@ div.report-user-notice {
 	box-sizing: border-box;
 }
 
+.reported-user-profile .rup-avatar,
+.reported-user-profile .rup-username,
+.reported-user-profile .rup-custom-fields,
+.reported-user-profile .rup-signature {
+	width: 100%;
+	margin: 0 auto;
+	display: block;
+}
+
 .reported-user-profile .rup-avatar {
 	width: 100px;
-	max-width: 100%;
-	margin: 0;
 	padding: 0 12px 0 0;
 	display: inline-block;
 }
@@ -46,10 +53,8 @@ div.report-user-notice {
 	display: inline-block;
 }
 
-.reported-user-profile .rup-custom-fields,
-.reported-user-profile .rup-signature {
-	width: 100%;
-	margin: 0 auto;
+.reported-user-profile .rup-custom-fields {
+	margin-top: 10px;
 	display: block;
 }
 
@@ -61,7 +66,7 @@ div.report-user-notice {
 }
 
 .reported-user-profile .rup-custom-fields ul li {
-	margin-bottom: 5px;
+	margin-bottom: 2px;
 }
 
 .reported-user-profile .rup-custom-fields ul li:Last-child {

@@ -42,9 +42,7 @@
 				<div class="rup-username">
 					{{ USER_REPORT.reported_user }}
 				</div>
-			</div>
-			{% if USER_REPORT.reported_user_cpfs %}
-				<div class="reported-user-profile bg2">
+				{% if USER_REPORT.reported_user_cpfs %}
 					<div class="rup-custom-fields">
 						<ul>
 							{% for field in USER_REPORT.reported_user_cpfs %}
@@ -56,10 +54,10 @@
 							{% endfor %}
 						</ul>
 					</div>
-				</div>
-			{% endif %}
+				{% endif %}
+			</div>
 			{% if USER_REPORT.reported_user_signature %}
-				<div class="reported-user-profile bg1">
+				<div class="reported-user-profile bg2">
 					<div class="rup-signature">
 						{{ USER_REPORT.reported_user_signature }}
 					</div>

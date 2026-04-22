@@ -541,7 +541,7 @@ final class functions {
 
 		if ( false === $user_cpf_data ) {
 
-			return [];
+			return false;
 
 		}
 
@@ -575,8 +575,16 @@ final class functions {
 
 					if ( $fields[ $lang[ 'field_id' ] ] ) {
 
-						$fields[ $lang[ 'field_id' ] ][ 'language' ] = $this->language->lang( $lang[ 'lang_name' ] );
-						$fields[ $lang[ 'field_id' ] ][ 'value' ] = $user_cpf_data[ 'pf_' . $fields[ $lang[ 'field_id' ] ][ 'key' ] ];
+						if ( '' !== $user_cpf_data[ 'pf_' . $fields[ $lang[ 'field_id' ] ][ 'key' ] ] ) {
+
+							$fields[ $lang[ 'field_id' ] ][ 'language' ] = $this->language->lang( $lang[ 'lang_name' ] );
+							$fields[ $lang[ 'field_id' ] ][ 'value' ] = $user_cpf_data[ 'pf_' . $fields[ $lang[ 'field_id' ] ][ 'key' ] ];
+
+						} else {
+
+							unset( $fields[ $lang[ 'field_id' ] ] );
+
+						}
 
 					}
 
