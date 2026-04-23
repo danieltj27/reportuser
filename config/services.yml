@@ -4,6 +4,7 @@ services:
         arguments:
             - '@controller.helper'
             - '@language'
+            - '@notification_manager'
             - '@request'
             - '@routing.helper'
             - '@template'
@@ -16,6 +17,7 @@ services:
             - '@auth'
             - '@controller.helper'
             - '@language'
+            - '@notification_manager'
             - '@pagination'
             - '@request'
             - '@routing.helper'
@@ -46,3 +48,12 @@ services:
             - '@routing.helper'
             - '@user'
             - '%datetime.class%'
+
+    danieltj.reportuser.notification.type.new_report:
+        class: danieltj\reportuser\notification\type\new_report
+        parent: notification.type.base
+        shared: false
+        tags: [ { name: notification.type } ]
+        calls:
+            - [ 'set_user_loader', [ '@user_loader' ] ]
+            - [ 'set_functions', [ '@danieltj.reportuser.includes.functions' ] ]

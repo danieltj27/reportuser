@@ -11,6 +11,7 @@ namespace danieltj\reportuser\controller;
 use phpbb\auth\auth;
 use phpbb\controller\helper as controller;
 use phpbb\language\language;
+use phpbb\notification\manager as notifications;
 use phpbb\pagination;
 use phpbb\request\request;
 use phpbb\routing\helper as router;
@@ -34,6 +35,11 @@ final class mcp {
 	 * @var language
 	 */
 	protected $language;
+
+	/**
+	 * @var notifications
+	 */
+	protected $notifications;
 
 	/**
 	 * @var pagination
@@ -68,11 +74,12 @@ final class mcp {
 	/**
 	 * Constructor
 	 */
-	public function __construct( auth $auth, controller $controller, language $language, pagination $pagination, request $request, router $router, template $template, user $user, functions $functions ) {
+	public function __construct( auth $auth, controller $controller, language $language, notifications $notifications, pagination $pagination, request $request, router $router, template $template, user $user, functions $functions ) {
 
 		$this->auth = $auth;
 		$this->controller = $controller;
 		$this->language = $language;
+		$this->notifications = $notifications;
 		$this->pagination = $pagination;
 		$this->request = $request;
 		$this->router = $router;
@@ -417,7 +424,7 @@ final class mcp {
 			'reported_user_id'			=> (int) $reports[ 0 ][ 'reported_user_id' ],
 			'reported_user'				=> ( isset( $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $reports[ 0 ][ 'reported_user_id' ] ),
 			'reported_user_avatar'		=> $reported_user_avatar,
-			'reported_user_cpfs'		=> $reported_user_cpf,
+			'reported_user_cpfs'		=> ( empty( $reported_user_cpf ) ) ? false : $reported_user_cpf,
 			'reported_user_signature'	=> $reported_user_signature,
 			'reported_by_user_id'		=> (int) $reports[ 0 ][ 'user_id' ],
 			'reported_by'				=> ( isset( $_user_cache[ $reports[ 0 ][ 'user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $reports[ 0 ][ 'user_id' ] ),

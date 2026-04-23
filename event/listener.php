@@ -91,6 +91,7 @@ class listener implements EventSubscriberInterface {
 		$this->language->add_lang( [
 			'common',
 			'mcp',
+			'notifications',
 			'permissions',
 		], 'danieltj/reportuser' );
 

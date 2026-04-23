@@ -73,6 +73,17 @@ class new_report extends \phpbb\notification\type\base {
 	}
 
 	/**
+	 * Return a CSS class name for the notification.
+	 * 
+	 * @return string  The CSS class name.
+	 */
+	public function get_style_class() {
+
+		return 'notification-reported';
+
+	}
+
+	/**
 	 * Returns a boolean value checking if the user can access this notification.
 	 * 
 	 * @return boolean Returns true if permission is granted or false if not.
@@ -91,7 +102,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public static function get_item_id( $data ) {
 
-		return $data[ 'item_id' ];
+		return $data[ 'report_id' ];
 
 	}
 
@@ -133,7 +144,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function users_to_query() {
 
-		return $this->functions->get_report_mods_user_ids();
+		return $this->functions->get_user_report_mod_ids( [ $this->get_data( 'reportee_user_id' ) ] );
 
 	}
 
@@ -144,33 +155,40 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_avatar() {
 
-		return $this->user_loader->get_avatar( $this->get_data( 'user_id' ), true, true );
+		return $this->user_loader->get_avatar( $this->get_data( 'reported_user_id' ), true, true );
 
 	}
 
 	/**
 	 * Return the title of the notification.
 	 * 
-	 * @todo replace with report info title
-	 * 
 	 * @return string The notification title.
 	 */
 	public function get_title() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_TITLE' );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_TITLE', $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'no_profile' ) );
 
 	}
 
 	/**
 	 * Return the reference of the notification.
 	 * 
-	 * @todo replace with report info text
-	 * 
 	 * @return string The notification reference.
 	 */
 	public function get_reference() {
 
-		return '<span>@todo</span>';
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_REFERENCE', $this->user_loader->get_username( $this->get_data( 'reportee_user_id' ), 'no_profile' ) );
+
+	}
+
+	/**
+	 * Return the reference of the notification.
+	 * 
+	 * @return string The notification reference.
+	 */
+	public function get_reason() {
+
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_REASON', $this->get_data( 'report_text' ) );
 
 	}
 
@@ -183,7 +201,10 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_url() {
 
-		return '';
+		return $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
+			'mode'	=> 'user_report_details',
+			'r'		=> $this->get_data( 'report_id' ),
+		] );
 
 	}
 
@@ -205,7 +226,12 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_email_template_variables() {
 
-		return [];
+		return [
+			'USER_NAME_REPORTER'	=> 'USER_NAME_REPORTER',
+			'USER_NAME_REPORTEE'	=> 'USER_NAME_REPORTEE',
+			'USER_REPORT_REASON'	=> 'USER_REPORT_REASON',
+			'MCP_REPORT_LINK'		=> 'MCP_REPORT_LINK',
+		];
 
 	}
 
@@ -218,8 +244,10 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function create_insert_array( $data, $pre_create_data = [] ) {
 
-		$this->set_data( 'item_id', $data[ 'item_id' ] );
-		$this->set_data( 'user_id', $data[ 'user_id' ] );
+		$this->set_data( 'report_id', $data[ 'report_id' ] );
+		$this->set_data( 'reportee_user_id', $data[ 'reportee_user_id' ] );
+		$this->set_data( 'reported_user_id', $data[ 'reported_user_id' ] );
+		$this->set_data( 'report_text', $data[ 'report_text' ] );
 
 		parent::create_insert_array( $data, $pre_create_data );
 

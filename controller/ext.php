@@ -10,6 +10,7 @@ namespace danieltj\reportuser\controller;
 
 use phpbb\controller\helper as controller;
 use phpbb\language\language;
+use phpbb\notification\manager as notifications;
 use phpbb\request\request;
 use phpbb\routing\helper as router;
 use phpbb\template\template;
@@ -27,6 +28,11 @@ final class ext {
 	 * @var language
 	 */
 	protected $language;
+
+	/**
+	 * @var notifications
+	 */
+	protected $notifications;
 
 	/**
 	 * @var request
@@ -56,10 +62,11 @@ final class ext {
 	/**
 	 * Constructor
 	 */
-	public function __construct( controller $controller, language $language, request $request, router $router, template $template, user $user, functions $functions ) {
+	public function __construct( controller $controller, language $language, notifications $notifications, request $request, router $router, template $template, user $user, functions $functions ) {
 
 		$this->controller = $controller;
 		$this->language = $language;
+		$this->notifications = $notifications;
 		$this->request = $request;
 		$this->router = $router;
 		$this->template = $template;
@@ -109,6 +116,7 @@ final class ext {
 		$this->language->add_lang( 'mcp' );
 
 		$this->template->assign_vars( [
+			'S_REPORT_USER_CSS'	=> true,
 			'REPORT_USER'		=> $this->router->route( 'report_user_mcp_submit_report', [ 'user_id' => $user_id ] ),
 			'REPORT_THIS_USER'	=> $this->language->lang( 'REPORT_USER_THIS_USER', get_username_string( 'full', $reported_user[ 'user_id' ], $reported_user[ 'username' ], $reported_user[ 'user_colour' ] ) ),
 		] );
@@ -182,12 +190,12 @@ final class ext {
 
 		}
 
-		/**
-		 * @todo send notifications to moderators
-		 * 
-		 * create function to fetch mods with m_user_report permission
-		 * send notification to all mods from above function
-		 */
+		$this->notifications->add_notifications( 'danieltj.reportuser.notification.type.new_report', [
+			'report_id'			=> $report_id,
+			'reportee_user_id'	=> $this->user->data[ 'user_id' ],
+			'reported_user_id'	=> $user_id,
+			'report_text'		=> $report_reason,
+		] );
 
 		trigger_error( $this->language->lang( 'REPORT_USER_SUCCESS_MESSAGE' ), E_USER_WARNING );
 

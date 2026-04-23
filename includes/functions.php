@@ -541,7 +541,7 @@ final class functions {
 
 		if ( false === $user_cpf_data ) {
 
-			return false;
+			return [];
 
 		}
 
@@ -601,11 +601,43 @@ final class functions {
 	/**
 	 * Return all moderators that can manage user reports.
 	 * 
-	 * @todo build the function...
+	 * @param array $ignore_ids An array of user IDs to filter out.
 	 * 
 	 * @return array  An array of moderator user IDs.
 	 */
-	public function get_report_mods_user_ids() {
+	public function get_user_report_mod_ids( array $ignore_ids = [] ) : array {
+
+		$user_ids = $this->auth->acl_get_list( false, 'm_user_report', 0 );
+
+		if ( ! is_array( $user_ids ) || empty( $user_ids ) ) {
+
+			return [];
+
+		}
+
+		if ( isset( $user_ids[ 0 ][ 'm_user_report' ] ) ) {
+
+			if ( ! empty( $ignore_ids ) ) {
+
+				foreach ( $user_ids[ 0 ][ 'm_user_report' ] as $key => $value ) {
+
+					/**
+					 * @todo make this work... it's making the array empty
+					 */
+
+					if ( in_array( $value, $user_ids[ 0 ][ 'm_user_report' ], true ) ) {
+
+						//unset( $user_ids[ 0 ][ 'm_user_report' ][ $key ] );
+
+					}
+
+				}
+
+			}
+
+			return $user_ids[ 0 ][ 'm_user_report' ];
+
+		}
 
 		return [];
 
