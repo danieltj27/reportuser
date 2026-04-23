@@ -45,6 +45,7 @@ services:
             - '@dbal.conn'
             - '@language'
             - '@log'
+            - '@notification_manager'
             - '@routing.helper'
             - '@user'
             - '%datetime.class%'

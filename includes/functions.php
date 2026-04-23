@@ -12,6 +12,7 @@ use phpbb\auth\auth;
 use phpbb\db\driver\driver_interface as database;
 use phpbb\language\language;
 use phpbb\log\log;
+use phpbb\notification\manager as notifications;
 use phpbb\routing\helper as router;
 use phpbb\user;
 
@@ -38,6 +39,11 @@ final class functions {
 	protected $log;
 
 	/**
+	 * @var notifications
+	 */
+	protected $notifications;
+
+	/**
 	 * @var router
 	 */
 	protected $router;
@@ -55,12 +61,13 @@ final class functions {
 	/**
 	 * Constructor
 	 */
-	public function __construct( auth $auth, database $database, language $language, log $log, router $router, user $user, $datetime_class ) {
+	public function __construct( auth $auth, database $database, language $language, log $log, notifications $notifications, router $router, user $user, $datetime_class ) {
 
 		$this->auth = $auth;
 		$this->database = $database;
 		$this->language = $language;
 		$this->log = $log;
+		$this->notifications = $notifications;
 		$this->router = $router;
 		$this->user = $user;
 		$this->datetime = $datetime_class;
@@ -238,7 +245,7 @@ final class functions {
 	/**
 	 * Close a user report.
 	 * 
-	 * @todo add user notification (if requested)
+	 * @todo notify user when report is closed
 	 * 
 	 * @param int $report_id A report id.
 	 * 
@@ -298,7 +305,7 @@ final class functions {
 	/**
 	 * Delete an existing user report.
 	 * 
-	 * @todo add user notification (if requested)
+	 * @todo delete notifications when a report is deleted
 	 * 
 	 * @param int $report_id A report id.
 	 * 
