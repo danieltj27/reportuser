@@ -599,6 +599,19 @@ final class functions {
 	}
 
 	/**
+	 * Return all moderators that can manage user reports.
+	 * 
+	 * @todo build the function...
+	 * 
+	 * @return array  An array of moderator user IDs.
+	 */
+	public function get_report_mods_user_ids() {
+
+		return [];
+
+	}
+
+	/**
 	 * Return the user reports module URL.
 	 * 
 	 * @param string $mode   Module base name used to return module data.
