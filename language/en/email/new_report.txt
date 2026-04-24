@@ -2,7 +2,7 @@ Subject: New user report
 
 Hello {USERNAME},
 
-{USER_NAME_REPORTER} submitted a new report against {USER_NAME_REPORTEE} for the following reason:
+{USER_NAME_REPORTER} submitted a new report against {USER_NAME_REPORTED} for the following reason:
 
 {USER_REPORT_REASON}
 

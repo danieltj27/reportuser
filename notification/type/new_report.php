@@ -137,7 +137,9 @@ class new_report extends \phpbb\notification\type\base {
 			'ignore_users' => [ ANONYMOUS ]
 		], $options );
 
-		$user_methods = $this->check_user_notification_options( $this->users_to_query(), $options );
+		$user_methods = $this->check_user_notification_options( $this->users_to_query( [
+			$data[ 'reporter_user_id' ]
+		] ), $options );
 
 		return $user_methods;
 
@@ -148,9 +150,9 @@ class new_report extends \phpbb\notification\type\base {
 	 * 
 	 * @return array  The array of user to query later.
 	 */
-	public function users_to_query() {
+	public function users_to_query( $ignore_mod_ids = [] ) {
 
-		return $this->functions->get_user_report_mod_ids( [ $this->get_data( 'reporter_user_id' ) ] );
+		return $this->functions->get_user_report_mod_ids( $ignore_mod_ids );
 
 	}
 
@@ -231,8 +233,8 @@ class new_report extends \phpbb\notification\type\base {
 	public function get_email_template_variables() {
 
 		return [
-			'USER_NAME_REPORTER'	=> $this->user_loader->get_username( $this->get_data( 'reporter_user_id' ), 'username' ),
-			'USER_NAME_REPORTED'	=> $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'username' ),
+			'USER_NAME_REPORTER'	=> $this->user_loader->get_username( $this->get_data( 'reporter_user_id' ), 'username', false, false, true ),
+			'USER_NAME_REPORTED'	=> $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'username', false, false, true ),
 			'USER_REPORT_REASON'	=> $this->get_data( 'report_text' ),
 			'MCP_REPORT_LINK'		=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
 				'mode'	=> 'user_report_details',

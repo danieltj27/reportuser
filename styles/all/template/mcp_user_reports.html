@@ -83,7 +83,7 @@
 			{% if OPEN_REPORTS %}
 				&nbsp;<input type="submit" name="submit[close]" class="button1" value="{{ lang( 'CLOSE_REPORTS' ) }}" />
 			{% endif %}
-			<div><a href="#" onclick="marklist( 'mcp_user_reports', 'report_item', true ); return false;">{{ lang( 'MARK_ALL' ) }}</a> :: <a href="#" onclick="marklist( 'mcp_user_reports', 'report_item', false ); return false;">{{ lang( 'UNMARK_ALL' ) }}</a></div>
+			<div><a href="#" onclick="marklist( 'mcp_user_reports', 'report_ids', true ); return false;">{{ lang( 'MARK_ALL' ) }}</a> :: <a href="#" onclick="marklist( 'mcp_user_reports', 'report_ids', false ); return false;">{{ lang( 'UNMARK_ALL' ) }}</a></div>
 		</fieldset>
 	{% endif %}
 </form>

@@ -286,6 +286,15 @@ final class functions {
 
 		}
 
+		// Mark all notifications (of this type) as read now the report is closed.
+		$this->notifications->mark_notifications(
+			'danieltj.reportuser.notification.type.new_report', // This type.
+			$report_data[ 'report_id' ], // This report.
+			false, // For all users.
+			false, // Mark all read now.
+			true // Mark as read.
+		);
+
 		$this->log->add(
 			'mod',
 			$this->user->data[ 'user_id' ],
@@ -343,6 +352,12 @@ final class functions {
 			$reported_user_name = get_username_string( 'no_profile', $this_user[ 'user_id' ], $this_user[ 'username' ], $this_user[ 'user_colour' ] );
 
 		}
+
+		// Delete any notifications created for this report.
+		$this->notifications->delete_notifications(
+			'danieltj.reportuser.notification.type.new_report',
+			$report_data[ 'report_id' ]
+		);
 
 		$this->log->add(
 			'mod',
@@ -608,6 +623,8 @@ final class functions {
 	/**
 	 * Return all moderators that can manage user reports.
 	 * 
+	 * @todo this doesn't work right now, it's filtering everything :(
+	 * 
 	 * @param array $ignore_ids An array of user IDs to filter out.
 	 * 
 	 * @return array  An array of moderator user IDs.
@@ -622,21 +639,21 @@ final class functions {
 
 		}
 
-		if ( isset( $user_ids[ 0 ][ 'm_user_report' ] ) ) {
+		if ( isset( $user_ids[ 0 ][ 'm_user_report' ] ) && ! empty( $ignore_ids ) ) {
 
-			if ( ! empty( $ignore_ids ) ) {
+			// Make sure all IDs are integers when we check type later.
+			foreach ( $ignore_ids as $key => $value ) {
 
-				foreach ( $user_ids[ 0 ][ 'm_user_report' ] as $key => $value ) {
+				$ignore_ids[ $key ] = (int) $value;
 
-					/**
-					 * @todo make this work... it's making the array empty
-					 */
+			}
 
-					if ( in_array( $value, $user_ids[ 0 ][ 'm_user_report' ], true ) ) {
+			foreach ( $user_ids[ 0 ][ 'm_user_report' ] as $key => $user_id ) {
 
-						//unset( $user_ids[ 0 ][ 'm_user_report' ][ $key ] );
+				// Check if we need to ignore this user ID.
+				if ( in_array( $user_id, $ignore_ids, true ) ) {
 
-					}
+					unset( $user_ids[ 0 ][ 'm_user_report' ][ $key ] );
 
 				}
 
@@ -658,9 +675,15 @@ final class functions {
 	 * 
 	 * @return string  The module URL.
 	 */
-	public function get_mcp_module_url( string $module, array $params = [] ) : string {
+	public function get_mcp_module_url( string $module, array $params = [], bool $board_url = true ) : string {
 
-		$module_url = './mcp.php';
+		$module_url = trim( generate_board_url(), '/' ) . '/mcp.php';
+
+		if ( false === $board_url ) {
+
+			$module_url = './mcp.php';
+
+		}
 
 		$result = $this->database->sql_query(
 			'SELECT * FROM ' . MODULES_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
