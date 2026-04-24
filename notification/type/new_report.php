@@ -106,7 +106,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public static function get_item_id( $data ) {
 
-		return $data[ 'report_id' ];
+		return (int) $data[ 'report_id' ];
 
 	}
 
@@ -115,7 +115,7 @@ class new_report extends \phpbb\notification\type\base {
 	 * 
 	 * @param array $data The item data passed to the notification handler.
 	 * 
-	 * @return integer  The ID of the parent.
+	 * @return integer  The parent ID of this notification.
 	 */
 	public static function get_item_parent_id( $data ) {
 
@@ -129,7 +129,7 @@ class new_report extends \phpbb\notification\type\base {
 	 * @param array $data    The array of data for this notification.
 	 * @param array $options The array of options for filtering users.
 	 * 
-	 * @return array  The array of users.
+	 * @return array  An array of users and their notification preferences.
 	 */
 	public function find_users_for_notification( $data, $options = [] ) {
 
