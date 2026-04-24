@@ -8,6 +8,14 @@ Adds a button that allows people to report other users.
 2. Moderators can close and delete reports if they have the correct permission.
 3. Notifications are sent when a user report is created or closed.
 
+## Donate
+
+Like this extension? [Donate](https://www.paypal.com/paypalme/dtj27) via PayPal to say thank you!
+
+## Feedback
+
+Please submit all feedback as an [issue on GitHub](https://github.com/danieltj27/reportuser/issues). Pull requests are welcome.
+
 ## Install
 
 1. Add the extension files into the `ext/danieltj/reportuser` directory.
