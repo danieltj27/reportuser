@@ -27,13 +27,13 @@
 	</fieldset>
 </form>
 
-<div class="panel" id="user-report-profileinfo">
+<div class="panel" id="user-report-userinfo">
 	<div class="inner">
 		<div class="postbody">
 			<h3>{{ lang( 'MCP_USER_REPORTS_USER_DETAILS_TITLE' ) }}</h3>
 			<p class="author"><i class="icon fa-warning fa-fw" aria-hidden="true"></i>&nbsp;{{ lang( 'MCP_USER_REPORTS_USER_DETAILS_EXPLAIN' ) }}</p>
 			{% EVENT danieltj_report_user_mcp_report_details_profile_before %}
-			<div class="reported-user-profile bg1">
+			<div class="reported-user-profile">
 				{% if USER_REPORT.reported_user_avatar %}
 					<div class="rup-avatar">
 						{{ USER_REPORT.reported_user_avatar }}
@@ -57,7 +57,7 @@
 				{% endif %}
 			</div>
 			{% if USER_REPORT.reported_user_signature %}
-				<div class="reported-user-profile bg2">
+				<div class="reported-user-profile">
 					<div class="rup-signature">
 						{{ USER_REPORT.reported_user_signature }}
 					</div>

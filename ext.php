@@ -24,8 +24,7 @@ class ext extends \phpbb\extension\base {
 	/**
 	 * Enable notifications.
 	 *
-	 * @param  mixed $old_state The old state returned from the last call of this method.
-	 * @return mixed            Returns a boolean (false) or string value.
+	 * @see https://area51.phpbb.com/docs/dev/3.3.x/extensions/tutorial_notifications.html#altering-an-extension-s-state
 	 */
 	public function enable_step( $old_state ) {
 
@@ -34,6 +33,7 @@ class ext extends \phpbb\extension\base {
 			$notifications = $this->container->get( 'notification_manager' );
 
 			$notifications->enable_notifications( 'danieltj.reportuser.notification.type.new_report' );
+			$notifications->enable_notifications( 'danieltj.reportuser.notification.type.report_closed' );
 
 			return 'notification';
 
@@ -46,8 +46,7 @@ class ext extends \phpbb\extension\base {
 	/**
 	 * Disable notifications.
 	 *
-	 * @param  mixed $old_state The old state returned from the last call of this method.
-	 * @return mixed            Returns a boolean (false) or string value.
+	 * @see https://area51.phpbb.com/docs/dev/3.3.x/extensions/tutorial_notifications.html#altering-an-extension-s-state
 	 */
 	public function disable_step( $old_state ) {
 
@@ -56,6 +55,7 @@ class ext extends \phpbb\extension\base {
 			$notifications = $this->container->get( 'notification_manager' );
 
 			$notifications->disable_notifications( 'danieltj.reportuser.notification.type.new_report' );
+			$notifications->disable_notifications( 'danieltj.reportuser.notification.type.report_closed' );
 
 			return 'notification';
 
@@ -68,8 +68,7 @@ class ext extends \phpbb\extension\base {
 	/**
 	 * Purge notifications.
 	 *
-	 * @param  mixed $old_state The old state returned from the last call of this method.
-	 * @return mixed            Returns a boolean (false) or string value.
+	 * @see https://area51.phpbb.com/docs/dev/3.3.x/extensions/tutorial_notifications.html#altering-an-extension-s-state
 	 */
 	public function purge_step( $old_state ) {
 
@@ -78,6 +77,7 @@ class ext extends \phpbb\extension\base {
 			$notifications = $this->container->get( 'notification_manager' );
 
 			$notifications->purge_notifications( 'danieltj.reportuser.notification.type.new_report' );
+			$notifications->purge_notifications( 'danieltj.reportuser.notification.type.report_closed' );
 
 			return 'notification';
 

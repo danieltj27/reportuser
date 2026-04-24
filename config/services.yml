@@ -58,3 +58,12 @@ services:
         calls:
             - [ 'set_user_loader', [ '@user_loader' ] ]
             - [ 'set_functions', [ '@danieltj.reportuser.includes.functions' ] ]
+
+    danieltj.reportuser.notification.type.report_closed:
+        class: danieltj\reportuser\notification\type\report_closed
+        parent: notification.type.base
+        shared: false
+        tags: [ { name: notification.type } ]
+        calls:
+            - [ 'set_user_loader', [ '@user_loader' ] ]
+            - [ 'set_functions', [ '@danieltj.reportuser.includes.functions' ] ]

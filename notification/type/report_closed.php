@@ -8,7 +8,7 @@
 
 namespace danieltj\reportuser\notification\type;
 
-class new_report extends \phpbb\notification\type\base {
+class report_closed extends \phpbb\notification\type\base {
 
 	/**
 	 * @var user_loader \phpbb\user_loader
@@ -23,7 +23,7 @@ class new_report extends \phpbb\notification\type\base {
 	/**
 	 * @var string
 	 */
-	protected $permission = 'm_user_report';
+	protected $permission = 'u_viewprofile';
 
 	/**
 	 * Notification options data.
@@ -31,9 +31,9 @@ class new_report extends \phpbb\notification\type\base {
 	 * @var array $notification_option An array of notification data.
 	 */
 	static public $notification_option = [
-		'id'		=> 'danieltj.reportuser.notification.type.new_report',
-		'group'		=> 'NOTIFICATION_GROUP_MODERATION',
-		'lang'		=> 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_SAMPLE',
+		'id'		=> 'danieltj.reportuser.notification.type.report_closed',
+		'group'		=> 'NOTIFICATION_GROUP_MISCELLANEOUS',
+		'lang'		=> 'REPORT_USER_NOTIFICATIONS_REPORT_CLOSED_SAMPLE',
 	];
 
 	/**
@@ -82,7 +82,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_style_class() {
 
-		return 'notification-reported';
+		return 'notification-report-closed';
 
 	}
 
@@ -152,12 +152,23 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function users_to_query( $data = [] ) {
 
+		$user_ids = [];
+
 		/**
-		 * @see danieltj.reportuser.notification.type.report_closed
+		 * Check if the data has actually been set yet because we can't rely on get_data()
+		 * if the notification hasn't actually been saved yet which is... annoying.
 		 */
+		$report_mod_id = ( NULL === $this->get_data( 'report_mod_id' ) ) ? (int) $data[ 'report_mod_id' ] : (int) $this->get_data( 'report_mod_id' );
 		$reporter_user_id = ( NULL === $this->get_data( 'reporter_user_id' ) ) ? (int) $data[ 'reporter_user_id' ] : (int) $this->get_data( 'reporter_user_id' );
 
-		return $this->functions->get_user_report_mod_ids( [ $reporter_user_id ] );
+		// Don't notify the moderator if they made the report.
+		if ( $report_mod_id !== $reporter_user_id ) {
+
+			$user_ids[] = $reporter_user_id;
+
+		}
+
+		return $user_ids;
 
 	}
 
@@ -168,7 +179,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_avatar() {
 
-		return $this->user_loader->get_avatar( $this->get_data( 'reporter_user_id' ), true, true );
+		return $this->user_loader->get_avatar( $this->get_data( 'report_mod_id' ), true, true );
 
 	}
 
@@ -179,7 +190,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_title() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_TITLE', $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'no_profile', false, false, true ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REPORT_CLOSED_TITLE', $this->user_loader->get_username( $this->get_data( 'report_mod_id' ), 'no_profile', false, false, true ) );
 
 	}
 
@@ -190,7 +201,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_reference() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_REFERENCE', $this->user_loader->get_username( $this->get_data( 'reporter_user_id' ), 'no_profile', false, false, true ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REPORT_CLOSED_REFERENCE', $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'no_profile', false, false, true ) );
 
 	}
 
@@ -212,10 +223,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_url() {
 
-		return $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
-			'mode'	=> 'user_report_details',
-			'r'		=> $this->get_data( 'report_id' ),
-		] );
+		return $this->functions->get_user_profile_url( $this->get_data( 'reported_user_id' ) );
 
 	}
 
@@ -226,7 +234,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_email_template() {
 
-		return '@danieltj_reportuser/new_report';
+		return '@danieltj_reportuser/report_closed';
 
 	}
 
@@ -238,13 +246,9 @@ class new_report extends \phpbb\notification\type\base {
 	public function get_email_template_variables() {
 
 		return [
-			'USER_NAME_REPORTER'	=> $this->user_loader->get_username( $this->get_data( 'reporter_user_id' ), 'username', false, false, true ),
+			'USER_NAME_MODERATOR'	=> $this->user_loader->get_username( $this->get_data( 'report_mod_id' ), 'username', false, false, true ),
 			'USER_NAME_REPORTED'	=> $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'username', false, false, true ),
 			'USER_REPORT_REASON'	=> $this->get_data( 'report_text' ),
-			'MCP_REPORT_LINK'		=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
-				'mode'	=> 'user_report_details',
-				'r'		=> $this->get_data( 'report_id' ),
-			] ),
 		];
 
 	}
@@ -260,6 +264,7 @@ class new_report extends \phpbb\notification\type\base {
 	public function create_insert_array( $data, $pre_create_data = [] ) {
 
 		$this->set_data( 'report_id', $data[ 'report_id' ] );
+		$this->set_data( 'report_mod_id', $data[ 'report_mod_id' ] );
 		$this->set_data( 'reporter_user_id', $data[ 'reporter_user_id' ] );
 		$this->set_data( 'reported_user_id', $data[ 'reported_user_id' ] );
 		$this->set_data( 'report_text', $data[ 'report_text' ] );

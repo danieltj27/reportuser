@@ -245,8 +245,6 @@ final class functions {
 	/**
 	 * Close a user report.
 	 * 
-	 * @todo notify user when report is closed
-	 * 
 	 * @param int $report_id A report id.
 	 * 
 	 * @return bool  True if successful, false if failed.
@@ -295,6 +293,19 @@ final class functions {
 			true // Mark as read.
 		);
 
+		// Notify the user that made the report?
+		if ( 1 === (int) $report_data[ 'user_notify' ] ) {
+
+			$this->notifications->add_notifications( 'danieltj.reportuser.notification.type.report_closed', [
+				'report_id'			=> $report_id,
+				'report_mod_id'		=> (int) $this->user->data[ 'user_id' ], // The moderator that is closing this report.
+				'reporter_user_id'	=> (int) $report_data[ 'user_id' ],
+				'reported_user_id'	=> (int) $report_data[ 'reported_user_id' ],
+				'report_text'		=> $report_data[ 'report_text' ],
+			] );
+
+		}
+
 		$this->log->add(
 			'mod',
 			$this->user->data[ 'user_id' ],
@@ -313,8 +324,6 @@ final class functions {
 
 	/**
 	 * Delete an existing user report.
-	 * 
-	 * @todo delete notifications when a report is deleted
 	 * 
 	 * @param int $report_id A report id.
 	 * 
@@ -623,8 +632,6 @@ final class functions {
 	/**
 	 * Return all moderators that can manage user reports.
 	 * 
-	 * @todo this doesn't work right now, it's filtering everything :(
-	 * 
 	 * @param array $ignore_ids An array of user IDs to filter out.
 	 * 
 	 * @return array  An array of moderator user IDs.
@@ -713,6 +720,29 @@ final class functions {
 		}
 
 		return $module_url;
+
+	}
+
+	/**
+	 * Return the profile URL of the specified user.
+	 * 
+	 * @param int $user_id The user ID to use.
+	 * 
+	 * @return string  The link to the user's profile.
+	 */
+	public function get_user_profile_url( int $user_id, bool $board_url = true ) : string {
+
+		$profile_url = trim( generate_board_url(), '/' ) . '/memberlist.php';
+
+		if ( false === $board_url ) {
+
+			$profile_url = './memberlist.php';
+
+		}
+
+		$profile_url .= '?mode=viewprofile&u=' . $user_id;
+
+		return $profile_url;
 
 	}
 
