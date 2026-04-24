@@ -31,6 +31,7 @@ class new_report extends \phpbb\notification\type\base {
 	 * @var array $notification_option An array of notification data.
 	 */
 	static public $notification_option = [
+		'id'		=> 'danieltj.reportuser.notification.type.new_report',
 		'group'		=> 'NOTIFICATION_GROUP_MODERATION',
 		'lang'		=> 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_SAMPLE',
 	];
@@ -64,11 +65,13 @@ class new_report extends \phpbb\notification\type\base {
 	/**
 	 * Returns the type of notification.
 	 * 
+	 * @uses $notification_option
+	 * 
 	 * @return string  The type of notification this is.
 	 */
 	public function get_type() {
 
-		return 'danieltj.reportuser.notification.type.new_report';
+		return $this::$notification_option[ 'id' ];
 
 	}
 
@@ -147,7 +150,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function users_to_query() {
 
-		return $this->functions->get_user_report_mod_ids( [ $this->get_data( 'reportee_user_id' ) ] );
+		return $this->functions->get_user_report_mod_ids( [ $this->get_data( 'reporter_user_id' ) ] );
 
 	}
 
@@ -169,7 +172,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_title() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_TITLE', $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'no_profile' ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_TITLE', $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'no_profile', false, false, true ) );
 
 	}
 
@@ -180,7 +183,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_reference() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_REFERENCE', $this->user_loader->get_username( $this->get_data( 'reportee_user_id' ), 'no_profile' ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_REFERENCE', $this->user_loader->get_username( $this->get_data( 'reporter_user_id' ), 'no_profile', false, false, true ) );
 
 	}
 
@@ -228,10 +231,13 @@ class new_report extends \phpbb\notification\type\base {
 	public function get_email_template_variables() {
 
 		return [
-			'USER_NAME_REPORTER'	=> 'USER_NAME_REPORTER',
-			'USER_NAME_REPORTEE'	=> 'USER_NAME_REPORTEE',
-			'USER_REPORT_REASON'	=> 'USER_REPORT_REASON',
-			'MCP_REPORT_LINK'		=> 'MCP_REPORT_LINK',
+			'USER_NAME_REPORTER'	=> $this->user_loader->get_username( $this->get_data( 'reporter_user_id' ), 'username' ),
+			'USER_NAME_REPORTED'	=> $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'username' ),
+			'USER_REPORT_REASON'	=> $this->get_data( 'report_text' ),
+			'MCP_REPORT_LINK'		=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
+				'mode'	=> 'user_report_details',
+				'r'		=> $this->get_data( 'report_id' ),
+			] ),
 		];
 
 	}
@@ -247,7 +253,7 @@ class new_report extends \phpbb\notification\type\base {
 	public function create_insert_array( $data, $pre_create_data = [] ) {
 
 		$this->set_data( 'report_id', $data[ 'report_id' ] );
-		$this->set_data( 'reportee_user_id', $data[ 'reportee_user_id' ] );
+		$this->set_data( 'reporter_user_id', $data[ 'reporter_user_id' ] );
 		$this->set_data( 'reported_user_id', $data[ 'reported_user_id' ] );
 		$this->set_data( 'report_text', $data[ 'report_text' ] );
 

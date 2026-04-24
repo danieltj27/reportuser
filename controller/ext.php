@@ -192,7 +192,7 @@ final class ext {
 
 		$this->notifications->add_notifications( 'danieltj.reportuser.notification.type.new_report', [
 			'report_id'			=> $report_id,
-			'reportee_user_id'	=> $this->user->data[ 'user_id' ],
+			'reporter_user_id'	=> $this->user->data[ 'user_id' ],
 			'reported_user_id'	=> $user_id,
 			'report_text'		=> $report_reason,
 		] );
