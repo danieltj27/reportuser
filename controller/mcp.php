@@ -190,14 +190,15 @@ final class mcp {
 
 		add_form_key( 'mcp_user_reports_csrf' );
 
-		// Set-up pagination settings for this view.
+		/**
+		 * Set-up the pagination variables to fetch the current set of reports.
+		 * 
+		 * This variables get used later in a phpBB core function to create the
+		 * correct template variables that give us the write page buttons.
+		 */
 		$count = $this->functions->get_user_report_total( ( 1 === $reports_view ) ? 'closed' : 'open' );
 		$limit = 10;
-		$max_page = ( $count > $limit ) ? (int) ceil( $count / $limit ) : 1;
-		$page = ( $max_page < $this->request->variable( 'page', 1 ) ) ? $max_page : $this->request->variable( 'page', 1 );
-		$prev_page = $page - 1;
-		$next_page = $page + 1;
-		$offset = ( 1 < $page ) ? ( $limit * $page ) - $limit : 0;
+		$offset = $this->request->variable( 'start', 0 );
 
 		$reports = $this->functions->get_user_reports( query: [
 			[ 'reported_user_id', '!=', 0 ],
@@ -220,9 +221,9 @@ final class mcp {
 				$reports_data[ $report[ 'report_id' ] ] = [
 					'report_id'				=> (int) $report[ 'report_id' ],
 					'reported_user_id'		=> (int) $report[ 'reported_user_id' ],
-					//'reported_user'		=> false,
+					'reported_user'			=> false, // This gets overwritten later.
 					'reported_by_user_id'	=> (int) $report[ 'user_id' ],
-					//'reported_by'			=> false,
+					'reported_by'			=> false, // This gets overwritten later.
 					'report_text'			=> $report[ 'report_text' ],
 					'report_time'			=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $report[ 'report_time' ] ),
 					'report_details_link'	=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
@@ -267,20 +268,19 @@ final class mcp {
 		 * @todo implement pagination that works with page numbers
 		 *       and not offsets like phpbb\pagination.
 		 */
-		// $this->pagination->generate_template_pagination(
-		// 	$this->functions->get_mcp_module_url( $module_id ),
-		// 	'pagination',
-		// 	'page',
-		// 	$count,
-		// 	$limit,
-		// 	$offset
-		// );
+		$this->pagination->generate_template_pagination(
+			$this->functions->get_mcp_module_url( $module_id ),
+			'pagination',
+			'start',
+			$count,
+			$limit,
+			$offset
+		);
 
 		$this->template->assign_vars( [
 			'USER_REPORTS_TITLE'	=> ( 1 === $reports_view ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN' ),
 			'USER_REPORTS_EXPLAIN'	=> ( 1 === $reports_view ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED_EXPLAIN' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN_EXPLAIN' ),
-			'TOTAL_REPORTS'			=> $this->language->lang( 'MCP_USER_REPORTS_TYPE_TOTAL', $count ),
-			'PAGE_NUMBER'			=> $this->language->lang( 'MCP_USER_REPORTS_PAGE', $page, $max_page ),
+			'TOTAL_REPORTS'			=> ( 1 === $reports_view ) ? $this->language->lang( 'MCP_USER_REPORTS_TOTAL_CLOSED_REPORTS', $count ) : $this->language->lang( 'MCP_USER_REPORTS_TOTAL_OPEN_REPORTS', $count ),
 			'USER_REPORTS'			=> $reports_data,
 			'OPEN_REPORTS'			=> ( 1 === $reports_view ) ? false : true,
 			'USER_REPORT_ACTION'	=> $action,

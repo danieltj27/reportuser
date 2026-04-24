@@ -19,13 +19,23 @@ if ( empty( $lang ) || ! is_array( $lang ) ) {
 }
 
 $lang = array_merge( $lang, [
-	'MCP_USER_REPORTS_OPEN'				=> 'Open user reports',
-	'MCP_USER_REPORTS_CLOSED'			=> 'Closed user reports',
-	'MCP_USER_REPORTS_DETAILS'			=> 'User report details',
-	'MCP_USER_REPORTS_OPEN_EXPLAIN'		=> 'This is a list of all user reports that are open and need review.',
-	'MCP_USER_REPORTS_CLOSED_EXPLAIN'	=> 'This is a list of all user reports that have been closed.',
-	'MCP_USER_REPORTS_LATEST_TITLE'		=> 'Latest 5 user reports',
-	'MCP_USER_REPORTS_LATEST_OVERVIEW'	=> [
+	'MCP_USER_REPORTS_OPEN'					=> 'Open user reports',
+	'MCP_USER_REPORTS_CLOSED'				=> 'Closed user reports',
+	'MCP_USER_REPORTS_DETAILS'				=> 'User report details',
+	'MCP_USER_REPORTS_OPEN_EXPLAIN'			=> 'This is a list of all user reports that are open and need review.',
+	'MCP_USER_REPORTS_CLOSED_EXPLAIN'		=> 'This is a list of all user reports that have been closed.',
+	'MCP_USER_REPORTS_TOTAL_OPEN_REPORTS'	=> [
+		0 => 'No open reports',
+		1 => '%d open report',
+		2 => '%d open reports',
+	],
+	'MCP_USER_REPORTS_TOTAL_CLOSED_REPORTS'	=> [
+		0 => 'No closed reports',
+		1 => '%d closed report',
+		2 => '%d closed reports',
+	],
+	'MCP_USER_REPORTS_LATEST_TITLE'			=> 'Latest 5 user reports',
+	'MCP_USER_REPORTS_LATEST_OVERVIEW'		=> [
 		0 => 'There are no user reports to review.',
 		1 => 'In total there is <strong>1</strong> user report to review.',
 		2 => 'In total there are <strong>%d</strong> user reports to review.',
@@ -37,11 +47,8 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_COLUMN_REVIEW'		=> 'Review',
 	'MCP_USER_REPORTS_REVIEW_REPORT'		=> 'View report',
 	'MCP_USER_REPORTS_NO_RESULTS'			=> 'There are no user reports to review.',
-	'MCP_USER_REPORTS_TYPE_TOTAL'			=> [
-		1 => '1 report',
-		2 => '%s reports',
-	],
 	'MCP_USER_REPORTS_LAST_5'				=> [
+		0 => 'There are no reports for you to review.',
 		1 => 'In total there is 1 report to review.',
 		2 => 'In total there is %s reports to review.',
 	],
