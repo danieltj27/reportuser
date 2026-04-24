@@ -76,27 +76,22 @@ final class ext {
 	}
 
 	/**
-	 * Create a new user report.
-	 * 
-	 * @todo include return links in trigger_error calls
+	 * The new user report form.
 	 */
 	public function report( int $user_id ) {
 
-		if ( 'GET' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
-
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_HTTP_REQUEST' ), E_USER_WARNING );
-
-		}
-
-		// The profile URL of the user being reported.
-		$user_return_url = append_sid( '/memberlist.php', [
-			'mode'	=> 'viewprofile',
-			'u'		=> $user_id,
-		] );
+		// Return URLs that the user may be redirected to.
+		$return_user_profile_url = $this->functions->get_user_profile_url( $user_id );
 
 		if ( ! $this->functions->can_report_user( $user_id ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_USER_PERMISSION' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_USER_PERMISSION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_user_profile_url . '">', '</a>' ), E_USER_WARNING );
+
+		}
+
+		if ( 'GET' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
+
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_HTTP_REQUEST' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_INDEX' ), '<a href="' . $return_user_profile_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
@@ -104,7 +99,7 @@ final class ext {
 
 		if ( empty( $user_data ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_USER_SELECTED' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_USER_SELECTED' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_INDEX' ), '<a href="' . generate_board_url() . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
@@ -127,32 +122,30 @@ final class ext {
 
 	/**
 	 * Submit a new user report.
-	 * 
-	 * @todo include return links in trigger_error calls
 	 */
 	public function submit( int $user_id ) {
 
-		if ( 'POST' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
-
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_HTTP_REQUEST' ), E_USER_WARNING );
-
-		}
-
-		// The profile URL of the user being reported.
-		$user_return_url = append_sid( '/memberlist.php', [
-			'mode'	=> 'viewprofile',
-			'u'		=> $user_id,
+		// Return URLs that the user may be redirected to.
+		$return_user_profile_url = $this->functions->get_user_profile_url( $user_id );
+		$return_report_form_url = $this->router->route( 'report_user_mcp_create_report', [
+			'user_id' => $user_id,
 		] );
 
 		if ( ! $this->functions->can_report_user( $user_id ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_USER_PERMISSION' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_USER_PERMISSION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_user_profile_url . '">', '</a>' ), E_USER_WARNING );
+
+		}
+
+		if ( 'POST' !== strtoupper( $this->request->server( 'REQUEST_METHOD' ) ) ) {
+
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_HTTP_REQUEST' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_INDEX' ), '<a href="' . $return_report_form_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
 		if ( ! check_form_key( 'report_user_form_csrf' ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_CSRF_TOKEN' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_CSRF_TOKEN' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_report_form_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
@@ -162,7 +155,7 @@ final class ext {
 
 		if ( 1 > strlen( $report_reason ) || 250 < strlen( $report_reason ) ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REPORT_REASON' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_INVALID_REPORT_REASON' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_report_form_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
@@ -186,7 +179,7 @@ final class ext {
 
 		if ( false === $report_id ) {
 
-			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_UNKNOWN_ERROR_MESSAGE' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'REPORT_USER_ERROR_UNKNOWN_ERROR_MESSAGE' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_report_form_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
@@ -197,7 +190,7 @@ final class ext {
 			'report_text'		=> $report_reason,
 		] );
 
-		trigger_error( $this->language->lang( 'REPORT_USER_SUCCESS_MESSAGE' ), E_USER_WARNING );
+		trigger_error( $this->language->lang( 'REPORT_USER_SUCCESS_MESSAGE' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_user_profile_url . '">', '</a>' ), E_USER_WARNING );
 
 	}
 

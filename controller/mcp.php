@@ -91,18 +91,16 @@ final class mcp {
 
 	/**
 	 * Handle the user reports interface.
-	 * 
-	 * @todo include return links in trigger_error calls
 	 */
 	public function reports( string $module_id, string $action, string $mode ) {
 
+		$this->language->add_lang( 'mcp' );
+
 		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
 
-			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $this->functions->get_mcp_module_url( 'mcp_main', [ 'mode' => 'front' ] ) . '">', '</a>' ), E_USER_WARNING );
 
 		}
-
-		//var_dump( $mode ); die();
 
 		// Check which report type to look at (open or closed).
 		$reports_view = match ( $mode ) {
@@ -113,9 +111,14 @@ final class mcp {
 
 		if ( 2 === $reports_view ) {
 
-			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $this->functions->get_mcp_module_url( 'mcp_main', [ 'mode' => 'front' ] ) . '">', '</a>' ), E_USER_WARNING );
 
 		}
+
+		// Return URL to redirect the user back to *this* page.
+		$return_module_url = $this->functions->get_mcp_module_url( $module_id, [
+			'mode'	=> $mode,
+		] );
 
 		$report_ids = $this->request->variable( 'report_ids', [ 0 ] );
 
@@ -123,7 +126,7 @@ final class mcp {
 
 			if ( ! is_array( $report_ids ) || is_array( $report_ids ) && empty( $report_ids ) ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_EMPTY_REPORT_ARRAY' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_EMPTY_REPORT_ARRAY' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -131,7 +134,7 @@ final class mcp {
 
 			if ( ! in_array( $submit, [ 'close', 'delete' ] ) ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -146,13 +149,13 @@ final class mcp {
 
 			if ( 'delete' === $submit ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', count( $report_ids ) ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', count( $report_ids ) ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
 			if ( 'close' === $submit ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', count( $report_ids ) ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', count( $report_ids ) ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -162,7 +165,7 @@ final class mcp {
 
 				if ( ! check_form_key( 'mcp_user_reports_csrf' ) ) {
 
-					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ), E_USER_WARNING );
+					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 				}
 
@@ -287,26 +290,36 @@ final class mcp {
 
 	/**
 	 * Handle the user report details interface.
-	 * 
-	 * @todo include return links in trigger_error calls
-	 * @todo fix breadcrumb link to report detail page (missing id)
 	 */
 	public function details( string $module_id, string $action, string $mode ) {
 
+		$this->language->add_lang( 'mcp' );
+
+		// Return URL to redirect the user back to the open reports.
+		$return_module_url = $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\reports_open_module', [
+			'mode'	=> 'user_reports_open',
+		] );
+
 		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
 
-			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
 		$report_id = $this->request->variable( 'r', 0 );
 		$submit = $this->request->variable( 'submit', [ '' ] );
 
+		// Return URL to redirect the user back to this details page.
+		$return_report_details_url = $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
+			'mode'	=> 'user_report_details',
+			'r'		=> $report_id,
+		] );
+
 		if ( confirm_box( true ) ) {
 
 			if ( 0 === $report_id ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_REPORT_ID' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_REPORT_ID' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -314,7 +327,7 @@ final class mcp {
 
 			if ( ! in_array( $submit, [ 'close', 'delete' ] ) ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -325,13 +338,13 @@ final class mcp {
 
 			if ( 'delete' === $submit ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', 1 ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', 1 ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
 			if ( 'close' === $submit ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', 1 ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', 1 ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -341,7 +354,7 @@ final class mcp {
 
 				if ( ! check_form_key( 'mcp_user_reports_csrf' ) ) {
 
-					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ), E_USER_WARNING );
+					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
 
 				}
 
@@ -375,7 +388,7 @@ final class mcp {
 
 		if ( empty( $reports ) ) {
 
-			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_REPORT_NOT_FOUND' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_REPORT_NOT_FOUND' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 

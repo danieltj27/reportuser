@@ -195,6 +195,15 @@ final class functions {
 			'reported_post_bitfield'			=> '',
 		], $options );
 
+		// Trim whitespace from the report text and check it.
+		$options[ 'report_text' ] = trim( $options[ 'report_text' ] );
+
+		if ( 1 > strlen( $options[ 'report_text' ] ) ) {
+
+			return false;
+
+		}
+
 		// Check the reported user exists.
 		$reported_user = $this->get_user_data( [ $options[ 'reported_user_id' ] ] );
 
@@ -732,15 +741,18 @@ final class functions {
 	 */
 	public function get_user_profile_url( int $user_id, bool $board_url = true ) : string {
 
-		$profile_url = trim( generate_board_url(), '/' ) . '/memberlist.php';
+		$profile_url = '';
 
-		if ( false === $board_url ) {
+		if ( true === $board_url ) {
 
-			$profile_url = './memberlist.php';
+			$profile_url = trim( generate_board_url(), '/' );
 
 		}
 
-		$profile_url .= '?mode=viewprofile&u=' . $user_id;
+		$profile_url .= append_sid( '/memberlist.php', [
+			'mode'	=> 'viewprofile',
+			'u'		=> $user_id,
+		] );
 
 		return $profile_url;
 
