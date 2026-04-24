@@ -10,6 +10,7 @@ namespace danieltj\reportuser\includes;
 
 use phpbb\auth\auth;
 use phpbb\db\driver\driver_interface as database;
+use phpbb\event\dispatcher_interface as dispatcher;
 use phpbb\language\language;
 use phpbb\log\log;
 use phpbb\notification\manager as notifications;
@@ -27,6 +28,11 @@ final class functions {
 	 * @var driver_interface
 	 */
 	protected $database;
+
+	/**
+	 * @var dispatcher_interface
+	 */
+	protected $dispatcher;
 
 	/**
 	 * @var language
@@ -61,10 +67,11 @@ final class functions {
 	/**
 	 * Constructor
 	 */
-	public function __construct( auth $auth, database $database, language $language, log $log, notifications $notifications, router $router, user $user, $datetime_class ) {
+	public function __construct( auth $auth, database $database, dispatcher $dispatcher, language $language, log $log, notifications $notifications, router $router, user $user, $datetime_class ) {
 
 		$this->auth = $auth;
 		$this->database = $database;
+		$this->dispatcher = $dispatcher;
 		$this->language = $language;
 		$this->log = $log;
 		$this->notifications = $notifications;
@@ -225,6 +232,19 @@ final class functions {
 
 		$report_id = $this->database->sql_nextid();
 
+		/**
+		 * Event to hook into the create report workflow.
+		 * 
+		 * @event danieltj.reportuser.create_user_report_after
+		 * @since 1.0.0-b2
+		 * 
+		 * @var int   $report_id     The report ID that was created.
+		 * @var array $reported_user An array containing user data of the reported user.
+		 * @var array $options       An array containing report data.
+		 */
+		$event = [ 'report_id', 'reported_user', 'options' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.create_user_report_after', compact( $event ) ) );
+
 		return $report_id;
 
 	}
@@ -327,6 +347,18 @@ final class functions {
 			]
 		);
 
+		/**
+		 * Event to hook into the close report workflow.
+		 * 
+		 * @event danieltj.reportuser.close_user_report_after
+		 * @since 1.0.0-b2
+		 * 
+		 * @var int   $report_id   The report ID that was closed.
+		 * @var array $report_data An array containing report data.
+		 */
+		$event = [ 'report_id', 'report_data' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.close_user_report_after', compact( $event ) ) );
+
 		return true;
 
 	}
@@ -388,6 +420,18 @@ final class functions {
 				'reported_user_id'		=> $report_data[ 'reported_user_id' ],
 			]
 		);
+
+		/**
+		 * Event to hook into the delete report workflow.
+		 * 
+		 * @event danieltj.reportuser.delete_user_report_after
+		 * @since 1.0.0-b2
+		 * 
+		 * @var int   $report_id   The report ID that was deleted.
+		 * @var array $report_data An array containing report data.
+		 */
+		$event = [ 'report_id', 'report_data' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.delete_user_report_after', compact( $event ) ) );
 
 		return true;
 
@@ -764,7 +808,7 @@ final class functions {
 	 * @param  string $zone (optional) An ISO formatted timezone code.
 	 * @param  int    $time A UNIX timestamp.
 	 * 
-	 * @return string           A localised timestamp as a string.
+	 * @return string  A localised timestamp as a string.
 	 */
 	public function get_l10n_local_time( string $zone = 'UTC', int $time ) : string {
 

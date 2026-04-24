@@ -9,6 +9,7 @@
 namespace danieltj\reportuser\controller;
 
 use phpbb\controller\helper as controller;
+use phpbb\event\dispatcher_interface as dispatcher;
 use phpbb\language\language;
 use phpbb\notification\manager as notifications;
 use phpbb\request\request;
@@ -23,6 +24,11 @@ final class ext {
 	 * @var controller
 	 */
 	protected $controller;
+
+	/**
+	 * @var dispatcher_interface
+	 */
+	protected $dispatcher;
 
 	/**
 	 * @var language
@@ -62,9 +68,10 @@ final class ext {
 	/**
 	 * Constructor
 	 */
-	public function __construct( controller $controller, language $language, notifications $notifications, request $request, router $router, template $template, user $user, functions $functions ) {
+	public function __construct( controller $controller, dispatcher $dispatcher, language $language, notifications $notifications, request $request, router $router, template $template, user $user, functions $functions ) {
 
 		$this->controller = $controller;
+		$this->dispatcher = $dispatcher;
 		$this->language = $language;
 		$this->notifications = $notifications;
 		$this->request = $request;
@@ -115,6 +122,18 @@ final class ext {
 			'REPORT_USER'		=> $this->router->route( 'report_user_mcp_submit_report', [ 'user_id' => $user_id ] ),
 			'REPORT_THIS_USER'	=> $this->language->lang( 'REPORT_USER_THIS_USER', get_username_string( 'full', $reported_user[ 'user_id' ], $reported_user[ 'username' ], $reported_user[ 'user_colour' ] ) ),
 		] );
+
+		/**
+		 * Event to hook into the new report form.
+		 * 
+		 * @event danieltj.reportuser.ext_controller_report
+		 * @since 1.0.0-b2
+		 * 
+		 * @var int   $user_id   The user ID that is being reported.
+		 * @var array $user_data An array containing data of the user being reported.
+		 */
+		$event = [ 'user_id', 'user_data' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.ext_controller_report', compact( $event ) ) );
 
 		return $this->controller->render( '@danieltj_reportuser/report_user_body.html', $this->language->lang( 'REPORT_USER' ) );
 

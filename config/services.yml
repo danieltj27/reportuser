@@ -3,6 +3,7 @@ services:
         class: danieltj\reportuser\controller\ext
         arguments:
             - '@controller.helper'
+            - '@dispatcher'
             - '@language'
             - '@notification_manager'
             - '@request'
@@ -16,6 +17,7 @@ services:
         arguments:
             - '@auth'
             - '@controller.helper'
+            - '@dispatcher'
             - '@language'
             - '@notification_manager'
             - '@pagination'
@@ -43,6 +45,7 @@ services:
         arguments:
             - '@auth'
             - '@dbal.conn'
+            - '@dispatcher'
             - '@language'
             - '@log'
             - '@notification_manager'

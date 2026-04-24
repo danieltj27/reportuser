@@ -10,6 +10,7 @@ namespace danieltj\reportuser\controller;
 
 use phpbb\auth\auth;
 use phpbb\controller\helper as controller;
+use phpbb\event\dispatcher_interface as dispatcher;
 use phpbb\language\language;
 use phpbb\notification\manager as notifications;
 use phpbb\pagination;
@@ -30,6 +31,11 @@ final class mcp {
 	 * @var controller
 	 */
 	protected $controller;
+
+	/**
+	 * @var dispatcher_interface
+	 */
+	protected $dispatcher;
 
 	/**
 	 * @var language
@@ -74,10 +80,11 @@ final class mcp {
 	/**
 	 * Constructor
 	 */
-	public function __construct( auth $auth, controller $controller, language $language, notifications $notifications, pagination $pagination, request $request, router $router, template $template, user $user, functions $functions ) {
+	public function __construct( auth $auth, controller $controller, dispatcher $dispatcher, language $language, notifications $notifications, pagination $pagination, request $request, router $router, template $template, user $user, functions $functions ) {
 
 		$this->auth = $auth;
 		$this->controller = $controller;
+		$this->dispatcher = $dispatcher;
 		$this->language = $language;
 		$this->notifications = $notifications;
 		$this->pagination = $pagination;
@@ -263,11 +270,21 @@ final class mcp {
 
 		}
 
-
 		/**
-		 * @todo implement pagination that works with page numbers
-		 *       and not offsets like phpbb\pagination.
+		 * Event to hook into the MCP user report lists.
+		 * 
+		 * @event danieltj.reportuser.ext_controller_report
+		 * @since 1.0.0-b2
+		 * 
+		 * @var string module_id    The current module identifier.
+		 * @var string mode         The current mode of this module.
+		 * @var array  reports_data An array containing formatted report data (not the same as the return result of `get_user_reports()`).
+		 * @var int    limit        The maximum number of reports per page.
+		 * @var int    offset       The current offset of reports to display (pagination).
 		 */
+		$event = [ 'module_id', 'mode', 'reports_data', 'limit', 'offset' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.ext_controller_report', compact( $event ) ) );
+
 		$this->pagination->generate_template_pagination(
 			$this->functions->get_mcp_module_url( $module_id ),
 			'pagination',
@@ -448,6 +465,19 @@ final class mcp {
 				'report_id'				=> (int) $reports[ 0 ][ 'report_id' ],
 			] ),
 		];
+
+		/**
+		 * Event to hook into the MCP user report details.
+		 * 
+		 * @event danieltj.reportuser.ext_controller_details
+		 * @since 1.0.0-b2
+		 * 
+		 * @var string module_id   The current module identifier.
+		 * @var string mode        The current mode of this module.
+		 * @var array  report_data An array containing formatted report data of a single user report.
+		 */
+		$event = [ 'module_id', 'mode', 'report_data' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.ext_controller_details', compact( $event ) ) );
 
 		$this->template->assign_vars( [
 			'S_REPORT_USER_CSS'						=> true,

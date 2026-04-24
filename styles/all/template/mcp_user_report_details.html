@@ -2,6 +2,8 @@
 
 <h2>{{ lang( 'MCP_USER_REPORTS_DETAILS' ) }}</h2>
 
+{% EVENT danieltj_report_user_mcp_report_details_page_before %}
+
 <div class="panel" id="user-report-details">
 	<div class="inner">
 		<div class="postbody">
@@ -67,5 +69,7 @@
 		</div>
 	</div>
 </div>
+
+{% EVENT danieltj_report_user_mcp_report_details_page_after %}
 
 {% include 'mcp_footer.html' %}
