@@ -438,6 +438,67 @@ final class functions {
 	}
 
 	/**
+	 * Send a request changes notification to a user.
+	 * 
+	 * @todo implement the request changes notification
+	 * 
+	 * @param int $report_id The report ID used to fetch the user.
+	 * 
+	 * @return bool  True if the notification was sent, false if not.
+	 */
+	public function send_request_changes_notification( int $report_id, string $notification_text ) : bool {
+
+		$report_data = $this->get_user_report( $report_id );
+
+		if ( false === $report_data ) {
+
+			return false;
+
+		}
+
+		$user_data = $this->get_user_data( [ $report_data[ 'reported_user_id' ] ] );
+
+		if ( false === $user_data ) {
+
+			return false;
+
+		}
+
+		$reported_user = array_first( $user_data );
+
+		$notification_text = trim( $notification_text );
+
+		if ( 1 > strlen( $notification_text ) || $this->get_rcn_character_length() < strlen( $notification_text ) ) {
+
+			return false;
+
+		}
+
+		// $this->notifications->add_notifications( 'danieltj.reportuser.notification.type.request_changes', [
+		// 	'report_id'			=> $report_id,
+		// 	'report_mod_id'		=> (int) $this->user->data[ 'user_id' ],
+		// 	'reported_user_id'	=> (int) $report_data[ 'reported_user_id' ],
+		// 	'notification_text'	=> $notification_text,
+		// ] );
+
+		$this->log->add(
+			'user',
+			$this->user->data[ 'user_id' ],
+			$this->user->data[ 'user_ip' ],
+			'MCP_USER_REPORT_LOG_REQUESTED_CHANGES',
+			time(),
+			[
+				'reportee_id'		=> $reported_user[ 'user_id' ],
+				'report_id'			=> $report_id,
+				'notification_text'	=> $notification_text,
+			]
+		);
+
+		return true;
+
+	}
+
+	/**
 	 * Return a collection of user reports.
 	 * 
 	 * @param int   $report_id    The report ID to fetch, ignores all other parameters.
@@ -799,6 +860,31 @@ final class functions {
 		] );
 
 		return $profile_url;
+
+	}
+
+	/**
+	 * Returns the allowed character length of the notification text
+	 * when a moderator requests changes from a reported user.
+	 * 
+	 * @return int  The allowed character length.
+	 */
+	public function get_rcn_character_length() : int {
+
+		$length = 64;
+
+		/**
+		 * Event to hook into the character length for request changes notifications.
+		 * 
+		 * @event danieltj.reportuser.rcn_character_length
+		 * @since 1.0.0-b3
+		 * 
+		 * @var int $length The allowed character length.
+		 */
+		$event = [ 'length' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.rcn_character_length', compact( $event ) ) );
+
+		return (int) $length;
 
 	}
 

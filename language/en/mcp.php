@@ -61,6 +61,10 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_USER_DETAILS_TITLE'		=> 'User information',
 	'MCP_USER_REPORTS_USER_DETAILS_EXPLAIN'		=> 'This is a preview of the user\'s profile which they may have updated since the report was sent.',
 	'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER'	=> 'unknown user %d',
+	'MCP_USER_REPORTS_REQUEST_CHANGES_TITLE'	=> 'Request changes',
+	'MCP_USER_REPORTS_REQUEST_CHANGES_EXPLAIN'	=> 'Send a notification to the reported user asking them to update their profile. This notification will also be saved as a moderator note on this user\'s profile.',
+	'MCP_USER_REPORTS_REQUEST_CHANGES_LABEL'	=> 'Message',
+	'MCP_USER_REPORTS_REQUEST_CHANGES_SUBMIT'	=> 'Request changes',
 
 	// CONFIRM MESSAGES
 	'MCP_USER_REPORTS_ACTION_CONFIRM_CLOSE'		=> [
@@ -71,16 +75,18 @@ $lang = array_merge( $lang, [
 		1 => 'Are you sure you would like to delete this report?',
 		2 => 'Are you sure you would like to delete the reports?',
 	],
+	'MCP_USER_REPORTS_ACTION_CONFIRM_CHANGES'	=> 'Are you sure that you would like to send the request changes notification?',
 
 	// SUCCESS MESSAGES
-	'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED'	=> [
+	'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED'		=> [
 		1 => 'The selected report has been successfully closed.',
 		2 => 'The selected reports have been successfully closed.',
 	],
-	'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED'	=> [
+	'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED'		=> [
 		1 => 'The selected report has been successfully deleted.',
 		2 => 'The selected reports have been successfully deleted.',
 	],
+	'MCP_USER_REPORTS_SUCCESS_CHANGED_REQUESTED'	=> 'You have sent a notification requesting profile changes.',
 
 	// ERRORS
 	'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION'	=> 'You do not have permission to manage user reports.',
@@ -89,8 +95,10 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_ERROR_INVALID_REPORT_ID'		=> 'You have submitted an invalid report identifier.',
 	'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN'	=> 'You have submitted an incorrect CSRF token.',
 	'MCP_USER_REPORTS_ERROR_REPORT_NOT_FOUND'		=> 'The selected report does not exist.',
+	'MCP_USER_REPORTS_ERROR_REQUEST_CHANGES'		=> 'There was an error attempting to send the request changes notification.',
 
 	// LOGS
-	'MCP_USER_REPORT_LOG_CLOSED_REPORT'		=> '<strong>Closed user Report:</strong><br />» %s (user_id: %d) ',
-	'MCP_USER_REPORT_LOG_DELETED_REPORT'	=> '<strong>Deleted user report:</strong><br />» %s (user_id: %d)',
+	'MCP_USER_REPORT_LOG_CLOSED_REPORT'		=> '<strong>Closed user Report:</strong><br />» %1$s (user_id: %2$d) ',
+	'MCP_USER_REPORT_LOG_DELETED_REPORT'	=> '<strong>Deleted user report:</strong><br />» %1$s (user_id: %2$d)',
+	'MCP_USER_REPORT_LOG_REQUESTED_CHANGES'	=> '<strong>Requested profile changes:</strong><br />User report reference: %1$d<br />» %2$s',
 ] );
