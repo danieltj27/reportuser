@@ -8,7 +8,7 @@
 
 namespace danieltj\reportuser\notification\type;
 
-class report_closed extends \phpbb\notification\type\base {
+class request_changes extends \phpbb\notification\type\base {
 
 	/**
 	 * @var user_loader \phpbb\user_loader
@@ -31,9 +31,9 @@ class report_closed extends \phpbb\notification\type\base {
 	 * @var array $notification_option An array of notification data.
 	 */
 	static public $notification_option = [
-		'id'		=> 'danieltj.reportuser.notification.type.report_closed',
+		'id'		=> 'danieltj.reportuser.notification.type.request_changes',
 		'group'		=> 'NOTIFICATION_GROUP_MISCELLANEOUS',
-		'lang'		=> 'REPORT_USER_NOTIFICATIONS_REPORT_CLOSED_SAMPLE',
+		'lang'		=> 'REPORT_USER_NOTIFICATIONS_REQUEST_CHANGES_SAMPLE',
 	];
 
 	/**
@@ -82,7 +82,7 @@ class report_closed extends \phpbb\notification\type\base {
 	 */
 	public function get_style_class() {
 
-		return 'notification-report-closed';
+		return 'notification-reported';
 
 	}
 
@@ -152,19 +152,14 @@ class report_closed extends \phpbb\notification\type\base {
 	 */
 	public function users_to_query( $data = [] ) {
 
-		$user_ids = [];
+		// Fetch the reported user ID and return it.
+		if ( NULL === $this->get_data( 'reported_user_id' ) ) {
 
-		/**
-		 * Check if the data has actually been set yet because we can't rely on get_data()
-		 * if the notification hasn't actually been saved yet which is... annoying.
-		 */
-		$report_mod_id = ( NULL === $this->get_data( 'report_mod_id' ) ) ? (int) $data[ 'report_mod_id' ] : (int) $this->get_data( 'report_mod_id' );
-		$reporter_user_id = ( NULL === $this->get_data( 'reporter_user_id' ) ) ? (int) $data[ 'reporter_user_id' ] : (int) $this->get_data( 'reporter_user_id' );
+			$user_ids[] = (int) $data[ 'reported_user_id' ];
 
-		// Don't notify the moderator if they made the report.
-		if ( $report_mod_id !== $reporter_user_id ) {
+		} else {
 
-			$user_ids[] = $reporter_user_id;
+			$user_ids[] = (int) $this->get_data( 'reported_user_id' );
 
 		}
 
@@ -190,7 +185,7 @@ class report_closed extends \phpbb\notification\type\base {
 	 */
 	public function get_title() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REPORT_CLOSED_TITLE', $this->user_loader->get_username( $this->get_data( 'report_mod_id' ), 'no_profile', false, false, true ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REQUEST_CHANGES_TITLE', $this->user_loader->get_username( $this->get_data( 'report_mod_id' ), 'no_profile', false, false, true ) );
 
 	}
 
@@ -201,7 +196,7 @@ class report_closed extends \phpbb\notification\type\base {
 	 */
 	public function get_reference() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REPORT_CLOSED_REFERENCE', $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'no_profile', false, false, true ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REQUEST_CHANGES_REFERENCE' );
 
 	}
 
@@ -212,7 +207,7 @@ class report_closed extends \phpbb\notification\type\base {
 	 */
 	public function get_reason() {
 
-		return $this->language->lang( 'NOTIFICATION_REASON', $this->get_data( 'report_text' ) );
+		return $this->language->lang( 'NOTIFICATION_REASON', $this->get_data( 'notification_text' ) );
 
 	}
 
@@ -234,7 +229,7 @@ class report_closed extends \phpbb\notification\type\base {
 	 */
 	public function get_email_template() {
 
-		return '@danieltj_reportuser/report_closed';
+		return '@danieltj_reportuser/request_changes';
 
 	}
 
@@ -247,8 +242,7 @@ class report_closed extends \phpbb\notification\type\base {
 
 		return [
 			'MODERATOR_NAME'	=> $this->user_loader->get_username( $this->get_data( 'report_mod_id' ), 'username', false, false, true ),
-			'REPORTED_NAME'		=> $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'username', false, false, true ),
-			'REPORT_REASON'		=> $this->get_data( 'report_text' ),
+			'REQUESTED_CHANGES'	=> $this->get_data( 'notification_text' ),
 		];
 
 	}
@@ -265,9 +259,8 @@ class report_closed extends \phpbb\notification\type\base {
 
 		$this->set_data( 'report_id', $data[ 'report_id' ] );
 		$this->set_data( 'report_mod_id', $data[ 'report_mod_id' ] );
-		$this->set_data( 'reporter_user_id', $data[ 'reporter_user_id' ] );
 		$this->set_data( 'reported_user_id', $data[ 'reported_user_id' ] );
-		$this->set_data( 'report_text', $data[ 'report_text' ] );
+		$this->set_data( 'notification_text', $data[ 'notification_text' ] );
 
 		parent::create_insert_array( $data, $pre_create_data );
 

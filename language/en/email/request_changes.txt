@@ -1,0 +1,13 @@
+Subject: {MODERATOR_NAME} requested changes
+
+Hello {USERNAME},
+
+{MODERATOR_NAME} has requested that you update your profile as it has been reported by someone.
+
+The following message was included in this request:
+{REQUESTED_CHANGES}
+
+Manage your notification settings in the User Control Panel:
+{U_NOTIFICATION_SETTINGS}
+
+{EMAIL_SIG}

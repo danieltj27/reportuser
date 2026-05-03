@@ -474,12 +474,15 @@ final class functions {
 
 		}
 
-		// $this->notifications->add_notifications( 'danieltj.reportuser.notification.type.request_changes', [
-		// 	'report_id'			=> $report_id,
-		// 	'report_mod_id'		=> (int) $this->user->data[ 'user_id' ],
-		// 	'reported_user_id'	=> (int) $report_data[ 'reported_user_id' ],
-		// 	'notification_text'	=> $notification_text,
-		// ] );
+		/**
+		 * @todo always send this, the user should not be able to turn this off
+		 */
+		$this->notifications->add_notifications( 'danieltj.reportuser.notification.type.request_changes', [
+			'report_id'			=> $report_id,
+			'report_mod_id'		=> (int) $this->user->data[ 'user_id' ],
+			'reported_user_id'	=> (int) $report_data[ 'reported_user_id' ],
+			'notification_text'	=> $notification_text,
+		] );
 
 		$this->log->add(
 			'user',

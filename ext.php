@@ -34,6 +34,7 @@ class ext extends \phpbb\extension\base {
 
 			$notifications->enable_notifications( 'danieltj.reportuser.notification.type.new_report' );
 			$notifications->enable_notifications( 'danieltj.reportuser.notification.type.report_closed' );
+			$notifications->enable_notifications( 'danieltj.reportuser.notification.type.request_changes' );
 
 			return 'notification';
 
@@ -56,6 +57,7 @@ class ext extends \phpbb\extension\base {
 
 			$notifications->disable_notifications( 'danieltj.reportuser.notification.type.new_report' );
 			$notifications->disable_notifications( 'danieltj.reportuser.notification.type.report_closed' );
+			$notifications->disable_notifications( 'danieltj.reportuser.notification.type.request_changes' );
 
 			return 'notification';
 
@@ -78,6 +80,7 @@ class ext extends \phpbb\extension\base {
 
 			$notifications->purge_notifications( 'danieltj.reportuser.notification.type.new_report' );
 			$notifications->purge_notifications( 'danieltj.reportuser.notification.type.report_closed' );
+			$notifications->purge_notifications( 'danieltj.reportuser.notification.type.request_changes' );
 
 			return 'notification';
 

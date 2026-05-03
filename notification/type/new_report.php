@@ -238,10 +238,10 @@ class new_report extends \phpbb\notification\type\base {
 	public function get_email_template_variables() {
 
 		return [
-			'USER_NAME_REPORTER'	=> $this->user_loader->get_username( $this->get_data( 'reporter_user_id' ), 'username', false, false, true ),
-			'USER_NAME_REPORTED'	=> $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'username', false, false, true ),
-			'USER_REPORT_REASON'	=> $this->get_data( 'report_text' ),
-			'MCP_REPORT_LINK'		=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
+			'REPORTER_NAME'		=> $this->user_loader->get_username( $this->get_data( 'reporter_user_id' ), 'username', false, false, true ),
+			'REPORTED_NAME'		=> $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'username', false, false, true ),
+			'REPORT_REASON'		=> $this->get_data( 'report_text' ),
+			'REPORT_URL'		=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
 				'mode'	=> 'user_report_details',
 				'r'		=> $this->get_data( 'report_id' ),
 			] ),

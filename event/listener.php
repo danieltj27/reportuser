@@ -75,10 +75,10 @@ class listener implements EventSubscriberInterface {
 	static public function getSubscribedEvents() {
 
 		return [
-			'core.user_setup_after'						=> 'add_languages',
-			'core.permissions'							=> 'add_permissions',
-			'core.memberlist_view_profile'				=> 'add_memberlist_template_vars',
-			'core.modify_mcp_modules_display_option'	=> 'update_mcp_module_display',
+			'core.user_setup_after'								=> 'add_languages',
+			'core.permissions'									=> 'add_permissions',
+			'core.memberlist_view_profile'						=> 'add_memberlist_template_vars',
+			'core.modify_mcp_modules_display_option'			=> 'update_mcp_module_display',
 		];
 
 	}

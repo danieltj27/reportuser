@@ -2,12 +2,12 @@ Subject: New user report
 
 Hello {USERNAME},
 
-{USER_NAME_REPORTER} submitted a new report against {USER_NAME_REPORTED} for the following reason:
+{REPORTER_NAME} submitted a new report against {REPORTED_NAME} for the following reason:
 
-{USER_REPORT_REASON}
+{REPORT_REASON}
 
 You can review this report by visiting the Moderator Control Panel:
-{MCP_REPORT_LINK}
+{REPORT_URL}
 
 Manage your notification settings in the User Control Panel:
 {U_NOTIFICATION_SETTINGS}

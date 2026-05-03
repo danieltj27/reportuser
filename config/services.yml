@@ -70,3 +70,12 @@ services:
         calls:
             - [ 'set_user_loader', [ '@user_loader' ] ]
             - [ 'set_functions', [ '@danieltj.reportuser.includes.functions' ] ]
+
+    danieltj.reportuser.notification.type.request_changes:
+        class: danieltj\reportuser\notification\type\request_changes
+        parent: notification.type.base
+        shared: false
+        tags: [ { name: notification.type } ]
+        calls:
+            - [ 'set_user_loader', [ '@user_loader' ] ]
+            - [ 'set_functions', [ '@danieltj.reportuser.includes.functions' ] ]
