@@ -88,6 +88,11 @@ $lang = array_merge( $lang, [
 	],
 	'MCP_USER_REPORTS_SUCCESS_CHANGED_REQUESTED'	=> 'You have sent a notification requesting profile changes.',
 
+	// RETURNS
+	'MCP_USER_REPORTS_RETURN_MCP'		=> '%1$sReturn to the Moderator Control Panel%2$s',
+	'MCP_USER_REPORTS_RETURN_MODULE'	=> '%1$sReturn to the list of user reports%2$s',
+	'MCP_USER_REPORTS_RETURN_DETAILS'	=> '%1$sReturn to the user report%2$s',
+
 	// ERRORS
 	'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION'	=> 'You do not have permission to manage user reports.',
 	'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION'	=> 'You have submitted an invalid form action.',
@@ -96,6 +101,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN'	=> 'You have submitted an incorrect CSRF token.',
 	'MCP_USER_REPORTS_ERROR_REPORT_NOT_FOUND'		=> 'The selected report does not exist.',
 	'MCP_USER_REPORTS_ERROR_REQUEST_CHANGES'		=> 'There was an error attempting to send the request changes notification.',
+	'MCP_USER_REPORTS_SUCCESS_CHANGES_REQUESTED'	=> 'Your request for changes has been sent successfully.',
 
 	// LOGS
 	'MCP_USER_REPORT_LOG_CLOSED_REPORT'		=> '<strong>Closed user Report:</strong><br />» %1$s (user_id: %2$d) ',

@@ -101,11 +101,9 @@ final class mcp {
 	 */
 	public function reports( string $module_id, string $action, string $mode ) {
 
-		$this->language->add_lang( 'mcp' );
-
 		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
 
-			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $this->functions->get_mcp_module_url( 'mcp_main', [ 'mode' => 'front' ] ) . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MCP' ), '<a href="' . $this->functions->get_mcp_module_url( 'mcp_main', [ 'mode' => 'front' ] ) . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
@@ -118,7 +116,7 @@ final class mcp {
 
 		if ( 2 === $reports_view ) {
 
-			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $this->functions->get_mcp_module_url( 'mcp_main', [ 'mode' => 'front' ] ) . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MCP' ), '<a href="' . $this->functions->get_mcp_module_url( 'mcp_main', [ 'mode' => 'front' ] ) . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
@@ -133,7 +131,7 @@ final class mcp {
 
 			if ( ! is_array( $report_ids ) || is_array( $report_ids ) && empty( $report_ids ) ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_EMPTY_REPORT_ARRAY' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_EMPTY_REPORT_ARRAY' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MODULE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -141,7 +139,7 @@ final class mcp {
 
 			if ( ! in_array( $submit, [ 'delete', 'close' ] ) ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MODULE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -156,13 +154,13 @@ final class mcp {
 
 			if ( 'delete' === $submit ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', count( $report_ids ) ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', count( $report_ids ) ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MODULE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
 			if ( 'close' === $submit ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', count( $report_ids ) ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', count( $report_ids ) ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MODULE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -172,7 +170,7 @@ final class mcp {
 
 				if ( ! check_form_key( 'mcp_user_reports_list_csrf' ) ) {
 
-					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_PAGE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
+					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MODULE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 				}
 
@@ -310,8 +308,6 @@ final class mcp {
 	 */
 	public function details( string $module_id, string $action, string $mode ) {
 
-		$this->language->add_lang( 'mcp' );
-
 		// Return URL to redirect the user back to the open reports.
 		$return_module_url = $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\reports_open_module', [
 			'mode'	=> 'user_reports_open',
@@ -319,7 +315,7 @@ final class mcp {
 
 		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
 
-			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_MODERATOR_PERMISSION' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MODULE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
@@ -336,7 +332,7 @@ final class mcp {
 
 			if ( 0 === $report_id ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_REPORT_ID' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_REPORT_ID' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MODULE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -344,7 +340,7 @@ final class mcp {
 
 			if ( ! in_array( $submit, [ 'delete', 'close' ] ) ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_DETAILS' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -355,13 +351,13 @@ final class mcp {
 
 			if ( 'delete' === $submit ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', 1 ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_DELETED', 1 ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MODULE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
 			if ( 'close' === $submit ) {
 
-				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', 1 ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
+				trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_REPORTS_CLOSED', 1 ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_DETAILS' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
 
 			}
 
@@ -371,7 +367,7 @@ final class mcp {
 
 				if ( ! check_form_key( 'mcp_user_report_details_csrf' ) ) {
 
-					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
+					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_DETAILS' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
 
 				}
 
@@ -385,7 +381,7 @@ final class mcp {
 
 				if ( 'error' === $submit ) {
 
-					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
+					trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_INVALID_FORM_ACTION' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_DETAILS' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
 
 				}
 
@@ -416,11 +412,11 @@ final class mcp {
 
 					if ( false === $result ) {
 
-						trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_REQUEST_CHANGES' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
+						trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_REQUEST_CHANGES' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_DETAILS' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
 
 					} else {
 
-						trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_CHANGES_REQUESTED' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
+						trigger_error( $this->language->lang( 'MCP_USER_REPORTS_SUCCESS_CHANGES_REQUESTED' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_DETAILS' ), '<a href="' . $return_report_details_url . '">', '</a>' ), E_USER_WARNING );
 
 					}
 
@@ -441,7 +437,7 @@ final class mcp {
 
 		if ( empty( $reports ) ) {
 
-			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_REPORT_NOT_FOUND' ) . '<br /><br />' . sprintf( $this->language->lang( 'RETURN_MCP' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
+			trigger_error( $this->language->lang( 'MCP_USER_REPORTS_ERROR_REPORT_NOT_FOUND' ) . '<br /><br />' . sprintf( $this->language->lang( 'MCP_USER_REPORTS_RETURN_MODULE' ), '<a href="' . $return_module_url . '">', '</a>' ), E_USER_WARNING );
 
 		}
 
