@@ -133,11 +133,32 @@ class request_changes extends \phpbb\notification\type\base {
 	 */
 	public function find_users_for_notification( $data, $options = [] ) {
 
-		$options = array_merge( [
-			'ignore_users' => [ ANONYMOUS ]
-		], $options );
+		/**
+		 * @todo
+		 * 
+		 * This needs to be done automatically and in such a way where by
+		 * the notification can't be turned off in the UCP even though
+		 * the user will always get these notifications regardless.
+		 */
 
-		$user_methods = $this->check_user_notification_options( $this->users_to_query( $data ), $options );
+		// $options = array_merge( [
+		// 	'ignore_users' => [ ANONYMOUS ]
+		// ], $options );
+
+		//$user_methods = $this->check_user_notification_options( $this->users_to_query( $data ), $options );
+
+		$user_methods = [];
+		$user_ids = $this->users_to_query( $data );
+
+		if ( ! empty( $user_ids ) ) {
+
+			foreach ( $user_ids as $user_id ) {
+
+				$user_methods[ $user_id ] = [ 'notification.method.board' ];
+
+			}
+
+		}
 
 		return $user_methods;
 
@@ -195,6 +216,8 @@ class request_changes extends \phpbb\notification\type\base {
 	 * @return string  The notification reference.
 	 */
 	public function get_reference() {
+
+		// REPORT_USER_NOTIFICATIONS_REQUEST_CHANGES_REFERENCE
 
 		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REQUEST_CHANGES_REFERENCE' );
 

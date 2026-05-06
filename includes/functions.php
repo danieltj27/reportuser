@@ -438,9 +438,55 @@ final class functions {
 	}
 
 	/**
-	 * Send a request changes notification to a user.
+	 * Return the request changes notification for a report.
 	 * 
-	 * @todo implement the request changes notification
+	 * @param int $report_id The report ID this notification was created from.
+	 * 
+	 * @return array|bool  The array of notification data or false if it hasn't been sent.
+	 */
+	public function get_request_changes_notification( int $report_id ) : array|bool {
+
+		// Fetch the type ID for the 'request_changes' notification.
+		$result = $this->database->sql_query(
+			'SELECT notification_type_id FROM ' . NOTIFICATION_TYPES_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
+				'notification_type_name' => 'danieltj.reportuser.notification.type.request_changes',
+			] )
+		);
+
+		$type_data = $this->database->sql_fetchrow( $result );
+		$this->database->sql_freeresult( $result );
+
+		if ( false === $type_data ) {
+
+			return false;
+
+		}
+
+		$type_id = (int) $type_data[ 'notification_type_id' ];
+
+		// Fetch the notification data (if it exists).
+		$result = $this->database->sql_query(
+			'SELECT * FROM ' . NOTIFICATIONS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
+				'notification_type_id'	=> $type_id,
+				'item_id'				=> $report_id,
+			] )
+		);
+
+		$notification_data = $this->database->sql_fetchrow( $result );
+		$this->database->sql_freeresult( $result );
+
+		if ( false === $notification_data ) {
+
+			return false;
+
+		}
+
+		return $notification_data;
+
+	}
+
+	/**
+	 * Send a request changes notification to a user.
 	 * 
 	 * @param int $report_id The report ID used to fetch the user.
 	 * 
@@ -474,15 +520,40 @@ final class functions {
 
 		}
 
-		/**
-		 * @todo always send this, the user should not be able to turn this off
-		 */
-		$this->notifications->add_notifications( 'danieltj.reportuser.notification.type.request_changes', [
-			'report_id'			=> $report_id,
-			'report_mod_id'		=> (int) $this->user->data[ 'user_id' ],
-			'reported_user_id'	=> (int) $report_data[ 'reported_user_id' ],
-			'notification_text'	=> $notification_text,
-		] );
+		$request_changes_notification = $this->get_request_changes_notification( $report_id );
+
+		if ( false === $request_changes_notification ) {
+
+			// This hasn't been sent before so create a new notification.
+			$this->notifications->add_notifications( 'danieltj.reportuser.notification.type.request_changes', [
+				'report_id'			=> $report_id,
+				'report_mod_id'		=> (int) $this->user->data[ 'user_id' ],
+				'reported_user_id'	=> (int) $report_data[ 'reported_user_id' ],
+				'notification_text'	=> $notification_text,
+			] );
+
+		} else {
+
+			// Update the existing notification data.
+			$this->notifications->update_notifications( 'danieltj.reportuser.notification.type.request_changes', [
+				'report_id'			=> $report_id,
+				'report_mod_id'		=> (int) $this->user->data[ 'user_id' ],
+				'reported_user_id'	=> (int) $report_data[ 'reported_user_id' ],
+				'notification_text'	=> $notification_text,
+			], [
+				'notification_type_id'	=> $request_changes_notification[ 'notification_type_id' ],
+				'item_id'				=> $request_changes_notification[ 'item_id' ],
+			] );
+
+			// Mark the notification as unread.
+			$this->notifications->mark_notifications_by_id(
+				'notification.method.board', // Only update forum-based notifications.
+				(int) $request_changes_notification[ 'notification_id' ],
+				false, // Mark all notification of this type prior to now as read.
+				false // Mark this notification as unread.
+			);
+
+		}
 
 		$this->log->add(
 			'user',
