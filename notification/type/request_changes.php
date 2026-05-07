@@ -217,8 +217,6 @@ class request_changes extends \phpbb\notification\type\base {
 	 */
 	public function get_reference() {
 
-		// REPORT_USER_NOTIFICATIONS_REQUEST_CHANGES_REFERENCE
-
 		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REQUEST_CHANGES_REFERENCE' );
 
 	}

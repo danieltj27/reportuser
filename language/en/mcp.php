@@ -37,7 +37,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_LATEST_TITLE'			=> 'Latest 5 user reports',
 	'MCP_USER_REPORTS_LATEST_OVERVIEW'		=> [
 		0 => 'There are no user reports to review.',
-		1 => 'In total there is <strong>1</strong> user report to review.',
+		1 => 'In total there is <strong>%d</strong> user report to review.',
 		2 => 'In total there are <strong>%d</strong> user reports to review.',
 	],
 	'MCP_USER_REPORTS_COLUMN_USERNAME'		=> 'Reported user',
@@ -46,12 +46,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_COLUMN_TIME'			=> 'Time',
 	'MCP_USER_REPORTS_COLUMN_REVIEW'		=> 'Review',
 	'MCP_USER_REPORTS_REVIEW_REPORT'		=> 'View report',
-	'MCP_USER_REPORTS_NO_RESULTS'			=> 'There are no user reports to review.',
-	'MCP_USER_REPORTS_LAST_5'				=> [
-		0 => 'There are no reports for you to review.',
-		1 => 'In total there is 1 report to review.',
-		2 => 'In total there is %s reports to review.',
-	],
+	'MCP_USER_REPORTS_NO_RESULTS'			=> 'No user reports were found.',
 	'MCP_USER_REPORTS_PAGE'					=> 'Page <strong>%s</strong> of <strong>%s</strong>',
 
 	// REPORT DETAILS

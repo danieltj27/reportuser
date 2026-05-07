@@ -221,7 +221,7 @@ class listener implements EventSubscriberInterface {
 
 			$this->template->assign_vars( [
 				'S_USER_REPORTS'					=> ( $this->auth->acl_get( 'm_user_report' ) ) ? true : false,
-				'MCP_USER_REPORTS_LATEST_OVERVIEW'	=> $this->language->lang( 'MCP_USER_REPORTS_LATEST_OVERVIEW', 0 ),
+				'MCP_USER_REPORTS_LATEST_OVERVIEW'	=> $this->language->lang( 'MCP_USER_REPORTS_LATEST_OVERVIEW', count( $reports_data ) ),
 				'USER_REPORTS'						=> $reports_data,
 			] );
 
