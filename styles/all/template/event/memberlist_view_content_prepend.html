@@ -4,3 +4,11 @@
 		<span class="sr-only">{{ lang( 'REPORT_USER' ) }}</span>
 	</a>
 {% endif %}
+
+{% if S_USER_REPORTED %}
+	<div class="report-user-notice rules">
+		<div class="inner">
+			<a href="{{ REPORTS_MODULE }}"><strong><i class="icon fa-exclamation fa-fw icon-red" aria-hidden="true"></i>{{ lang( 'REPORT_USER_VIEW_USER_REPORTS' ) }}</strong></a>
+		</div>
+	</div>
+{% endif %}

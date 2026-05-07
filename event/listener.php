@@ -120,8 +120,17 @@ class listener implements EventSubscriberInterface {
 
 		$can_report_user = $this->functions->can_report_user( $event[ 'member' ][ 'user_id' ] );
 
+		$is_user_reported = $this->functions->is_user_reported( $event[ 'member' ][ 'user_id' ] );
+
+		$reports_module_url = $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\reports_open_module', [
+			'mode'		=> 'user_reports_open',
+			'user_id'	=> (int) $event[ 'member' ][ 'user_id' ],
+		] );
+
 		$this->template->assign_vars( [
 			'S_REPORT_USER_CSS'	=> ( $can_report_user ) ? true : false,
+			'S_USER_REPORTED'	=> ( $this->auth->acl_get( 'm_user_report' ) && $is_user_reported ) ? true : false,
+			'REPORTS_MODULE'	=> $reports_module_url,
 			'REPORT_USER'		=> ( $can_report_user ) ? $report_user_url : false,
 		] );
 

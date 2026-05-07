@@ -21,6 +21,7 @@ if ( empty( $lang ) || ! is_array( $lang ) ) {
 $lang = array_merge( $lang, [
 	'REPORT_USER'						=> 'Report this user',
 	'REPORT_USER_THIS_USER' 			=> 'You are creating a report for %s.',
+	'REPORT_USER_VIEW_USER_REPORTS'		=> 'View reports for this user.',
 	'REPORT_USER_NOTIFY_DESCRIPTION'	=> 'Receive a notification when this report is closed.',
 	'REPORT_USER_REASON_LABEL'			=> 'Reason for report',
 	'REPORT_USER_REASON_DESCRIPTION'	=> 'This field is required and cannot be left blank.',

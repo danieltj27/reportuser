@@ -119,7 +119,7 @@ final class ext {
 
 		$this->template->assign_vars( [
 			'S_REPORT_USER_CSS'	=> true,
-			'REPORT_USER'		=> $this->router->route( 'report_user_mcp_submit_report', [ 'user_id' => $user_id ] ),
+			'REPORT_USER_FORM'	=> $this->router->route( 'report_user_mcp_submit_report', [ 'user_id' => $user_id ] ),
 			'REPORT_THIS_USER'	=> $this->language->lang( 'REPORT_USER_THIS_USER', get_username_string( 'full', $reported_user[ 'user_id' ], $reported_user[ 'username' ], $reported_user[ 'user_colour' ] ) ),
 		] );
 

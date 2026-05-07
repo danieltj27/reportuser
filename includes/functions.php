@@ -664,11 +664,21 @@ final class functions {
 	 * 
 	 * @return int  The total number of user reports (open or closed).
 	 */
-	public function get_user_report_total( string $report_type = 'open' ) : int {
+	public function get_user_report_total( string $report_type = 'open', int $user_id = 0 ) : int {
+
+		if ( 0 !== $user_id ) {
+
+			$where_user = 'reported_user_id != ' . $user_id;
+
+		} else {
+
+			$where_user = 'reported_user_id != 0';
+
+		}
 
 		$where = match ( $report_type ) {
-			'closed' => 'reported_user_id != 0 AND report_closed = 1',
-			default => 'reported_user_id != 0 AND report_closed = 0',
+			'closed' => $where_user . ' AND report_closed = 1',
+			default => $where_user . ' AND report_closed = 0',
 		};
 
 		$result = $this->database->sql_query(

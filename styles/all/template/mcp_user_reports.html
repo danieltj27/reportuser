@@ -6,6 +6,9 @@
 	<div class="panel" class="user-report-list">
 		<div class="inner">
 			<p>{{ USER_REPORTS_EXPLAIN }}</p>
+			{% if S_REPORTS_FILTERED %}
+				<p>{{ REPORTS_FILTERED_FOR }}</p>
+			{% endif %}
 			<div class="action-bar bar-top">
 				<div class="pagination">
 					{{ TOTAL_REPORTS }}
@@ -80,7 +83,7 @@
 		<fieldset class="display-actions">
 			{{ S_FORM_TOKEN }}
 			<input type="submit" name="submit[delete]" class="button2" value="{{ lang( 'DELETE_REPORTS' ) }}" />
-			{% if OPEN_REPORTS %}
+			{% if S_OPEN_REPORTS %}
 				&nbsp;<input type="submit" name="submit[close]" class="button1" value="{{ lang( 'CLOSE_REPORTS' ) }}" />
 			{% endif %}
 			<div><a href="#" onclick="marklist( 'mcp_user_reports', 'report_ids', true ); return false;">{{ lang( 'MARK_ALL' ) }}</a> :: <a href="#" onclick="marklist( 'mcp_user_reports', 'report_ids', false ); return false;">{{ lang( 'UNMARK_ALL' ) }}</a></div>

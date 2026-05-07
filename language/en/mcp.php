@@ -24,6 +24,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_DETAILS'				=> 'User report details',
 	'MCP_USER_REPORTS_OPEN_EXPLAIN'			=> 'This is a list of all user reports that are open and need review.',
 	'MCP_USER_REPORTS_CLOSED_EXPLAIN'		=> 'This is a list of all user reports that have been closed.',
+	'MCP_USER_REPORTS_FILTERED_BY_USER'		=> 'Showing reports for %s.',
 	'MCP_USER_REPORTS_TOTAL_OPEN_REPORTS'	=> [
 		0 => 'No open reports',
 		1 => '%d open report',
@@ -56,7 +57,7 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_USER_DETAILS_EXPLAIN'		=> 'This is a preview of the user\'s profile which they may have updated since the report was sent.',
 	'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER'	=> 'unknown user %d',
 	'MCP_USER_REPORTS_REQUEST_CHANGES_TITLE'	=> 'Request changes',
-	'MCP_USER_REPORTS_REQUEST_CHANGES_EXPLAIN'	=> 'Send a notification to the reported user asking them to update their profile. This notification will also be saved as a moderator note on this user\'s profile.',
+	'MCP_USER_REPORTS_REQUEST_CHANGES_EXPLAIN'	=> 'Send a notification to the reported user asking them to update their profile. This notification will also be saved as a note on their profile.',
 	'MCP_USER_REPORTS_REQUEST_CHANGES_LABEL'	=> 'Message',
 	'MCP_USER_REPORTS_REQUEST_CHANGES_SUBMIT'	=> 'Request changes',
 
