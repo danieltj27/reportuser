@@ -80,7 +80,7 @@ $lang = array_merge( $lang, [
 		1 => 'The selected report has been successfully deleted.',
 		2 => 'The selected reports have been successfully deleted.',
 	],
-	'MCP_USER_REPORTS_SUCCESS_CHANGED_REQUESTED'	=> 'You have sent a notification requesting profile changes.',
+	'MCP_USER_REPORTS_SUCCESS_CHANGES_REQUESTED'	=> 'You have sent a notification requesting profile changes.',
 
 	// RETURNS
 	'MCP_USER_REPORTS_RETURN_MCP'		=> '%1$sReturn to the Moderator Control Panel%2$s',
