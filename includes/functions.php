@@ -84,7 +84,7 @@ final class functions {
 	/**
 	 * Returns whether the user can report the specified user.
 	 * 
-	 * @param integer $user_id  A user id.
+	 * @param integer $user_id A user id.
 	 * 
 	 * @return bool  True if permission is allowed, false if not.
 	 */
@@ -104,38 +104,28 @@ final class functions {
 
 		}
 
-		$result = $this->database->sql_query(
-			'SELECT user_id FROM ' . USERS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
-				'user_id' => $user_id,
-			] )
-		);
+		// Does this user exist?
+		$users = $this->get_user_data( [ $user_id ] );
 
-		$user = $this->database->sql_fetchrow( $result );
-		$this->database->sql_freeresult( $result );
-
-		// User does not exist.
-		if ( false === $user ) {
+		if ( empty( $users ) ) {
 
 			return false;
 
 		}
 
-		// Moderators can report anyone whenever they like.
+		$user = array_first( $users );
+
+		// Moderators can skip this.
 		if ( ! $this->auth->acl_get( 'm_user_report' ) ) {
 
-			$result = $this->database->sql_query(
-				'SELECT * FROM ' . REPORTS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
-					'user_id'			=> (int) $this->user->data[ 'user_id' ],
-					'report_closed'		=> 0,
-					'reported_user_id'	=> $user_id,
-				] )
-			);
+			$my_reports = $this->get_user_reports( query: [
+				[ 'user_id', '=', (int) $this->user->data[ 'user_id' ] ], // This is me.
+				[ 'report_closed', '=', 0 ], // Open reports only.
+				[ 'reported_user_id', '=', (int) $user[ 'user_id' ] ],
+			] );
 
-			$reports = $this->database->sql_fetchrow( $result );
-			$this->database->sql_freeresult( $result );
-
-			// You already reported this user.
-			if ( false !== $reports ) {
+			// You've already reported this user.
+			if ( ! empty( $my_reports ) ) {
 
 				return false;
 
@@ -156,16 +146,12 @@ final class functions {
 	 */
 	public function is_user_reported( int $user_id ) : bool {
 
-		$result = $this->database->sql_query(
-			'SELECT * FROM ' . REPORTS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
-				'reported_user_id' => $user_id,
-			] )
-		);
+		$reports = $this->get_user_reports( query: [
+			[ 'report_closed', '=', 0 ],
+			[ 'reported_user_id', '=', $user_id ],
+		] );
 
-		$reports = $this->database->sql_fetchrowset( $result );
-		$this->database->sql_freeresult( $result );
-
-		if ( false === $reports ) {
+		if ( empty( $reports ) ) {
 
 			return false;
 
