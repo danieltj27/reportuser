@@ -668,7 +668,7 @@ final class functions {
 
 		if ( 0 !== $user_id ) {
 
-			$where_user = 'reported_user_id != ' . $user_id;
+			$where_user = 'reported_user_id = ' . $user_id;
 
 		} else {
 

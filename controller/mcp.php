@@ -195,7 +195,7 @@ final class mcp {
 
 		add_form_key( 'mcp_user_reports_list_csrf' );
 
-		$filtered_user = false;
+		$filtered_user_id = 0;
 
 		/**
 		 * Should the reports be filtered to only show reports made against
@@ -204,22 +204,23 @@ final class mcp {
 		 */
 		if ( 0 !== $this->request->variable( 'user_id', 0 ) ) {
 
-			$filtered_user = $this->functions->get_user_data( [ $this->request->variable( 'user_id', 0 ) ] );
+			$_filtered_user = $this->functions->get_user_data( [ $this->request->variable( 'user_id', 0 ) ] );
 
-			if ( ! empty( $filtered_user ) ) {
+			if ( ! empty( $_filtered_user ) ) {
 
-				$filtered_user = array_first( $filtered_user );
+				$_filtered_user = array_first( $_filtered_user );
+				$filtered_user_id = (int) $_filtered_user[ 'user_id' ];
 
-				$_user_cache[ $filtered_user[ 'user_id' ] ] = get_username_string( 'full', $filtered_user[ 'user_id' ], $filtered_user[ 'username' ], $filtered_user[ 'user_colour' ] );
+				$_user_cache[ $filtered_user_id ] = get_username_string( 'full', $_filtered_user[ 'user_id' ], $_filtered_user[ 'username' ], $_filtered_user[ 'user_colour' ] );
 
 			}
 
 		}
 
 		// Filter the results of reports for the specified user.
-		if ( false !== $filtered_user ) {
+		if ( 0 !== $filtered_user_id ) {
 
-			$where_user = [ 'reported_user_id', '=', (int) $filtered_user[ 'user_id' ] ];
+			$where_user = [ 'reported_user_id', '=', $filtered_user_id ];
 
 		} else {
 
@@ -233,7 +234,7 @@ final class mcp {
 		 * This variables get used later in a phpBB core function to create the
 		 * correct template variables that give us the write page buttons.
 		 */
-		$count = $this->functions->get_user_report_total( ( 1 === $reports_view ) ? 'closed' : 'open', $this->request->variable( 'user_id', 0 ) );
+		$count = $this->functions->get_user_report_total( ( 1 === $reports_view ) ? 'closed' : 'open', $filtered_user_id );
 		$limit = 10;
 		$offset = $this->request->variable( 'start', 0 );
 
@@ -315,17 +316,11 @@ final class mcp {
 		$event = [ 'module_id', 'mode', 'reports_data', 'limit', 'offset' ];
 		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.ext_controller_report', compact( $event ) ) );
 
-		// Default module URL params.
-		$module_url_params = [];
-
-		if ( false !== $filtered_user ) {
-
-			$module_url_params = [ 'user_id' => $filtered_user[ 'user_id' ] ];
-
-		}
-
 		$this->pagination->generate_template_pagination(
-			$this->functions->get_mcp_module_url( $module_id, $module_url_params ),
+			$this->functions->get_mcp_module_url(
+				$module_id,
+				( 0 !== $filtered_user_id ) ? [ 'user_id' => $filtered_user_id ] : []
+			),
 			'pagination',
 			'start',
 			$count,
@@ -338,8 +333,8 @@ final class mcp {
 			'USER_REPORTS_EXPLAIN'	=> ( 1 === $reports_view ) ? $this->language->lang( 'MCP_USER_REPORTS_CLOSED_EXPLAIN' ) : $this->language->lang( 'MCP_USER_REPORTS_OPEN_EXPLAIN' ),
 			'TOTAL_REPORTS'			=> ( 1 === $reports_view ) ? $this->language->lang( 'MCP_USER_REPORTS_TOTAL_CLOSED_REPORTS', $count ) : $this->language->lang( 'MCP_USER_REPORTS_TOTAL_OPEN_REPORTS', $count ),
 			'USER_REPORTS'			=> $reports_data,
-			'S_REPORTS_FILTERED'	=> ( false !== $filtered_user ) ? true : false,
-			'REPORTS_FILTERED_FOR'	=> ( false !== $filtered_user ) ? $this->language->lang( 'MCP_USER_REPORTS_FILTERED_BY_USER', $_user_cache[ $filtered_user[ 'user_id' ] ] ) : '',
+			'S_REPORTS_FILTERED'	=> ( 0 !== $filtered_user_id ) ? true : false,
+			'REPORTS_FILTERED_FOR'	=> ( 0 !== $filtered_user_id ) ? $this->language->lang( 'MCP_USER_REPORTS_FILTERED_BY_USER', $_user_cache[ $filtered_user_id ] ) : '',
 			'S_OPEN_REPORTS'		=> ( 1 === $reports_view ) ? false : true,
 			'DEFAULT_MODULE_URL'	=> $this->functions->get_mcp_module_url( $module_id ),
 			'USER_REPORT_ACTION'	=> $action,
