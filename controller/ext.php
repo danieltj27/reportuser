@@ -168,6 +168,19 @@ final class ext {
 
 		}
 
+		// Check the type of submission.
+		$submit = $this->request->variable( 'submit', [ '' ] );
+		$submit = array_first( $submit );
+
+		// Form cancelled, redirect to user profile.
+		if ( $submit === $this->language->lang( 'CANCEL' ) ) {
+
+			header( 'Location: ' . htmlspecialchars_decode( $return_user_profile_url, ENT_NOQUOTES ) );
+
+			die();
+
+		}
+
 		// Fetch submitted form components.
 		$report_notify = $this->request->variable( 'report_notify', 0 );
 		$report_reason = $this->request->variable( 'report_reason', '' );
