@@ -45,9 +45,8 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_COLUMN_REASON'		=> 'Reason',
 	'MCP_USER_REPORTS_COLUMN_TIME'			=> 'Time',
 	'MCP_USER_REPORTS_COLUMN_REVIEW'		=> 'Review',
-	'MCP_USER_REPORTS_REVIEW_REPORT'		=> 'View report',
+	'MCP_USER_REPORTS_BUTTON_VIEW_REPORT'	=> 'View report',
 	'MCP_USER_REPORTS_NO_RESULTS'			=> 'No user reports were found.',
-	'MCP_USER_REPORTS_PAGE'					=> 'Page <strong>%s</strong> of <strong>%s</strong>',
 
 	// REPORT DETAILS
 	'MCP_USER_REPORTS_REPORT_INFO_TITLE'		=> 'Report #%d',
@@ -96,7 +95,6 @@ $lang = array_merge( $lang, [
 	'MCP_USER_REPORTS_ERROR_INCORRECT_CSRF_TOKEN'	=> 'You have submitted an incorrect CSRF token.',
 	'MCP_USER_REPORTS_ERROR_REPORT_NOT_FOUND'		=> 'The selected report does not exist.',
 	'MCP_USER_REPORTS_ERROR_REQUEST_CHANGES'		=> 'There was an error attempting to send the request changes notification.',
-	'MCP_USER_REPORTS_SUCCESS_CHANGES_REQUESTED'	=> 'Your request for changes has been sent successfully.',
 
 	// LOGS
 	'MCP_USER_REPORT_LOG_CLOSED_REPORT'		=> '<strong>Closed user Report:</strong><br />» %1$s (user_id: %2$d) ',
