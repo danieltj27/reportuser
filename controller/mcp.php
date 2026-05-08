@@ -304,17 +304,19 @@ final class mcp {
 		/**
 		 * Event to hook into the MCP user report lists.
 		 * 
-		 * @event danieltj.reportuser.ext_controller_report
+		 * @event danieltj.reportuser.mcp_list_reports
 		 * @since 1.0.0-b2
+		 * @since 1.0.0-b5 Fixed incorrect event name and added the filtered_user_id variable to the event.
 		 * 
-		 * @var string module_id    The current module identifier.
-		 * @var string mode         The current mode of this module.
-		 * @var array  reports_data An array containing formatted report data (not the same as the return result of `get_user_reports()`).
-		 * @var int    limit        The maximum number of reports per page.
-		 * @var int    offset       The current offset of reports to display (pagination).
+		 * @var string module_id        The current module identifier.
+		 * @var string mode             The current mode of this module.
+		 * @var array  reports_data     An array containing formatted report data (not the same as the return result of `get_user_reports()`).
+		 * @var int    filtered_user_id The user ID to filter results for. 0 means no user has been selected.
+		 * @var int    limit            The maximum number of reports per page.
+		 * @var int    offset           The current offset of reports to display (pagination).
 		 */
-		$event = [ 'module_id', 'mode', 'reports_data', 'limit', 'offset' ];
-		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.ext_controller_report', compact( $event ) ) );
+		$event = [ 'module_id', 'mode', 'reports_data', 'filtered_user_id', 'limit', 'offset' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.mcp_list_reports', compact( $event ) ) );
 
 		$this->pagination->generate_template_pagination(
 			$this->functions->get_mcp_module_url(
@@ -540,15 +542,16 @@ final class mcp {
 		/**
 		 * Event to hook into the MCP user report details.
 		 * 
-		 * @event danieltj.reportuser.ext_controller_details
+		 * @event danieltj.reportuser.mcp_view_report
 		 * @since 1.0.0-b2
+		 * @since 1.0.0-b5 Renamed event to something more descriptive.
 		 * 
 		 * @var string module_id   The current module identifier.
 		 * @var string mode        The current mode of this module.
 		 * @var array  report_data An array containing formatted report data of a single user report.
 		 */
 		$event = [ 'module_id', 'mode', 'report_data' ];
-		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.ext_controller_details', compact( $event ) ) );
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.mcp_view_report', compact( $event ) ) );
 
 		$this->template->assign_vars( [
 			'S_REPORT_USER_CSS'						=> true,

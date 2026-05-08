@@ -126,14 +126,15 @@ final class ext {
 		/**
 		 * Event to hook into the new report form.
 		 * 
-		 * @event danieltj.reportuser.ext_controller_report
+		 * @event danieltj.reportuser.new_report_form
 		 * @since 1.0.0-b2
+		 * @since 1.0.0-b5 Renamed event to something more descriptive.
 		 * 
 		 * @var int   $user_id   The user ID that is being reported.
 		 * @var array $user_data An array containing data of the user being reported.
 		 */
 		$event = [ 'user_id', 'user_data' ];
-		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.ext_controller_report', compact( $event ) ) );
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.new_report_form', compact( $event ) ) );
 
 		return $this->controller->render( '@danieltj_reportuser/report_user_body.html', $this->language->lang( 'REPORT_USER' ) );
 
@@ -181,7 +182,8 @@ final class ext {
 
 		}
 
-		// Fetch submitted form components.
+		// Set report variables for submission.
+		$reporter_user_id = (int) $this->user->data[ 'user_id' ];
 		$report_notify = $this->request->variable( 'report_notify', 0 );
 		$report_reason = $this->request->variable( 'report_reason', '' );
 
@@ -191,10 +193,24 @@ final class ext {
 
 		}
 
+		/**
+		 * Event to hook into the report submission process.
+		 * 
+		 * @event danieltj.reportuser.submit_new_report
+		 * @since 1.0.0-b5
+		 * 
+		 * @var int    reporter_user_id The user ID of the person making the report.
+		 * @var int    user_id          The user ID of the person being reported.
+		 * @var int    report_notify    Flag that sets if the reporter should be notified when the report is closed.
+		 * @var string report_reason    The reason the reporter is submitting this report.
+		 */
+		$event = [ 'reporter_user_id', 'user_id', 'report_notify', 'report_reason' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.submit_new_report', compact( $event ) ) );
+
 		$report_id = $this->functions->create_user_report( [
 			'reason_id'							=> 0,
 			'post_id'							=> 0,
-			'user_id'							=> $this->user->data[ 'user_id' ], // the reporter
+			'user_id'							=> $reporter_user_id,
 			'pm_id'								=> 0,
 			'reported_user_id'					=> $user_id,
 			'user_notify'						=> $report_notify,
@@ -216,9 +232,9 @@ final class ext {
 		}
 
 		$this->notifications->add_notifications( 'danieltj.reportuser.notification.type.new_report', [
-			'report_id'			=> (int) $report_id,
-			'reporter_user_id'	=> (int) $this->user->data[ 'user_id' ],
-			'reported_user_id'	=> (int) $user_id,
+			'report_id'			=> $report_id,
+			'reporter_user_id'	=> $reporter_user_id,
+			'reported_user_id'	=> $user_id,
 			'report_text'		=> $report_reason,
 		] );
 
