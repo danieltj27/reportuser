@@ -236,28 +236,6 @@ final class functions {
 	}
 
 	/**
-	 * Return the data of a user report.
-	 * 
-	 * @param int $report_id The user report ID.
-	 * 
-	 * @return array|bool  An array of report data or false if it cannot be found.
-	 */
-	public function get_user_report( int $report_id ) : array|bool {
-
-		$result = $this->database->sql_query(
-			'SELECT * FROM ' . REPORTS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
-				'report_id' => $report_id,
-			] )
-		);
-
-		$report = $this->database->sql_fetchrow( $result );
-		$this->database->sql_freeresult( $result );
-
-		return $report;
-
-	}
-
-	/**
 	 * Close a user report.
 	 * 
 	 * @param int $report_id A report id.
@@ -640,6 +618,28 @@ final class functions {
 			$limit =  ' LIMIT ' . implode( ', ', $limit_offset );
 
 		}
+
+		/**
+		 * Event to hook into the SQL arguments before querying.
+		 * 
+		 * @event danieltj.reportuser.pre_get_reports_sql
+		 * @since 1.0.0-b5
+		 * 
+		 * @var array query        An array containing query parameters for the reports lookup.
+		 *                          array [ string column_name, string =,!=,<,>,LIKE, mixed column_value ]
+		 * @var array order_by     An array containing ordering data as values as:
+		 *                          array [ string COLUMN_NAME => string ASC or DESC ]
+		 * @var array limit_offset An array containing limit and offset data as integers:
+		 *                          array [ int OFFSET, int LIMIT ] or if a single integer is given [ int LIMIT ]
+		 * @var string where       A string formatted as a SQL where clause.
+		 *                          string ' WHERE column_name = abc AND column_name = xyz '
+		 * @var string order       A string formatted as a SQL order clause.
+		 *                          string ' ORDER BY column_name DESC '
+		 * @var string limit       A string formatted as a SQL limit clause.
+		 *                          string ' LIMIT 0,5 '
+		 */
+		$event = [ 'query', 'order_by', 'limit_offset', 'where', 'order', 'limit' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.pre_get_reports_sql', compact( $event ) ) );
 
 		$result = $this->database->sql_query( 'SELECT * FROM ' . REPORTS_TABLE . $where . $order . $limit );
 
