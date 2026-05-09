@@ -244,13 +244,15 @@ final class functions {
 	 */
 	public function close_user_report( int $report_id ) : bool {
 
-		$report_data = $this->get_user_report( $report_id );
+		$report_data = $this->get_user_reports( report_id: $report_id );
 
 		if ( false === $report_data ) {
 
 			return false;
 
 		}
+
+		$report_data = array_first( $report_data );
 
 		$this->database->sql_query(
 			'UPDATE ' . REPORTS_TABLE . ' SET ' . $this->database->sql_build_array( 'UPDATE', [
@@ -336,13 +338,15 @@ final class functions {
 	 */
 	public function delete_user_report( int $report_id ) : bool {
 
-		$report_data = $this->get_user_report( $report_id );
+		$report_data = $this->get_user_reports( report_id: $report_id );
 
 		if ( false === $report_data ) {
 
 			return false;
 
 		}
+
+		$report_data = array_first( $report_data );
 
 		$this->database->sql_query(
 			'DELETE FROM ' . REPORTS_TABLE . ' WHERE ' . $this->database->sql_build_array( 'SELECT', [
@@ -458,13 +462,15 @@ final class functions {
 	 */
 	public function send_request_changes_notification( int $report_id, string $notification_text ) : bool {
 
-		$report_data = $this->get_user_report( $report_id );
+		$report_data = $this->get_user_reports( report_id: $report_id );
 
 		if ( false === $report_data ) {
 
 			return false;
 
 		}
+
+		$report_data = array_first( $report_data );
 
 		$user_data = $this->get_user_data( [ $report_data[ 'reported_user_id' ] ] );
 
@@ -565,9 +571,7 @@ final class functions {
 
 		if ( 0 !== $report_id ) {
 
-			$where = $this->database->sql_build_array( 'SELECT', [
-				'report_id' => $report_id,
-			] );
+			$where = ' WHERE report_id = ' . $this->database->sql_escape( $report_id ) . ' ';
 
 		} elseif ( ! empty( $query ) ) {
 
@@ -575,9 +579,25 @@ final class functions {
 
 			foreach ( $query as $key => $value ) {
 
-				if ( isset( $value[ 0 ] ) && isset( $value[ 1 ] ) && isset( $value[ 2 ] ) && in_array( $value[ 0 ], $allowed_columns, true ) && in_array( $value[ 1 ], [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN' ], true ) ) {
+				if ( isset( $value[ 0 ] ) && isset( $value[ 1 ] ) && isset( $value[ 2 ] ) && in_array( $value[ 0 ], $allowed_columns, true ) && in_array( $value[ 1 ], [ '=', '!=', '>', '<', '>=', '<=', 'IN', 'NOT IN', 'LIKE', 'NOT LIKE' ], true ) ) {
 
-					$where_collection[] = ( 'IN' === $value[ 1 ] || 'NOT IN' === $value[ 1 ] ) ? $value[ 0 ] . ' ' . $value[ 1 ] . '(' . $value[ 2 ] . ')' : $value[ 0 ] . ' ' . $value[ 1 ] . ' ' . $value[ 2 ];
+					if ( 'IN' === $value[ 1 ] || 'NOT IN' === $value[ 1 ] ) {
+
+						$where_collection[] = $this->database->sql_in_set( $value[ 0 ], $value[ 2 ], ( 'IN' === $value[ 1 ] ) ? false : true );
+
+					} elseif ( 'LIKE' === $value[ 1 ] || 'NOT LIKE' === $value[ 1 ] ) {
+
+						$_like_value = $this->database->get_any_char() . $value[ 2 ] . $this->database->get_any_char();
+
+						$_like_expression = ( 'LIKE' === $value[ 1 ] ) ? $this->database->sql_like_expression( $_like_value ) : $this->database->sql_not_like_expression( $_like_value );
+
+						$where_collection[] = $value[ 0 ] . ' ' . $_like_expression;
+
+					} else {
+
+						$where_collection[] = $value[ 0 ] . ' ' . $value[ 1 ] . ' ' . $this->database->sql_escape( $value[ 2 ] );
+
+					}
 
 				}
 
@@ -597,6 +617,7 @@ final class functions {
 
 			foreach ( $order_by as $key => $value ) {
 
+				// Only allow specific columns and ASC or DESC sorts.
 				if ( isset( $value[ 0 ] ) && isset( $value[ 1 ] ) && in_array( $value[ 0 ], $allowed_columns, true ) && in_array( $value[ 1 ], [ 'ASC', 'DESC' ], true ) ) {
 
 					$order_collection[] = $value[ 0 ] . ' ' . $value[ 1 ];
@@ -614,6 +635,13 @@ final class functions {
 		}
 
 		if ( ! empty( $limit_offset ) ) {
+
+			foreach ( $limit_offset as $key => $value ) {
+
+				// Always force to an int!
+				$limit_offset[ $key ] = (int) $value;
+
+			}
 
 			$limit =  ' LIMIT ' . implode( ', ', $limit_offset );
 
