@@ -19,6 +19,8 @@ Please submit all feedback as an [issue on GitHub](https://github.com/danieltj27
 
 ## Install
 
+This extension requires phpBB 3.3.0 and php 8.5.0 to be installed on your server.
+
 1. Add the extension files into the `ext/danieltj/reportuser` directory.
 2. Log in to the Admin Control Panel and install the extension.
 3. Configure your moderator permissions to decide who can manage user reports which includes closing and deleting them.
