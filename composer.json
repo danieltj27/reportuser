@@ -19,6 +19,12 @@
         "display-name": "Report User",
         "soft-require": {
             "phpbb/phpbb": ">=3.3.16"
+        },
+        "version-check": {
+            "host": "www.phpbb.com",
+            "directory": "/customise/db/extension/report_user",
+            "filename": "version_check",
+            "ssl": true
         }
     }
 }
