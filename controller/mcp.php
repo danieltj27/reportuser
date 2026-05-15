@@ -294,8 +294,8 @@ final class mcp {
 
 			foreach ( $reports_data as $report ) {
 
-				$reports_data[ $report[ 'report_id' ] ][ 'reported_user' ] = ( isset( $_user_cache[ $report[ 'reported_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $report[ 'reported_user_id' ] );
-				$reports_data[ $report[ 'report_id' ] ][ 'reported_by' ] = ( isset( $_user_cache[ $report[ 'reported_by_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_by_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $report[ 'reported_by_user_id' ] );
+				$reports_data[ $report[ 'report_id' ] ][ 'reported_user' ] = ( isset( $_user_cache[ $report[ 'reported_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER', (int) $report[ 'reported_user_id' ] );
+				$reports_data[ $report[ 'report_id' ] ][ 'reported_by' ] = ( isset( $_user_cache[ $report[ 'reported_by_user_id' ] ] ) ) ? $_user_cache[ $report[ 'reported_by_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER', (int) $report[ 'reported_by_user_id' ] );
 
 			}
 
@@ -525,12 +525,12 @@ final class mcp {
 		$report_data = [
 			'report_id'					=> (int) $reports[ 0 ][ 'report_id' ],
 			'reported_user_id'			=> (int) $reports[ 0 ][ 'reported_user_id' ],
-			'reported_user'				=> ( isset( $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $reports[ 0 ][ 'reported_user_id' ] ),
+			'reported_user'				=> ( isset( $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'reported_user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER', (int) $reports[ 0 ][ 'reported_user_id' ] ),
 			'reported_user_avatar'		=> $reported_user_avatar,
 			'reported_user_cpfs'		=> ( empty( $reported_user_cpf ) ) ? false : $reported_user_cpf,
 			'reported_user_signature'	=> $reported_user_signature,
 			'reported_by_user_id'		=> (int) $reports[ 0 ][ 'user_id' ],
-			'reported_by'				=> ( isset( $_user_cache[ $reports[ 0 ][ 'user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_UNKNOWN_USER_NAME', (int) $reports[ 0 ][ 'user_id' ] ),
+			'reported_by'				=> ( isset( $_user_cache[ $reports[ 0 ][ 'user_id' ] ] ) ) ? $_user_cache[ $reports[ 0 ][ 'user_id' ] ] : $this->language->lang( 'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER', (int) $reports[ 0 ][ 'user_id' ] ),
 			'report_text'				=> $reports[ 0 ][ 'report_text' ],
 			'report_time'				=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $reports[ 0 ][ 'report_time' ] ),
 			'report_details_link'		=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
@@ -560,6 +560,7 @@ final class mcp {
 			'MCP_USER_REPORTS_REPORT_BY_USER'		=> $this->language->lang( 'MCP_USER_REPORTS_REPORT_BY_USER', $report_data[ 'reported_by' ] ),
 			'MAX_NOTIFY_TEXT_LENGTH'				=> $this->functions->get_rcn_character_length(),
 			'S_REPORT_OPEN'							=> ( 1 === (int) $reports[ 0 ][ 'report_closed' ] ) ? false : true,
+			'S_REPORT_USER_EXISTS'					=> true,
 		] );
 
 	}

@@ -190,7 +190,7 @@ class report_closed extends \phpbb\notification\type\base {
 	 */
 	public function get_title() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REPORT_CLOSED_TITLE', $this->user_loader->get_username( $this->get_data( 'report_mod_id' ), 'no_profile', false, false, true ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REPORT_CLOSED_TITLE', $this->user_loader->get_username( $this->get_data( 'report_mod_id' ), 'no_profile', $this->language->lang( 'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER', $this->get_data( 'report_mod_id' ) ), false, true ) );
 
 	}
 
@@ -201,7 +201,7 @@ class report_closed extends \phpbb\notification\type\base {
 	 */
 	public function get_reference() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REPORT_CLOSED_REFERENCE', $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'no_profile', false, false, true ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REPORT_CLOSED_REFERENCE', $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'no_profile', $this->language->lang( 'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER', $this->get_data( 'reported_user_id' ) ), false, true ) );
 
 	}
 

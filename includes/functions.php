@@ -474,7 +474,7 @@ final class functions {
 
 		$user_data = $this->get_user_data( [ $report_data[ 'reported_user_id' ] ] );
 
-		if ( false === $user_data ) {
+		if ( empty( $user_data ) ) {
 
 			return false;
 

@@ -206,7 +206,7 @@ class request_changes extends \phpbb\notification\type\base {
 	 */
 	public function get_title() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REQUEST_CHANGES_TITLE', $this->user_loader->get_username( $this->get_data( 'report_mod_id' ), 'no_profile', false, false, true ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_REQUEST_CHANGES_TITLE', $this->user_loader->get_username( $this->get_data( 'report_mod_id' ), 'no_profile', $this->language->lang( 'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER', $this->get_data( 'report_mod_id' ) ), false, true ) );
 
 	}
 

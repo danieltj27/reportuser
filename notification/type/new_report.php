@@ -179,7 +179,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_title() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_TITLE', $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'no_profile', false, false, true ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_TITLE', $this->user_loader->get_username( $this->get_data( 'reported_user_id' ), 'no_profile', $this->language->lang( 'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER', $this->get_data( 'reported_user_id' ) ), false, true ) );
 
 	}
 
@@ -190,7 +190,7 @@ class new_report extends \phpbb\notification\type\base {
 	 */
 	public function get_reference() {
 
-		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_REFERENCE', $this->user_loader->get_username( $this->get_data( 'reporter_user_id' ), 'no_profile', false, false, true ) );
+		return $this->language->lang( 'REPORT_USER_NOTIFICATIONS_NEW_REPORT_REFERENCE', $this->user_loader->get_username( $this->get_data( 'reporter_user_id' ), 'no_profile', $this->language->lang( 'MCP_USER_REPORTS_USER_NAME_PLACEHOLDER', $this->get_data( 'reporter_user_id' ) ), false, true ) );
 
 	}
 
