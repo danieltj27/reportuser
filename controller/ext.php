@@ -21,47 +21,47 @@ use danieltj\reportuser\includes\functions;
 final class ext {
 
 	/**
-	 * @var controller
+	 * @var phpbb\controller\helper
 	 */
 	protected $controller;
 
 	/**
-	 * @var dispatcher_interface
+	 * @var phpbb\event\dispatcher_interface
 	 */
 	protected $dispatcher;
 
 	/**
-	 * @var language
+	 * @var phpbb\language\language
 	 */
 	protected $language;
 
 	/**
-	 * @var notifications
+	 * @var phpbb\notification\manager
 	 */
 	protected $notifications;
 
 	/**
-	 * @var request
+	 * @var phpbb\request\request
 	 */
 	protected $request;
 
 	/**
-	 * @var router
+	 * @var phpbb\routing\helper
 	 */
 	protected $router;
 
 	/**
-	 * @var template
+	 * @var phpbb\template\template
 	 */
 	protected $template;
 
 	/**
-	 * @var user
+	 * @var phpbb\user
 	 */
 	protected $user;
 
 	/**
-	 * @var functions
+	 * @var danieltj\reportuser\includes\functions
 	 */
 	protected $functions;
 
@@ -83,7 +83,7 @@ final class ext {
 	}
 
 	/**
-	 * The new user report form.
+	 * New user report form.
 	 */
 	public function report( int $user_id ) {
 

@@ -2,7 +2,7 @@
     "name": "danieltj/reportuser",
     "type": "phpbb-extension",
     "description": "Adds a button that allows people to report other users.",
-    "version": "1.0.0-b6",
+    "version": "1.0.0",
     "license": "GPL-2.0-only",
     "authors": [
         {
@@ -18,7 +18,7 @@
     "extra": {
         "display-name": "Report User",
         "soft-require": {
-            "phpbb/phpbb": ">=3.3.15"
+            "phpbb/phpbb": ">=3.3.16"
         }
     }
 }

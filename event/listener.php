@@ -20,37 +20,37 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class listener implements EventSubscriberInterface {
 
 	/**
-	 * @var auth
+	 * @var phpbb\auth\auth
 	 */
 	protected $auth;
 
 	/**
-	 * @var language
+	 * @var phpbb\language\language
 	 */
 	protected $language;
 
 	/**
-	 * @var request
+	 * @var phpbb\request\request
 	 */
 	protected $request;
 
 	/**
-	 * @var router
+	 * @var phpbb\routing\helper
 	 */
 	protected $router;
 
 	/**
-	 * @var template
+	 * @var phpbb\template\template
 	 */
 	protected $template;
 
 	/**
-	 * @var user
+	 * @var phpbb\user
 	 */
 	protected $user;
 
 	/**
-	 * @var functions
+	 * @var danieltj\reportuser\includes\functions
 	 */
 	protected $functions;
 
@@ -75,10 +75,10 @@ class listener implements EventSubscriberInterface {
 	static public function getSubscribedEvents() {
 
 		return [
-			'core.user_setup_after'								=> 'add_languages',
-			'core.permissions'									=> 'add_permissions',
-			'core.memberlist_view_profile'						=> 'add_memberlist_template_vars',
-			'core.modify_mcp_modules_display_option'			=> 'update_mcp_module_display',
+			'core.user_setup_after'						=> 'add_languages',
+			'core.permissions'							=> 'add_permissions',
+			'core.memberlist_view_profile'				=> 'add_memberlist_template_vars',
+			'core.modify_mcp_modules_display_option'	=> 'update_mcp_module_display',
 		];
 
 	}

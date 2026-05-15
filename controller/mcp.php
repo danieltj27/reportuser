@@ -23,57 +23,57 @@ use danieltj\reportuser\includes\functions;
 final class mcp {
 
 	/**
-	 * @var auth
+	 * @var phpbb\auth\auth
 	 */
 	protected $auth;
 
 	/**
-	 * @var controller
+	 * @var phpbb\controller\helper
 	 */
 	protected $controller;
 
 	/**
-	 * @var dispatcher_interface
+	 * @var phpbb\event\dispatcher_interface
 	 */
 	protected $dispatcher;
 
 	/**
-	 * @var language
+	 * @var phpbb\language\language
 	 */
 	protected $language;
 
 	/**
-	 * @var notifications
+	 * @var phpbb\notification\manager
 	 */
 	protected $notifications;
 
 	/**
-	 * @var pagination
+	 * @var phpbb\pagination
 	 */
 	protected $pagination;
 
 	/**
-	 * @var request
+	 * @var phpbb\request\request
 	 */
 	protected $request;
 
 	/**
-	 * @var router
+	 * @var phpbb\routing\helper
 	 */
 	protected $router;
 
 	/**
-	 * @var template
+	 * @var phpbb\template\template
 	 */
 	protected $template;
 
 	/**
-	 * @var user
+	 * @var phpbb\user
 	 */
 	protected $user;
 
 	/**
-	 * @var functions
+	 * @var danieltj\reportuser\includes\functions
 	 */
 	protected $functions;
 
@@ -263,7 +263,7 @@ final class mcp {
 					'reported_by_user_id'	=> (int) $report[ 'user_id' ],
 					'reported_by'			=> false, // This gets overwritten later.
 					'report_text'			=> $report[ 'report_text' ],
-					'report_time'			=> $this->functions->get_l10n_local_time( zone: $this->user->data[ 'user_dateformat' ], time: $report[ 'report_time' ] ),
+					'report_time'			=> $this->functions->get_l10n_local_time( $this->user->data[ 'user_dateformat' ], $report[ 'report_time' ] ),
 					'report_details_link'	=> $this->functions->get_mcp_module_url( '\danieltj\reportuser\mcp\report_details_module', [
 						'mode'	=> 'user_report_details',
 						'r'		=> (int) $report[ 'report_id' ],

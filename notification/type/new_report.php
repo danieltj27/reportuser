@@ -11,12 +11,12 @@ namespace danieltj\reportuser\notification\type;
 class new_report extends \phpbb\notification\type\base {
 
 	/**
-	 * @var user_loader \phpbb\user_loader
+	 * @var phpbb\user_loader
 	 */
 	protected $user_loader;
 
 	/**
-	 * @var functions \danieltj\reportuser\includes\functions
+	 * @var danieltj\reportuser\includes\functions
 	 */
 	protected $functions;
 

@@ -4,10 +4,10 @@ Adds a button that allows people to report other users.
 
 ## Features
 
-1. People can report other users by clicking the button on the view profile page.
-2. Moderators can close and delete reports if they have the correct permission.
-3. Notification are sent when a user report is created or closed.
-4. Moderators can send a notification to a user requesting that they make changes to their profile. This is also saved as a user note for future reference.
+- People can report other users by clicking the button on the view profile page.
+- Moderators can close and delete reports if they have the correct permission.
+- Notification are sent when a user report is created or closed.
+- Moderators can send a notification to a user requesting that they make changes to their profile. This is also saved as a user note for future reference.
 
 ## Donate
 

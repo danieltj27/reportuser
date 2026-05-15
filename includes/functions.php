@@ -20,47 +20,47 @@ use phpbb\user;
 final class functions {
 
 	/**
-	 * @var auth
+	 * @var phpbb\auth\auth
 	 */
 	protected $auth;
 
 	/**
-	 * @var driver_interface
+	 * @var phpbb\db\driver\driver_interface 
 	 */
 	protected $database;
 
 	/**
-	 * @var dispatcher_interface
+	 * @var phpbb\event\dispatcher_interface
 	 */
 	protected $dispatcher;
 
 	/**
-	 * @var language
+	 * @var phpbb\language\language
 	 */
 	protected $language;
 
 	/**
-	 * @var log
+	 * @var phpbb\log\log
 	 */
 	protected $log;
 
 	/**
-	 * @var notifications
+	 * @var phpbb\notification\manager
 	 */
 	protected $notifications;
 
 	/**
-	 * @var router
+	 * @var phpbb\routing\helper
 	 */
 	protected $router;
 
 	/**
-	 * @var user
+	 * @var phpbb\user
 	 */
 	protected $user;
 
 	/**
-	 * @var datetime
+	 * @var phpbb\datetime
 	 */
 	protected $datetime;
 
@@ -962,7 +962,7 @@ final class functions {
 	}
 
 	/**
-	 * Returns the allowed character length of the notification text
+	 * Returns the maximum character length of the notification text
 	 * when a moderator requests changes from a reported user.
 	 * 
 	 * @return int  The allowed character length.
