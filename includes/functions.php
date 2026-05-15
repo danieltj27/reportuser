@@ -564,10 +564,24 @@ final class functions {
 			'reported_user_id',
 		];
 
+		/**
+		 * Event to hook into the allowed column names.
+		 * 
+		 * @event danieltj.reportuser.get_reports_allowed_columns
+		 * @since 1.0.0-rc1
+		 * 
+		 * @var array allowed_columns An array containing a list of column names for the
+		 *                            reports table that can be used in this query.
+		 *                              array [ string COLUMN_NAME ]
+		 */
+		$event = [ 'allowed_columns' ];
+		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.get_reports_allowed_columns', compact( $event ) ) );
+
 		// Placeholders for sql query.
 		$where = '';
 		$order = '';
-		$limit = '';
+		$limit = 25; // Default to 25 rows.
+		$offset = 0; // Default to start at 0.
 
 		if ( 0 !== $report_id ) {
 
@@ -636,14 +650,19 @@ final class functions {
 
 		if ( ! empty( $limit_offset ) ) {
 
-			foreach ( $limit_offset as $key => $value ) {
+			if ( isset( $limit_offset[ 'limit' ] ) ) {
 
-				// Always force to an int!
-				$limit_offset[ $key ] = (int) $value;
+				// Must be at least 1, default value is 25.
+				$limit = ( 1 > (int) $limit_offset[ 'limit' ] ) ? $limit : (int) $limit_offset[ 'limit' ];
 
 			}
 
-			$limit =  ' LIMIT ' . implode( ', ', $limit_offset );
+			if ( isset( $limit_offset[ 'offset' ] ) ) {
+
+				// Cannot be negative, default value is 0.
+				$offset = ( 0 > (int) $limit_offset[ 'offset' ] ) ? $offset : (int) $limit_offset[ 'offset' ];
+
+			}
 
 		}
 
@@ -652,24 +671,29 @@ final class functions {
 		 * 
 		 * @event danieltj.reportuser.pre_get_reports_sql
 		 * @since 1.0.0-b5
+		 * @since 1.0.0-rc1 Updated the limit value and added offset argument.
 		 * 
 		 * @var array query        An array containing query parameters for the reports lookup.
-		 *                          array [ string column_name, string =,!=,<,>,LIKE, mixed column_value ]
+		 *                           array [ string column_name, string =,!=,<,>,LIKE, mixed column_value ]
 		 * @var array order_by     An array containing ordering data as values as:
-		 *                          array [ string COLUMN_NAME => string ASC or DESC ]
+		 *                           array [ string COLUMN_NAME => string ASC or DESC ]
 		 * @var array limit_offset An array containing limit and offset data as integers:
-		 *                          array [ int OFFSET, int LIMIT ] or if a single integer is given [ int LIMIT ]
+		 *                           array [ int OFFSET, int LIMIT ] or if a single integer is given [ int LIMIT ]
 		 * @var string where       A string formatted as a SQL where clause.
-		 *                          string ' WHERE column_name = abc AND column_name = xyz '
+		 *                           string ' WHERE column_name = abc AND column_name = xyz '
 		 * @var string order       A string formatted as a SQL order clause.
-		 *                          string ' ORDER BY column_name DESC '
-		 * @var string limit       A string formatted as a SQL limit clause.
-		 *                          string ' LIMIT 0,5 '
+		 *                           string ' ORDER BY column_name DESC '
+		 * @var int    limit       An integer representing the number of results to return. Defaults to 25.
+		 *                           int 25
+		 * @var int    offset      An integer representing the results to start from. Defaults to 0.
+		 *                           int 0
 		 */
-		$event = [ 'query', 'order_by', 'limit_offset', 'where', 'order', 'limit' ];
+		$event = [ 'query', 'order_by', 'limit_offset', 'where', 'order', 'limit', 'offset' ];
 		extract( $this->dispatcher->trigger_event( 'danieltj.reportuser.pre_get_reports_sql', compact( $event ) ) );
 
-		$result = $this->database->sql_query( 'SELECT * FROM ' . REPORTS_TABLE . $where . $order . $limit );
+		// Create the full query and execute it.
+		$_sql = 'SELECT * FROM ' . REPORTS_TABLE . $where . $order;
+		$result = $this->database->sql_query_limit( $_sql, (int) $limit, (int) $offset );
 
 		$reports = $this->database->sql_fetchrowset( $result );
 

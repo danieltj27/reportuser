@@ -244,7 +244,8 @@ final class mcp {
 		], order_by: [
 			[ 'report_time', 'DESC' ],
 		], limit_offset: [
-			$offset, $limit
+			'limit' => $limit,
+			'offset' => $offset,
 		] );
 
 		$reports_data = [];
@@ -469,9 +470,7 @@ final class mcp {
 
 		add_form_key( 'mcp_user_report_details_csrf' );
 
-		$reports = $this->functions->get_user_reports( query: [
-			[ 'report_id', '=', $report_id ],
-		] );
+		$reports = $this->functions->get_user_reports( report_id: $report_id );
 
 		$_user_cache = [];
 		$user_ids = [];

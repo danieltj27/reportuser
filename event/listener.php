@@ -171,7 +171,8 @@ class listener implements EventSubscriberInterface {
 			], order_by: [
 				[ 'report_time', 'DESC' ],
 			], limit_offset: [
-				0, 5
+				'limit' => 5,
+				'offset' => 0,
 			] );
 
 			$reports_data = [];
