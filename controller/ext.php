@@ -119,7 +119,7 @@ final class ext {
 
 		$this->template->assign_vars( [
 			'S_REPORT_USER_CSS'	=> true,
-			'REPORT_USER_FORM'	=> $this->router->route( 'report_user_mcp_submit_report', [ 'user_id' => $user_id ] ),
+			'REPORT_USER_FORM'	=> $this->router->route( 'danieltj_reportuser_mcp_submit_report', [ 'user_id' => $user_id ] ),
 			'REPORT_THIS_USER'	=> $this->language->lang( 'REPORT_USER_THIS_USER', get_username_string( 'full', $reported_user[ 'user_id' ], $reported_user[ 'username' ], $reported_user[ 'user_colour' ] ) ),
 		] );
 
@@ -147,7 +147,7 @@ final class ext {
 
 		// Return URLs that the user may be redirected to.
 		$return_user_profile_url = $this->functions->get_user_profile_url( $user_id );
-		$return_report_form_url = $this->router->route( 'report_user_mcp_create_report', [
+		$return_report_form_url = $this->router->route( 'danieltj_reportuser_mcp_create_report', [
 			'user_id' => $user_id,
 		] );
 

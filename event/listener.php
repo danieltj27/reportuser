@@ -114,7 +114,7 @@ class listener implements EventSubscriberInterface {
 	 */
 	public function add_memberlist_template_vars( $event ) {
 
-		$report_user_url = $this->router->route( 'report_user_mcp_create_report', [
+		$report_user_url = $this->router->route( 'danieltj_reportuser_mcp_create_report', [
 			'user_id' => $event[ 'member' ][ 'user_id' ],
 		] );
 
